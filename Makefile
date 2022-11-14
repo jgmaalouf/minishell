@@ -17,23 +17,25 @@ vpath %.c src/		\
 	src/parser		\
 	src/utils
 
-SRCS := src/*.c			\
-	src/env/*.c			\
-	src/expansion/*.c	\
-	src/lexer/*.c		\
-	src/output/*.c		\
-	src/parser/*.c		\
-	src/utils/*.c
+# SRCS := src/*.c			\
+# 	src/env/*.c			\
+# 	src/expansion/*.c	\
+# 	src/lexer/*.c		\
+# 	src/output/*.c		\
+# 	src/parser/*.c		\
+# 	src/utils/*.c
 
 # SRCS := src/*.c src/env/*.c
-# SRCS := src/**/*.c
+SRCS := $(wildcard src/**/*.c)
 
 OBJDIR := obj/
-# OBJS := $(SRCS:src/%.c=obj/%.o)
+OBJS := $(SRCS:src/%.c=obj/%.o)
 # OBJS := $(SRCS:src/%.c=$(OBJDIR)%.o)
-# OBJS := $(addprefix $(OBJDIR), $(SRCS:src/%.c=.o))
-OBJS = $(patsubst ./src/%.c, $(OBJDIR)%.o, $(SRCS))
+# OBJS := $(wildcard $(addprefix $(OBJDIR), $(SRCS:src/%.c=%.o)))
+# OBJS = $(patsubst ./src/%.c, $(OBJDIR)%.o, $(SRCS))
 
+# echo:
+# 	@echo $(OBJS)
 
 all: $(NAME)
 
@@ -42,8 +44,8 @@ bonus: all
 $(NAME): $(OBJS)
 	@$(CC) $(CFLAGS) $(HFLAGS) $(LFLAGS) $(OBJS) -o $(NAME)
 
-$(OBJDIR)%.o: src/%.c
-# obj/%.o: src/%.c $(HFILES)
+# $(OBJDIR)%.o: src/%.c
+obj/%.o: src/%.c $(HFILES)
 	@mkdir -p $(dir $@)
 	@$(CC) $(CFLAGS) $(HFLAGS) -c $< -o $@
 
