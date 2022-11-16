@@ -48,13 +48,17 @@ int	exit_routine(t_env *env)
 static void	minishell(t_env *env)
 {
 	char	*cmdline;
-	// t_table	cmdtable;
+	t_cmd	*table;
 	// t_token	*tokens;
 
 	while (42)
 	{
 		/* cmdline = readline(get_prompt(env)); */
-		cmdline = readline(GRN "minishell$ " NOC);
+		// cmdline = readline(GRN "minishell$ " NOC);
+		// cmdline = strdup("echo hello world");
+		cmdline = strdup("echo ${SHELL}");
+		// debugging_log_print_env(env);
+		// printf("%s\n", getenv("PATH"));
 		if (cmdline == NULL)
 		{
 			printf(BLU "\tC-d" NOC "\n");
@@ -70,12 +74,12 @@ static void	minishell(t_env *env)
 		// log_print_tokens(tokens);
 		// tokens = free_tokens(tokens);
 
-		/* cmdtable = parser(cmdline, env);
- */		parser(cmdline, env);
-		/* if (cmdtable != NULL) */
-			/* executor(); */
+		table = parser(cmdline, env);
+		if (table != NULL)
+			executor(table);
 
 		free(cmdline);
+		// exit_routine(env); return;
 		/* printf(RED "cmdline: '%s'\n" NOC, cmdline); */
 	}
 }
@@ -89,5 +93,6 @@ int	main(int argc, char const *argv[], char const **envp)
 	// signal(SIGQUIT, SIG_IGN);
 	t_env *env = preprocess_environment((char **)envp);
 	minishell(env);
+	// system("leaks minishell");
 	return (EXIT_SUCCESS);
 }

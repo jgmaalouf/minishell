@@ -31,6 +31,20 @@ void	env_list_add_back(t_env **list, t_env *new)
 }
  */
 
+char **duplicate_2d_array(char **array)
+{
+	char **ret;
+	int	count = 0, i;
+
+	for (i = 0; array[i] != NULL; i++)
+		count++;
+	ret = malloc(sizeof(char *) * count + 1);
+	for (i = 0; i < count; i++)
+		ret[i] = strdup(array[i]);
+	ret[i] = NULL;
+	return (ret);
+}
+
 /* extern char	**environ; */
 t_env	*preprocess_environment(char **envp)
 {
@@ -41,6 +55,7 @@ t_env	*preprocess_environment(char **envp)
 	env = new_env_node();
 	ptr = env;
 	i = 0;
+	envp = duplicate_2d_array(envp);
 	while (envp[i] != NULL)
 	{
 		// array = ft_str_split(envp[i++], "=");

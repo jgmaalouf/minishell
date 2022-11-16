@@ -38,6 +38,20 @@ typedef struct s_env
 	struct s_env	*next;
 }	t_env;
 
+typedef struct s_cmd
+{
+	char			*cmd_name;
+
+	char const		*cmd_path;
+	char *const		*cmd_argv;
+
+
+	int				stdinput;
+	int				stdoutput;
+	int				stderror;
+	struct s_cmd	*next;
+}	t_cmd;
+
 typedef enum e_token_type{
 	/* NONE, */
 	/* NEW_LINE, */
@@ -67,7 +81,7 @@ typedef struct s_token
 /* PROHIBITED */
 
 t_env	*preprocess_environment(char **envp);
-int	parser(char *line, t_env *env);
+t_cmd	*parser(char *line, t_env *env);
 
 bool	token_is_word(t_token_type type);
 bool	token_is_logical_operand(t_token_type type);
@@ -91,5 +105,10 @@ void	ft_lstadd_back(t_list **lst, t_list *new);
 void	ft_lstclear(t_list **lst, void (*del)(void *));
 
 char*	ft_concat(const char *s1, const char *s2);
+int		find_bad_substitution(char *line);
+t_cmd	*create_cmd_table(t_token *tokens);
+void	executor(t_cmd *table);
+
+void	debugging_log_print_env(t_env *env);
 
 #endif

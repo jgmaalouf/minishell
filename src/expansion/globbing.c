@@ -198,28 +198,22 @@ void	debugging_log_pattern_groups(t_pattern *groups, char const *filename)
 	printf("---\n\n");
 }
 
+/*
 int	main(int argc, char *argv[])
 {
-	/* BUGGY */
-	// char *pattern  = "test*?";
-	// char *filename = "test";
+	char *pattern  = "test*?";
+	char *filename = "test";
+	// char *pattern  = "test*a*b";
+	// char *filename = "testabbab";
 
-	char *pattern  = "test*a*b?";
-	char *filename = "testabbabcx";
-	/* BUGGY */
-
-	// char *pattern  = "*ttt????";
-	// char *filename = "asdtttjhhf";
+	// char *pattern  = "TEST_*a???_b_c";
+	// char *filename = "TEST_a12_b_ca321_b_c";
 
 	// char *pattern  = ".*";
 	// char *filename = ".";
 
 	// char *pattern  = "*aaa*zz*cc";
 	// char *filename = "qq_aaatabzzbccqcc";
-
-	// char *pattern  = "*test";
-	// char *filename = ".test";
-
 
 	int match = globbing(pattern, filename);
 	if (match)
@@ -228,3 +222,4 @@ int	main(int argc, char *argv[])
 		printf("CONFLICT:\n pattern  <%s> \n filename <%s>\n", pattern, filename);
 	return (0);
 }
+ */

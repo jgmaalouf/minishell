@@ -1,40 +1,38 @@
 NAME := minishell
 
 CC := gcc
-# CFLAGS := -Wall -Werror -Wextra # -g3
-LFLAGS := -lreadline -L/Users/rmeuth/.brew/opt/readline/lib
+#CFLAGS := -Wall -Werror -Wextra -g3
+CFLAGS := -g3
+# LFLAGS := -lreadline -L/opt/homebrew/opt/readline/lib
+LFLAGS := -lreadline -L ~/.brew/opt/readline/lib
 
 INCDIR := src/
-HFLAGS := -I $(INCDIR) -I/Users/rmeuth/.brew/opt/readline/include
+# HFLAGS := -I $(INCDIR) -I/opt/homebrew/opt/readline/include
+HFLAGS := -I $(INCDIR) -I ~/.brew/opt/readline/include
 HFILES := $(INCDIR)minishell.h
 
-
 vpath %.c src/		\
+	src/builtins	\
 	src/env			\
+	src/executor	\
 	src/expansion	\
+	src/input		\
 	src/lexer		\
 	src/output		\
 	src/parser		\
+	src/signals		\
 	src/utils
 
-# SRCS := src/*.c			\
-# 	src/env/*.c			\
-# 	src/expansion/*.c	\
-# 	src/lexer/*.c		\
-# 	src/output/*.c		\
-# 	src/parser/*.c		\
-# 	src/utils/*.c
-
-# SRCS := src/*.c src/env/*.c
+SRCDIR := src/
 SRCS := $(wildcard src/**/*.c)
+SRCS += src/main.c
 
 OBJDIR := obj/
-OBJS := $(SRCS:src/%.c=obj/%.o)
-# OBJS := $(SRCS:src/%.c=$(OBJDIR)%.o)
-# OBJS := $(wildcard $(addprefix $(OBJDIR), $(SRCS:src/%.c=%.o)))
-# OBJS = $(patsubst ./src/%.c, $(OBJDIR)%.o, $(SRCS))
+OBJS := $(SRCS:$(SRCDIR)%.c=$(OBJDIR)%.o)
+#OBJS := $(patsubst $(SRCDIR)%.c, $(OBJDIR)%.o, $(SRCS))
 
 # echo:
+# 	@echo $(SRCS)
 # 	@echo $(OBJS)
 
 all: $(NAME)
@@ -44,8 +42,7 @@ bonus: all
 $(NAME): $(OBJS)
 	@$(CC) $(CFLAGS) $(HFLAGS) $(LFLAGS) $(OBJS) -o $(NAME)
 
-# $(OBJDIR)%.o: src/%.c
-obj/%.o: src/%.c $(HFILES)
+$(OBJDIR)%.o: $(SRCDIR)%.c $(HFILES)
 	@mkdir -p $(dir $@)
 	@$(CC) $(CFLAGS) $(HFLAGS) -c $< -o $@
 
@@ -61,6 +58,6 @@ re: fclean
 	@$(MAKE) all
 
 exe: $(NAME)
-	./$(NAME)
+	@./$(NAME)
 
 .PHONY: all bonus clean fclean re exe

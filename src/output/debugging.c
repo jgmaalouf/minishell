@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-void	log_print_env(t_env *env)
+void	debugging_log_print_env(t_env *env)
 {
 	while (env->next != NULL)
 	{

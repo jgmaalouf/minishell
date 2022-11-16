@@ -1,33 +1,8 @@
 #include "minishell.h"
 
-int	bad_substitution(char *word)
-{
-	char	*dollar;
-
-	dollar = strchr(word, '$');
-	if (dollar == NULL)
-		return (false);
-	if (dollar[1] != '{')
-		return (bad_substitution(dollar + 1));
-	if (dollar[2] == '}')
-		return (true);
-	word = &dollar[2];
-	while (*word)
-	{
-		if (*word == '}')
-			return (bad_substitution(word + 1));
-		if (!isalnum(*word) && *word != '_')
-			return (true);
-		word++;
-	}
-	return (syntax_error_matching('}'), true);
-}
-
 int	valid_word(t_token *token)
 {
 	/* return (token->next->type != OPEN_PARENTHESIS); */
-	if (bad_substitution(token->val))
-		return (syntax_error_bad_substitution(token->val));
 	if (token->next == NULL)
 		return (true);
 	if (token->next->type == OPEN_PARENTHESIS)
@@ -105,23 +80,16 @@ int	valid_first_token(t_token_type type)
 	return (!token_is_logical_operand(type) && type != CLOSE_PARENTHESIS);
 }
 
-int	valid_last_token(t_token_type type)
-{
-	return (type == WORD || type == CLOSE_PARENTHESIS);
-}
-
 int	validate_token_list(t_token *tokens)
 {
 	if (!valid_first_token(tokens->type))
 		return (syntax_error_unexpected_token(tokens->val));
-	while (tokens->next)
+	while (tokens)
 	{
 		if (!validate_token(tokens))
 			return (false);
 		tokens = tokens->next;
 	}
-	if (!valid_last_token(tokens->type))
-		return (validate_token(tokens));
 	return (true);
 }
 

@@ -7,6 +7,7 @@ char	*process_brace_substitution(char **word)
 	variable = *word;
 	*word = strchr(*word, '}');
 	variable = strndup(variable, *word - variable);
+	// printf("%s\n", variable);
 	variable[0] = '$';
 	(*word)++;
 	return (variable);
@@ -36,7 +37,7 @@ char	*process_next_dollar_subword(char **word)
 	char	*dollar;
 	char	*single;
 
-	if (**word == '$' && (*word)++)
+	if (**word == '$')
 		return (process_dollar_sign(word));
 	subword = *word;
 	dollar = strchr(*word, '$');
@@ -65,10 +66,15 @@ t_list	*subdivide_dollar_word(char *word)
 	return (list);
 }
 
-void	free_subword_list(void *list)
+// void	free_subword_list(void *list)
+// {
+// 	free(((t_list *)list)->content);
+// 	free(list);
+// }
+
+void	free_subword_list(void *subword)
 {
-	free(((t_list *)list)->content);
-	free(list);
+	free(subword);
 }
 
 // char	*join_subwords(t_list *subwords)
@@ -86,7 +92,7 @@ char	*concatenate_subwords(t_list *subwords)
 		total_size += strlen(lptr->content);
 		lptr = lptr->next;
 	}
-	result = malloc(total_size + 1);
+	result = calloc(total_size + 1, sizeof(char));
 	lptr = subwords;
 	while (lptr)
 	{
@@ -126,7 +132,7 @@ char	*expand_env_variable(char *key, t_env *env)
 
 	if (strcmp(key, "$") == 0)
 		return (key);
-	if (strcmp(key, "$?") == 0)
+	if (strncmp(key, "$?", 2) == 0)
 		value = last_exit_status();
 	else
 		value = find_env_variable(key + 1, env);
@@ -150,6 +156,6 @@ char	*parameter_expansion(char *word, t_env *env)
 		lptr = lptr->next;
 	}
 	result = concatenate_subwords(subwords);
-	ft_lstclear(&subwords, &free_subword_list);
+	ft_lstclear(&subwords, &free);
 	return (result);
 }

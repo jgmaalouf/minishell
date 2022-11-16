@@ -61,17 +61,33 @@ void	shell_expansion(t_token *tokens, t_env *env)
 	}
 }
 
-int	parser(char *line, t_env *env)
+void	debugging_log_tokens(t_token *tokens)
+{
+	while (tokens)
+	{
+		printf("%d: ", tokens->type);
+		printf("%s, \n", tokens->val);
+		tokens = tokens->next;
+	}
+	printf("\n");
+}
+
+t_cmd	*parser(char *line, t_env *env)
 {
 	t_token	*tokens;
+	t_cmd	*table;
 
+	if (find_bad_substitution(line))
+		return (NULL);
 	tokens = lexer(line);
 	if (tokens == NULL)
-		return (EXIT_FAILURE);
+		return (NULL);
 	// log_print_tokens(tokens);
-	if (validate_syntax(tokens))
-		return (free_tokens(tokens), EXIT_FAILURE);
+	if (!validate_syntax(tokens))
+		return (free_tokens(tokens));
 	shell_expansion(tokens, env);
+	// debugging_log_tokens(tokens);
+	table = create_cmd_table(tokens);
 	tokens = free_tokens(tokens);
-	return (EXIT_SUCCESS);
+	return (table);
 }
