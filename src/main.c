@@ -54,9 +54,9 @@ static void	minishell(t_env *env)
 	while (42)
 	{
 		/* cmdline = readline(get_prompt(env)); */
-		// cmdline = readline(GRN "minishell$ " NOC);
+		cmdline = readline(GRN "minishell$ " NOC);
 		// cmdline = strdup("echo hello world");
-		cmdline = strdup("echo ${SHELL}");
+		// cmdline = strdup("echo ${SHELL}");
 		// debugging_log_print_env(env);
 		// printf("%s\n", getenv("PATH"));
 		if (cmdline == NULL)

@@ -10,7 +10,6 @@ char	**extract_env_path(void)
 	int		i;
 
 	env_path = strdup(getenv("PATH"));
-	printf("%s\n", env_path);
 	count = 0;
 	i = 0;
 	while (env_path[i] != '\0')
@@ -68,24 +67,29 @@ char const	*find_cmd_path(char *cmd_name)
 	return (cmd_path);
 }
 
-/* int cmd_argc(t_token *tokens) */
-
-void	add_cmd(t_token **tokens, t_cmd *table)
+int cmd_argc(t_token *tokens)
 {
 	t_token	*tptr;
 	int		count;
-	int		i;
 
-	tptr = *tokens;
-	table->cmd_name = tptr->val;
-	table->cmd_path = find_cmd_path(table->cmd_name);
+	tptr = tokens;
 	count = 0;
-	// count = cmd_argc(*tokens);
 	while (tptr != NULL && token_is_word(tptr->type))
 	{
 		count++;
 		tptr = tptr->next;
 	}
+	return (count);
+}
+
+void	add_cmd(t_token **tokens, t_cmd *table)
+{
+	int		count;
+	int		i;
+
+	table->cmd_name = strdup((*tokens)->val);
+	table->cmd_path = find_cmd_path(table->cmd_name);
+	count = cmd_argc(*tokens);
 	table->cmd_argv = calloc(count + 1, sizeof(char *));
 	i = 0;
 	while (i < count)
@@ -93,6 +97,23 @@ void	add_cmd(t_token **tokens, t_cmd *table)
 		((char **)(table->cmd_argv))[i++] = strdup((*tokens)->val);
 		*tokens = (*tokens)->next;
 	}
+}
+
+void	redirect_cmd_input_file(t_token **tokens, t_cmd *table)
+{
+	
+}
+
+void	redirect_cmd(t_token **tokens, t_cmd *table)
+{
+	if ((*tokens)->type == REDIRECT_INPUT_FILE)
+		redirect_cmd_input_file(tokens, table);
+	// if ((*tokens)->type == REDIRECT_INPUT_HEREDOC)
+	// 	redirect_cmd_input_heredoc();
+	// if ((*tokens)->type == REDIRECT_OUTPUT_APPEND)
+	// 	redirect_cmd_output_append();
+	// if ((*tokens)->type == REDIRECT_OUTPUT_TRUNC)
+	// 	redirect_cmd_output_trunc();
 }
 
 t_cmd	*create_cmd_table(t_token *tokens)
@@ -103,7 +124,8 @@ t_cmd	*create_cmd_table(t_token *tokens)
 	{
 		if (token_is_word(tokens->type))
 			add_cmd(&tokens, table);
-		// if (token_is_redirection())
+		if (token_is_redirection(tokens->type))
+			redirect_cmd(&tokens, table);
 		// if (token_is_logical_operand())
 		// if (token_is_parenthesis())
 		if (tokens != NULL)

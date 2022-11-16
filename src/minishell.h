@@ -45,7 +45,6 @@ typedef struct s_cmd
 	char const		*cmd_path;
 	char *const		*cmd_argv;
 
-
 	int				stdinput;
 	int				stdoutput;
 	int				stderror;
@@ -110,5 +109,6 @@ t_cmd	*create_cmd_table(t_token *tokens);
 void	executor(t_cmd *table);
 
 void	debugging_log_print_env(t_env *env);
+void	log_print_tokens(t_token *tokens);
 
 #endif
