@@ -66,17 +66,6 @@ t_list	*subdivide_dollar_word(char *word)
 	return (list);
 }
 
-// void	free_subword_list(void *list)
-// {
-// 	free(((t_list *)list)->content);
-// 	free(list);
-// }
-
-void	free_subword_list(void *subword)
-{
-	free(subword);
-}
-
 // char	*join_subwords(t_list *subwords)
 // char	*merge_subwords(t_list *subwords)
 char	*concatenate_subwords(t_list *subwords)
@@ -104,19 +93,16 @@ char	*concatenate_subwords(t_list *subwords)
 
 char	*last_exit_status(void)
 {
-	int		g_exit_status = 0;
 	char	*exit_status;
 
 	asprintf(&exit_status, "%d", g_exit_status); //itoa()
 	return (exit_status);
 }
 
+/*
 // char	*look_up_env_variable(char *key, t_env *env)
 char	*find_env_variable(char *key, t_env *env)
 {
-	char	*value;
-
-	/* getenv(key); */
 	while (env)
 	{
 		if (strcmp(key, env->key) == 0)
@@ -124,6 +110,17 @@ char	*find_env_variable(char *key, t_env *env)
 		env = env->next;
 	}
 	return (strdup(""));
+}
+ */
+
+char	*find_env_variable(char *key)
+{
+	char	*value;
+
+	value = getenv(key);
+	if (value == NULL)
+		return (strdup(""));
+	return (strdup(value));
 }
 
 char	*expand_env_variable(char *key, t_env *env)
@@ -135,7 +132,10 @@ char	*expand_env_variable(char *key, t_env *env)
 	if (strncmp(key, "$?", 2) == 0)
 		value = last_exit_status();
 	else
-		value = find_env_variable(key + 1, env);
+		value = find_env_variable(key + 1);
+		// value = find_env_variable(key + 1, env);
+	if (env)
+		env = NULL;
 	free(key);
 	return (value);
 }

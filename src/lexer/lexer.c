@@ -59,7 +59,7 @@ t_token	*tokenize_logical_operand(char **line)
 		if (**line == '&' && (*line)++)
 			return (new_token_node(LOGICAL_AND, "&&"));
 	}
-	syntax_error_unexpected_token(*line);
+	printf("minishell: syntax error near unexpected token `%c'\n", **line);
 	return (NULL);
 }
 
@@ -83,11 +83,6 @@ int reserved_shell_char(int c)
 	return (0);
 }
 
-int	ft_isquote(char c)
-{
-	return (c == '\'' || c == '\"');
-}
-
 char *find_next_match(char *input)
 {
 	return (strchr(input + 1, *input));
@@ -103,20 +98,23 @@ t_token	*tokenize_word(char **line)
 	{
 		if (ft_isquote(**line))
 		{
-			closing_quote = find_next_match(*line);
+			closing_quote = find_closing_quote(*line);
 			if (closing_quote == NULL)
 			{
 				syntax_error_matching(**line);
 				return (NULL);
 			}
-			*line = closing_quote;
+			*line = closing_quote + 1;
 		}
-		(*line)++;
+		else if (**line == '\\')
+			*line += 2;
+		else
+			(*line)++;
 	}
 	return (new_token_node(WORD, strndup(word, *line - word)));
 }
 
-t_token	*get_next_token(char **line)
+t_token	*create_next_token(char **line)
 {
 	char	c;
 
@@ -149,18 +147,6 @@ void	token_list_add_back(t_token **list, t_token *new)
 	}
 }
 
-void	log_print_tokens(t_token *tokens)
-{
-	while (tokens != NULL)
-	{
-		printf("type:%d,\t", tokens->type);
-		printf("val: '%s'\n", tokens->val);
-		printf("\n");
-		tokens = tokens->next;
-	}
-}
-
-/* char *line = command_line_input */
 t_token	*lexer(char *line)
 {
 	t_token	*tokens;
@@ -173,7 +159,7 @@ t_token	*lexer(char *line)
 			line++;
 		if (*line == '\0')
 			return (tokens);
-		new = get_next_token(&line);
+		new = create_next_token(&line);
 		if (new == NULL)
 			return (free_tokens(tokens));
 		token_list_add_back(&tokens, new);

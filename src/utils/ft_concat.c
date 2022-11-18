@@ -1,33 +1,6 @@
-#include "../minishell.h"
+#include "utilities.h"
 
-size_t	ft_strlen(const char *s)
-{
-	size_t	len;
-
-	if (s == NULL)
-		return (0);
-	len = 0;
-	while (s[len])
-		len++;
-	return (len);
-}
-
-void	*ft_memcpy(void *dst, const void *src, size_t n)
-{
-	size_t	pos;
-
-	if (dst == NULL || src == NULL)
-		return (NULL);
-	pos = 0;
-	while (pos < n)
-	{
-		((char *)dst)[pos] = ((char *)src)[pos];
-		pos++;
-	}
-	return (dst);
-}
-
-char*	ft_concat(const char *s1, const char *s2)
+char	*ft_concat(const char *s1, const char *s2)
 {
 	char	*result;
 	int		len1;

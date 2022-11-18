@@ -31,10 +31,22 @@ void	env_list_add_back(t_env **list, t_env *new)
 }
  */
 
+void	free_env(t_env *env)
+{
+	t_env	*next;
+
+	while (env != NULL)
+	{
+		next = env->next;
+		free(env);
+		env = next;
+	}
+}
+
 char **duplicate_2d_array(char **array)
 {
 	char **ret;
-	int	count = 0, i;
+	int	count = 0, i = 0;
 
 	for (i = 0; array[i] != NULL; i++)
 		count++;

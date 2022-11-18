@@ -5,24 +5,8 @@
 // int	glob_pattern_match(char const *pattern, char const *filename)
 int	glob_match(char const *pattern, char const *filename)
 {
-	if (strcmp(pattern, "*") == 0 && *filename != '.')
-		return (true);
-	if (strcmp(pattern, ".*") == 0 && *filename == '.')
-		return (true);
-	while (*pattern != '\0' && *filename != '\0')
-	{
-		if (*pattern != '*' && *pattern != '?')
-		{
-			if (*(filename++) != *(pattern++))
-				return (false);
-		}
-		if (*pattern == '*' && pattern++)
-			filename = strchr(filename, *pattern);
-		if (*pattern == '?' && pattern++)
-			filename++;
-	}
-	if (*filename == '\0' && *pattern == '\0')
-		return (true);
+	if (!pattern || !filename)
+		return (false);
 	return (false);
 }
 
@@ -30,7 +14,7 @@ int	ft_glob(char const *pattern, glob_t *pglob)
 {
 	DIR				*cwd;
 	struct dirent	*cwd_data;
-	t_list			*filenames;
+	// t_list			*filenames;
 	int				i;
 
 	i = 0;
@@ -58,6 +42,19 @@ int	ft_glob(char const *pattern, glob_t *pglob)
 
 int	valid_glob_pattern(char *word)
 {
+	while (*word != '\0')
+	{
+		if (*word == '*' || *word == '?')
+			return (true);
+		if (*word == '\\')
+			word += 2;
+		else if (*word == '\'')
+			word = find_closing_quote(word) + 1;
+		else if (*word == '\"')
+			word = find_closing_quote(word) + 1;
+		else
+			word++;
+	}
 	return (false);
 }
 
@@ -65,6 +62,7 @@ t_token	*filename_expansion(t_token	*token)
 {
 	if (!valid_glob_pattern(token->val))
 		return (token);
+	printf("valid pattern:\n");
 	// ft_glob(token->val, );
 	return (NULL);
 }

@@ -1,11 +1,5 @@
 #include "../minishell.h"
 
-/* instead of strstr */
-char *find_matching_string(char const *haystack, char const *needle)
-{
-	return (NULL);
-}
-
 typedef struct s_pattern
 {
 	char		*string;

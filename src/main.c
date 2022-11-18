@@ -6,93 +6,102 @@ static int	usage(void)
 	return (EXIT_FAILURE);
 }
 
-/*
-static int	command_history(char *command_line)
+int	exit_ctrl_d(t_env *env)
 {
-	int	i;
-
-	i = 0;
-	if (command_line == NULL)
-		return (EXIT_FAILURE);
-	while (isspace(command_line[i]))
-		i++;
-	if (command_line[i] == '\0')
-		return (EXIT_FAILURE);
-	// if (strcmp(command_line, previous_line))
-	//	return (EXIT_FAILURE);
-	add_history(command_line);
-	return (EXIT_SUCCESS);
-}
- */
-
-void	free_env(t_env *env)
-{
-	t_env	*next;
-
-	while (env != NULL)
-	{
-		next = env->next;
-		free(env);
-		env = next;
-	}
-}
-
-int	exit_routine(t_env *env)
-{
-	write(1, "exit\n", 5);
+	// rl_replace_line("", 0);
+	printf("\e[1A");
+	rl_on_new_line();
+	rl_redisplay();
+	write(2, "exit\n", 5);
 	rl_clear_history();
 	free_env(env);
-	return (EXIT_SUCCESS);
+	return (g_exit_status);
 }
 
-static void	minishell(t_env *env)
+// int	escaped_newline(char *line)
+int	trailing_backslash(char *line)
+{
+	int	count;
+	int	len;
+	int	i;
+
+	len = strlen(line);
+	if (len == 0)
+		return (false);
+	i = len - 1;
+	if (line[i] != '\\')
+		return (false);
+	count = 1;
+	while (--i > 0 && line[i] == '\\')
+		count++;
+	if (count % 2 == 0)
+		return (false);
+	line[len - 1] = '\0';
+	return (true);
+}
+
+char *command_line_input(void)
+{
+	char	*command_line;
+	char	*next_line;
+	char	*concat;
+
+	command_line = readline(GRN "minishell$ " NOC);
+	if (command_line == NULL)
+		return (NULL);
+	while (trailing_backslash(command_line))
+	{
+		next_line = readline("> ");
+		if (next_line == NULL)
+			return (free(command_line), NULL);
+		concat = ft_concat(command_line, next_line);
+		free(command_line);
+		free(next_line);
+		command_line = concat;
+	}
+	return (command_line);
+}
+
+static int	minishell(t_env *env)
 {
 	char	*cmdline;
 	t_cmd	*table;
-	// t_token	*tokens;
 
 	while (42)
 	{
 		/* cmdline = readline(get_prompt(env)); */
-		// cmdline = readline(GRN "minishell$ " NOC);
-		// cmdline = strdup("echo hello world");
-		cmdline = strdup("echo ${SHELL}");
-		// debugging_log_print_env(env);
-		// printf("%s\n", getenv("PATH"));
-		if (cmdline == NULL)
-		{
-			printf(BLU "\tC-d" NOC "\n");
-			exit_routine(env);
-			// exit(EXIT_SUCCESS);
-			return;
-		}
-		if (*cmdline != '\0')
-			add_history(cmdline);
-		// tokens = lexer(cmdline);
-		// if (tokens == NULL)
-		// 	printf(BLU "Failure or empty line\n" NOC);
-		// log_print_tokens(tokens);
-		// tokens = free_tokens(tokens);
+		/* cmdline = readline(GRN "minishell$ " NOC); */
+		cmdline = command_line_input();
+		// cmdline = strdup("echo ${SHELL}");
+		// cmdline = strdup("ls \"test\\*\\*\'*'\"");
+		// cmdline = strdup("\"this\\\" this\"");
+		// cmdline = strdup("'this\\'\\\\\\\\\\\\\\\\\"\\\"\\\"''");
+		// printf("%s\n", cmdline);
 
+		if (cmdline == NULL)
+			return (exit_ctrl_d(env));
+		command_history(cmdline);
 		table = parser(cmdline, env);
 		if (table != NULL)
 			executor(table);
-
 		free(cmdline);
-		// exit_routine(env); return;
-		/* printf(RED "cmdline: '%s'\n" NOC, cmdline); */
+
+		// exit_ctrl_d(env); return (0);
 	}
 }
 
 /* int	main(void) */
 int	main(int argc, char const *argv[], char const **envp)
 {
+	g_exit_status = 0;
 	if (argc != 1 && argv != NULL)
 		return (usage());
-	// signal(SIGINT, ctrl_c);
-	// signal(SIGQUIT, SIG_IGN);
+	read_history_file(HISTFILE_RDONLY);
+	signal(SIGINT, &signal_ctrl_c);
+	signal(SIGQUIT, SIG_IGN);
 	t_env *env = preprocess_environment((char **)envp);
 	minishell(env);
 	// system("leaks minishell");
-	return (EXIT_SUCCESS);
+	// exit(EXIT_SUCCESS);
+	return (g_exit_status);
 }

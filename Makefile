@@ -1,14 +1,14 @@
 NAME := minishell
 
 CC := gcc
-#CFLAGS := -Wall -Werror -Wextra -g3
-CFLAGS := -g3
-# LFLAGS := -lreadline -L/opt/homebrew/opt/readline/lib
-LFLAGS := -lreadline -L ~/.brew/opt/readline/lib
+CFLAGS := -Wall -Werror -Wextra -g3
+# CFLAGS := -g3
+LFLAGS := -lreadline -L/opt/homebrew/opt/readline/lib
+#LFLAGS := -lreadline -L ~/.brew/opt/readline/lib
 
 INCDIR := src/
-# HFLAGS := -I $(INCDIR) -I/opt/homebrew/opt/readline/include
-HFLAGS := -I $(INCDIR) -I ~/.brew/opt/readline/include
+HFLAGS := -I $(INCDIR) -I/opt/homebrew/opt/readline/include
+#HFLAGS := -I $(INCDIR) -I ~/.brew/opt/readline/include
 HFILES := $(INCDIR)minishell.h
 
 vpath %.c src/		\
@@ -21,6 +21,7 @@ vpath %.c src/		\
 	src/output		\
 	src/parser		\
 	src/signals		\
+	src/syntax		\
 	src/utils
 
 SRCDIR := src/
