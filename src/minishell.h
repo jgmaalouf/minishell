@@ -5,13 +5,15 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
+# include <fcntl.h>
 
 # include <dirent.h>
 
 # include <readline/readline.h>
 # include <readline/history.h>
 
-/* malloc exit(EXIT_FAILURE) */
+# include "utilities.h"
+# include "garbage.h"
 
 /* TERMINAL COLOR CODES */
 # define NOC "\e[0m"
@@ -20,38 +22,35 @@
 # define YEL "\e[0;33m"
 # define BLU "\e[0;34m"
 
-# define DELIMITERS "\"'$ =@(*)#:/"
-# define WORDCHARS  ""    // '*?_-.[]~&;!#$%^(){}<>' WORDCHARS='~!#$%^&*(){}[]<>?.+;-'
+# define HISTFILE        ".minishell"
+# define HISTFILE_RDONLY ".minishell_history"
+# define HISTFILE_WRONLY ".minishell_history"
 
-# define ASCII_DELIMITERS "\t\n\v\f\r !\"#$%&'()*+,-./:;<=>?@[\\]^`{|}~"
-
-typedef struct s_list
-{
-	void			*content;
-	struct s_list	*next;
-}	t_list;
-
-typedef struct s_env
-{
-	char			*key;
-	char			*val;
-	struct s_env	*next;
-}	t_env;
+typedef enum e_builtin {
+	NO_BUILTIN,
+	BUILTIN_CD,
+	BUILTIN_ECHO,
+	BUILTIN_ENV,
+	BUILTIN_EXIT,
+	BUILTIN_EXPORT,
+	BUILTIN_PWD,
+	BUILTIN_UNSET,
+}	t_builtin;
 
 typedef struct s_cmd
 {
 	char			*cmd_name;
-
-	char const		*cmd_path;
+	const char		*cmd_path;
 	char *const		*cmd_argv;
+
 
 	int				stdinput;
 	int				stdoutput;
-	int				stderror;
+	// int				stderror;
 	struct s_cmd	*next;
 }	t_cmd;
 
-typedef enum e_token_type{
+typedef enum e_token_type {
 	/* NONE, */
 	/* NEW_LINE, */
 	WORD,
@@ -73,42 +72,70 @@ typedef struct s_token
 	struct s_token	*next;
 }	t_token;
 
+int	g_exit_status;
 
-/* PROHIBITED */
-#include <ctype.h>
-#include <string.h>
-/* PROHIBITED */
 
-t_env	*preprocess_environment(char **envp);
-t_cmd	*parser(char *line, t_env *env);
+/* BUILTINS */
+int		cd(int argc, char *const argv[]);
+int		echo(int argc, char *const argv[]);
+int		env(void);
+int		builtin_exit(t_cmd *table);
+void	export(int argc, char *const argv[]);
+int		pwd(void);
+void	unset(char *argv[]);
 
+/* EXECUTOR */
+void	executor(t_cmd *table);
+
+/* PARSER */
+t_cmd	*parser(char *line);
+t_cmd	*create_cmd_table(t_token *tokens);
+
+/* LEXER */
+t_token	*lexer(char *line);
 bool	token_is_word(t_token_type type);
 bool	token_is_logical_operand(t_token_type type);
 bool	token_is_redirection(t_token_type type);
 bool	token_is_parenthesis(t_token_type type);
-
-char	*tilde_expansion(char *word);
-char	*parameter_expansion(char *word, t_env *env);
-t_token	*filename_expansion(t_token	*token);
-t_token	*lexer(char *line);
-int	validate_syntax(t_token *tokens);
 void	*free_tokens(t_token *tokens);
 
-int	syntax_error_end_of_file(void);
-int	syntax_error_unexpected_token(char *c);
-int	syntax_error_matching(char c);
-int	syntax_error_bad_substitution(char *word);
+/* EXPANSION */
+t_token	*filename_expansion(t_token	*token);
+char	*parameter_expansion(char *word);
+char	*quote_removal(char *word);
+void	shell_expansion(t_token *tokens);
+char	*tilde_expansion(char *word);
 
-t_list	*ft_lstnew(void *content);
-void	ft_lstadd_back(t_list **lst, t_list *new);
-void	ft_lstclear(t_list **lst, void (*del)(void *));
+/* HISTORY */
+int		set_history_file_path(const char *filename);
+int		read_history_file(const char *filename);
+int		command_history(const char *line);
 
-char*	ft_concat(const char *s1, const char *s2);
+/* SYNTAX */
 int		find_bad_substitution(char *line);
-t_cmd	*create_cmd_table(t_token *tokens);
-void	executor(t_cmd *table);
+char	*find_closing_quote(char *input);
+int		validate_syntax(t_token *tokens);
+int		validate_token(t_token *token);
 
-void	debugging_log_print_env(t_env *env);
-void	log_print_tokens(t_token *tokens);
+/* SIGNALS */
+void	signal_handler(int signal);
+void	signal_ctrl_c(int signal);
+void	signal_ctrl_c_runtime(int signal);
+void	signal_ctrl_backslash(int signal);
+
+/* ERROR */
+int		syntax_error_end_of_file(void);
+int		syntax_error_unexpected_token(char *c);
+int		syntax_error_matching(char c);
+int		syntax_error_bad_substitution(char *word);
+int		output_error(char *cmd, char *msg);
+int		output_error_arg(char *cmd, char *arg, char *msg);
+int		output_error_quoted_arg(char *cmd, char *arg, char *msg);
+
+/* TERMINAL */
+char	*generate_prompt(void);
+
+/* DEBUGGING */
+void	debugging_log_token_list(t_token *tokens);
 
 #endif

@@ -1,15 +1,9 @@
-# testing/*
-# obsolete/*
-# lost_and_found/*
-# bash_testfolder/*
 # .vscode/*
 # .DS_Store
-# *.out*
-# *.dSYM*
 
 *
 !*/
+!.gitignore
 !src/**/*.h
 !src/**/*.c
-!.gitignore
 !Makefile

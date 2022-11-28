@@ -1,4 +1,4 @@
-#include "../minishell.h"
+#include "utilities.h"
 
 char	*ft_strsep(char **stringp, const char *delim)
 {
@@ -9,12 +9,12 @@ char	*ft_strsep(char **stringp, const char *delim)
 	ret = *stringp;
 	while (**stringp != '\0')
 	{
-		if (strchr(delim, **stringp))
+		if (ft_strchr(delim, **stringp))
 			break ;
 		(*stringp)++;
 	}
 	if (**stringp == '\0')
-		(*stringp) = NULL;
+		*stringp = NULL;
 	else
 		*(*stringp)++ = '\0';
 	return (ret);
