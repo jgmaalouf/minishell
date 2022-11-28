@@ -123,7 +123,7 @@ char	*find_env_variable(char *key)
 	return (strdup(value));
 }
 
-char	*expand_env_variable(char *key, t_env *env)
+char	*expand_env_variable(char *key)
 {
 	char	*value;
 
@@ -133,14 +133,11 @@ char	*expand_env_variable(char *key, t_env *env)
 		value = last_exit_status();
 	else
 		value = find_env_variable(key + 1);
-		// value = find_env_variable(key + 1, env);
-	if (env)
-		env = NULL;
 	free(key);
 	return (value);
 }
 
-char	*parameter_expansion(char *word, t_env *env)
+char	*parameter_expansion(char *word)
 {
 	char	*result;
 	t_list	*subwords;
@@ -152,7 +149,7 @@ char	*parameter_expansion(char *word, t_env *env)
 	while (lptr)
 	{
 		if (((char *)lptr->content)[0] == '$')
-			lptr->content = expand_env_variable(lptr->content, env);
+			lptr->content = expand_env_variable(lptr->content);
 		lptr = lptr->next;
 	}
 	result = concatenate_subwords(subwords);

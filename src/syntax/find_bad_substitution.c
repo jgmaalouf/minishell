@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-char	*bad_substitution(char const *line)
+char	*bad_substitution(const char *line)
 {
 	char	*dollar;
 

@@ -3,14 +3,14 @@
 typedef struct s_pattern
 {
 	char		*string;
-	char const	*ptr;
+	const char	*ptr;
 	int			len;
 	int			asterisk;
 	int			question_mark;
 	bool		wildcard;
 }	t_pattern;
 
-int	count_subpatterns(char const *pattern)
+int	count_subpatterns(const char *pattern)
 {
 	int	count;
 
@@ -33,7 +33,7 @@ int	count_subpatterns(char const *pattern)
 	return (count);
 }
 
-void	group_wildcard(char const **pattern, t_pattern *group)
+void	group_wildcards(const char **pattern, t_pattern *group)
 {
 	group->wildcard = true;
 	while (**pattern == '*' || **pattern == '?')
@@ -47,7 +47,7 @@ void	group_wildcard(char const **pattern, t_pattern *group)
 	}
 }
 
-void	group_string(char const **pattern, t_pattern *group)
+void	group_string(const char **pattern, t_pattern *group)
 {
 	while (**pattern != '\0' && **pattern != '*' && **pattern != '?')
 	{
@@ -56,7 +56,7 @@ void	group_string(char const **pattern, t_pattern *group)
 	}
 }
 
-t_pattern	*group_subpatterns(char const *pattern)
+t_pattern	*group_subpatterns(const char *pattern)
 {
 	t_pattern	*groups;
 	int			count;
@@ -74,7 +74,7 @@ t_pattern	*group_subpatterns(char const *pattern)
 		groups[i].question_mark = 0;
 		groups[i].wildcard = false;
 		if (*pattern == '*' || *pattern == '?')
-			group_wildcard(&pattern, &groups[i]);
+			group_wildcards(&pattern, &groups[i]);
 		else if (*pattern != '*' && *pattern != '?')
 			group_string(&pattern, &groups[i]);
 		groups[i].string = strndup(groups[i].ptr, groups[i].len);
@@ -85,7 +85,7 @@ t_pattern	*group_subpatterns(char const *pattern)
 	return (groups);
 }
 
-int	match_string(t_pattern *groups, char const **filename)
+int	match_string(t_pattern *groups, const char **filename)
 {
 	if (strncmp(*filename, groups->ptr, groups->len) != 0)
 		return (false);
@@ -93,7 +93,7 @@ int	match_string(t_pattern *groups, char const **filename)
 	return (true);
 }
 
-int	match_question_mark(int question_mark, char const **filename)
+int	match_question_mark(int question_mark, const char **filename)
 {
 	while (question_mark--)
 	{
@@ -104,7 +104,7 @@ int	match_question_mark(int question_mark, char const **filename)
 	return (true);
 }
 
-int	match_after_asterisk(t_pattern *groups, char const **filename)
+int	match_after_asterisk(t_pattern *groups, const char **filename)
 {
 	char *next_match;
 
@@ -115,7 +115,7 @@ int	match_after_asterisk(t_pattern *groups, char const **filename)
 	return (true);
 }
 
-int	recursive_matching(t_pattern *groups, char const *filename)
+int	recursive_matching(t_pattern *groups, const char *filename)
 {
 	while (groups->ptr != NULL)
 	{
@@ -152,7 +152,7 @@ void	free_pattern_groups(t_pattern *groups)
 	free(groups);
 }
 
-int	globbing(char const *pattern, char const *filename)
+int	globbing(const char *pattern, const char *filename)
 {
 	t_pattern	*groups;
 	int			result;
@@ -170,7 +170,7 @@ int	globbing(char const *pattern, char const *filename)
 }
 
 
-void	debugging_log_pattern_groups(t_pattern *groups, char const *filename)
+void	debugging_log_pattern_groups(t_pattern *groups, const char *filename)
 {
 	printf("pattern: '%s'\n\n", groups->ptr);
 	while (groups->ptr != NULL)

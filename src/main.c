@@ -6,15 +6,17 @@ static int	usage(void)
 	return (EXIT_FAILURE);
 }
 
-int	exit_ctrl_d(t_env *env)
+int	exit_ctrl_d(void)
 {
+	extern char **environ;
+
 	// rl_replace_line("", 0);
 	printf("\e[1A");
 	rl_on_new_line();
 	rl_redisplay();
-	write(2, "exit\n", 5);
+	ft_dwrite(2, "exit\n");
 	rl_clear_history();
-	free_env(env);
+	strarr_free(environ);
 	return (g_exit_status);
 }
 
@@ -45,8 +47,12 @@ char *command_line_input(void)
 	char	*command_line;
 	char	*next_line;
 	char	*concat;
+	char	*prompt;
 
-	command_line = readline(GRN "minishell$ " NOC);
+	prompt = generate_prompt();
+	command_line = readline(prompt);
+	// command_line = readline(GRN "minishell$ " NOC);
+	free(prompt);
 	if (command_line == NULL)
 		return (NULL);
 	while (trailing_backslash(command_line))
@@ -62,7 +68,7 @@ char *command_line_input(void)
 	return (command_line);
 }
 
-static int	minishell(t_env *env)
+static int	minishell(void)
 {
 	char	*cmdline;
 	t_cmd	*table;
@@ -79,9 +85,9 @@ static int	minishell(t_env *env)
 		// printf("%s\n", cmdline);
 
 		if (cmdline == NULL)
-			return (exit_ctrl_d(env));
+			return (exit_ctrl_d());
 		command_history(cmdline);
-		table = parser(cmdline, env);
+		table = parser(cmdline);
 		if (table != NULL)
 			executor(table);
 		free(cmdline);
@@ -91,16 +97,21 @@ static int	minishell(t_env *env)
 }
 
 /* int	main(void) */
-int	main(int argc, char const *argv[], char const **envp)
+int	main(int argc, char *const argv[])
 {
+	extern char	**environ;
+
 	g_exit_status = 0;
 	if (argc != 1 && argv != NULL)
 		return (usage());
+	environ = strarr_dup(environ);
+	if (environ == NULL)
+		exit(EXIT_FAILURE);
+	set_history_file_path(HISTFILE_WRONLY);
 	read_history_file(HISTFILE_RDONLY);
 	signal(SIGINT, &signal_ctrl_c);
 	signal(SIGQUIT, SIG_IGN);
-	t_env *env = preprocess_environment((char **)envp);
-	minishell(env);
+	minishell();
 	// system("leaks minishell");
 	// exit(EXIT_SUCCESS);
 	return (g_exit_status);

@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-void	heredoc(char const *delimiter)
+void	heredoc(const char *delimiter)
 {
 	if (!delimiter)
 		return;

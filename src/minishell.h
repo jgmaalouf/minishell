@@ -40,8 +40,7 @@ typedef enum e_builtin {
 typedef struct s_cmd
 {
 	char			*cmd_name;
-
-	char const		*cmd_path;
+	const char		*cmd_path;
 	char *const		*cmd_argv;
 	int				cmd_argc;
 	t_builtin		builtin_id;
@@ -49,7 +48,7 @@ typedef struct s_cmd
 
 	int				stdinput;
 	int				stdoutput;
-	int				stderror;
+	// int				stderror;
 	struct s_cmd	*next;
 }	t_cmd;
 
@@ -79,13 +78,19 @@ int	g_exit_status;
 
 
 /* BUILTINS */
+int		cd(int argc, char *const argv[]);
+int		echo(int argc, char *const argv[]);
+int		env(void);
 int		builtin_exit(t_cmd *table);
+void	export(int argc, char *const argv[]);
+int		pwd(void);
+void	unset(char *argv[]);
 
 /* EXECUTOR */
 void	executor(t_cmd *table);
 
 /* PARSER */
-t_cmd	*parser(char *line, t_env *env);
+t_cmd	*parser(char *line);
 t_cmd	*create_cmd_table(t_token *tokens);
 
 /* LEXER */
@@ -98,14 +103,15 @@ void	*free_tokens(t_token *tokens);
 
 /* EXPANSION */
 t_token	*filename_expansion(t_token	*token);
-char	*parameter_expansion(char *word, t_env *env);
+char	*parameter_expansion(char *word);
 char	*quote_removal(char *word);
-void	shell_expansion(t_token *tokens, t_env *env);
+void	shell_expansion(t_token *tokens);
 char	*tilde_expansion(char *word);
 
 /* HISTORY */
-int		read_history_file(char const *filename);
-int		command_history(char const *line);
+int		set_history_file_path(const char *filename);
+int		read_history_file(const char *filename);
+int		command_history(const char *line);
 
 /* SYNTAX */
 int		find_bad_substitution(char *line);
@@ -120,13 +126,18 @@ void	signal_ctrl_c_runtime(int signal);
 void	signal_ctrl_backslash(int signal);
 
 /* ERROR */
-int	syntax_error_end_of_file(void);
-int	syntax_error_unexpected_token(char *c);
-int	syntax_error_matching(char c);
-int	syntax_error_bad_substitution(char *word);
+int		syntax_error_end_of_file(void);
+int		syntax_error_unexpected_token(char *c);
+int		syntax_error_matching(char c);
+int		syntax_error_bad_substitution(char *word);
+int		output_error(char *cmd, char *msg);
+int		output_error_arg(char *cmd, char *arg, char *msg);
+int		output_error_quoted_arg(char *cmd, char *arg, char *msg);
+
+/* TERMINAL */
+char	*generate_prompt(void);
 
 /* DEBUGGING */
-void	debugging_log_env_list(t_env *env);
 void	debugging_log_token_list(t_token *tokens);
 
 #endif

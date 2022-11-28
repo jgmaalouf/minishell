@@ -14,7 +14,7 @@ char	*ft_strsep(char **stringp, const char *delim)
 		(*stringp)++;
 	}
 	if (**stringp == '\0')
-		(*stringp) = NULL;
+		*stringp = NULL;
 	else
 		*(*stringp)++ = '\0';
 	return (ret);

@@ -2,15 +2,15 @@
 
 #include <glob.h>
 
-// int	glob_pattern_match(char const *pattern, char const *filename)
-int	glob_match(char const *pattern, char const *filename)
+// int	glob_pattern_match(const char *pattern, const char *filename)
+int	glob_match(const char *pattern, const char *filename)
 {
 	if (!pattern || !filename)
 		return (false);
 	return (false);
 }
 
-int	ft_glob(char const *pattern, glob_t *pglob)
+int	ft_glob(const char *pattern, glob_t *pglob)
 {
 	DIR				*cwd;
 	struct dirent	*cwd_data;

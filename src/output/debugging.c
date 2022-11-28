@@ -1,16 +1,5 @@
 #include "minishell.h"
 
-void	debugging_log_env_list(t_env *env)
-{
-	while (env->next != NULL)
-	{
-		printf(BLU "key: " NOC "%s, ", env->key);
-		printf(GRN "val: " NOC "%s  ", env->val);
-		printf("\n");
-		env = env->next;
-	}
-}
-
 void	print_token_type(t_token_type type)
 {
 	if (type == WORD)

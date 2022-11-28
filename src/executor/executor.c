@@ -17,6 +17,8 @@ char	**extract_env_path(void)
 		if (var_path[i++] == ':')
 			count++;
 	env_path = calloc(count + 1, sizeof(char *));
+	if (env_path == NULL)
+		exit(EXIT_FAILURE);
 	i = 0;
 	env_path[i] = strsep(&var_path, ":");
 	while (env_path[i++] != NULL)
@@ -41,7 +43,7 @@ int	cmd_not_found(char *cmd)
 	return (g_exit_status = 1);
 }
 
-char const	*find_cmd_path(char *cmd_name)
+const char	*find_cmd_path(char *cmd_name)
 {
 	char	*cmd_path;
 	char	**env_path;
@@ -89,6 +91,8 @@ void	add_cmd(t_token **tokens, t_cmd *table)
 	table->cmd_path = find_cmd_path(table->cmd_name);
 	table->cmd_argc = cmd_argc(*tokens);
 	table->cmd_argv = calloc(table->cmd_argc + 1, sizeof(char *));
+	if (table->cmd_argv == NULL)
+		exit(EXIT_FAILURE);
 	i = 0;
 	while (i < table->cmd_argc)
 	{
@@ -126,10 +130,18 @@ int	execute_builtin(t_cmd *table)
 	id = table->builtin_id;
 	if (id == NO_BUILTIN)
 		return (EXIT_FAILURE);
-	// else if (id == BUILTIN_CD)
-	// 	builtin_cd();
+	else if (id == BUILTIN_CD)
+		cd(table->cmd_argc, table->cmd_argv);
+	else if (id == BUILTIN_ECHO)
+		echo(table->cmd_argc, table->cmd_argv);
+	else if (id == BUILTIN_ENV)
+		env();
 	else if (id == BUILTIN_EXIT)
 		builtin_exit(table);
+	else if (id == BUILTIN_EXPORT)
+		export(table->cmd_argc, table->cmd_argv);
+	else if (id == BUILTIN_PWD)
+		pwd();
 	return (EXIT_SUCCESS);
 }
 
@@ -137,8 +149,8 @@ int	builtin_command(char *cmd_name)
 {
 	if (strcmp(cmd_name, "cd") == 0)
 		return (BUILTIN_CD);
-	// if (strcmp(cmd_name, "echo") == 0)
-	// 	return (BUILTIN_ECHO);
+	if (strcmp(cmd_name, "echo") == 0)
+		return (BUILTIN_ECHO);
 	if (strcmp(cmd_name, "env") == 0)
 		return (BUILTIN_ENV);
 	if (strcmp(cmd_name, "exit") == 0)
