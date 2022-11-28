@@ -26,6 +26,8 @@ char	*ft_concat3(const char *s1, const char *s2, const char *s3)
 	// if (s1 == NULL || s2 == NULL || s3 == NULL)
 	// 	return (NULL);
 	concat = ft_concat(s1, s2);
+	if (concat == NULL)
+		return (NULL);
 	result = ft_concat(concat, s3);
 	free(concat);
 	return (result);

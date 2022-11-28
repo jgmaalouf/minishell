@@ -4,12 +4,6 @@ static bool	test_single_flag(char flag, char *s)
 {
 	if (*s++ != '-')
 		return (false);
-	// if (*s++ != flag)
-	// 	return (false);
-	// while (*s != '\0')
-	// 	if (*s++ != flag)
-	// 		return (false);
-	// return (true);
 	while (*s++ == flag)
 		if (*s == '\0')
 			return (true);
