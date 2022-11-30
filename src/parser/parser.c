@@ -12,12 +12,12 @@ t_cmd	*parser(char *line)
 		return (NULL);
 	// printf("TOKENIZED:\n");
 	// debugging_log_token_list(tokens);
-	if (!validate_syntax(tokens))
-		return (free_tokens(tokens));
+	if (syntax_validator(tokens) != EXIT_SUCCESS)
+		return (free_token_list(tokens));
 	shell_expansion(tokens);
 	// printf("EXPANDED:\n");
 	// debugging_log_token_list(tokens);
 	table = create_cmd_table(tokens);
-	free_tokens(tokens);
+	free_token_list(tokens);
 	return (table);
 }

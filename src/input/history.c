@@ -35,7 +35,6 @@ int	read_history_file(const char *filename)
 			if (++i + 1 < 1024)
 				continue ;
 		buffer[i] = '\0';
-		// printf("%s\n", buffer);
 		add_history(buffer);
 		i = 0;
 	}

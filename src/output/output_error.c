@@ -35,3 +35,9 @@ int	output_error_quoted_arg(char *cmd, char *arg, char *msg)
 	ft_dwrite(2, "\n");
 	return (g_exit_status = 1);
 }
+
+int	fatal_error(void)
+{
+	ft_dwrite(2, "minishell: fatal error: critical memory allocation failed\n");
+	return (g_exit_status = 1);
+}

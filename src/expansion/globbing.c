@@ -1,99 +1,14 @@
-#include "../minishell.h"
+#include "minishell.h"
 
-typedef struct s_pattern
+static int	match_string(t_pat *groups, const char **filename)
 {
-	char		*string;
-	const char	*ptr;
-	int			len;
-	int			asterisk;
-	int			question_mark;
-	bool		wildcard;
-}	t_pattern;
-
-int	count_subpatterns(const char *pattern)
-{
-	int	count;
-
-	count = 0;
-	while (*pattern != '\0')
-	{
-		if (*pattern == '*' || *pattern == '?')
-		{
-			count++;
-			while (*pattern == '*' || *pattern == '?')
-				pattern++;
-		}
-		if (*pattern != '\0' && *pattern != '*' && *pattern != '?')
-		{
-			count++;
-			while (*pattern != '\0' && *pattern != '*' && *pattern != '?')
-				pattern++;
-		}
-	}
-	return (count);
-}
-
-void	group_wildcards(const char **pattern, t_pattern *group)
-{
-	group->wildcard = true;
-	while (**pattern == '*' || **pattern == '?')
-	{
-		group->len++;
-		if (**pattern == '*')
-			group->asterisk++;
-		else if (**pattern == '?')
-			group->question_mark++;
-		(*pattern)++;
-	}
-}
-
-void	group_string(const char **pattern, t_pattern *group)
-{
-	while (**pattern != '\0' && **pattern != '*' && **pattern != '?')
-	{
-		group->len++;
-		(*pattern)++;
-	}
-}
-
-t_pattern	*group_subpatterns(const char *pattern)
-{
-	t_pattern	*groups;
-	int			count;
-	int			i;
-
-	count = count_subpatterns(pattern);
-	// groups = malloc(sizeof(t_pattern) * (count + 1));
-	groups = calloc(count + 1, sizeof(t_pattern));
-	i = 0;
-	while (*pattern != '\0')
-	{
-		groups[i].ptr = pattern;
-		groups[i].len = 0;
-		groups[i].asterisk = 0;
-		groups[i].question_mark = 0;
-		groups[i].wildcard = false;
-		if (*pattern == '*' || *pattern == '?')
-			group_wildcards(&pattern, &groups[i]);
-		else if (*pattern != '*' && *pattern != '?')
-			group_string(&pattern, &groups[i]);
-		groups[i].string = strndup(groups[i].ptr, groups[i].len);
-		i++;
-	}
-	groups[i].ptr = NULL;
-	groups[i].string = NULL;
-	return (groups);
-}
-
-int	match_string(t_pattern *groups, const char **filename)
-{
-	if (strncmp(*filename, groups->ptr, groups->len) != 0)
+	if (strncmp(*filename, groups->str, groups->len) != 0)
 		return (false);
 	*filename += groups->len;
 	return (true);
 }
 
-int	match_question_mark(int question_mark, const char **filename)
+static int	match_question_mark(int question_mark, const char **filename)
 {
 	while (question_mark--)
 	{
@@ -104,20 +19,20 @@ int	match_question_mark(int question_mark, const char **filename)
 	return (true);
 }
 
-int	match_after_asterisk(t_pattern *groups, const char **filename)
+static int	match_after_asterisk(t_pat *groups, const char **filename)
 {
-	char *next_match;
+	char	*next_match;
 
-	next_match = strstr(*filename, groups->string);
+	next_match = strstr(*filename, groups->str);
 	if (next_match == NULL)
 		return (false);
 	*filename = next_match + groups->len;
 	return (true);
 }
 
-int	recursive_matching(t_pattern *groups, const char *filename)
+static int	recursive_matching(t_pat groups[], const char *filename)
 {
-	while (groups->ptr != NULL)
+	while (groups->str != NULL)
 	{
 		if (!groups->wildcard)
 			if (!match_string(groups, &filename))
@@ -127,7 +42,7 @@ int	recursive_matching(t_pattern *groups, const char *filename)
 				return (false);
 		if (groups->asterisk > 0)
 		{
-			if ((groups + 1)->ptr == NULL)
+			if ((groups + 1)->str == NULL)
 				return (true);
 			if (!match_after_asterisk(groups + 1, &filename))
 				return (false);
@@ -142,54 +57,15 @@ int	recursive_matching(t_pattern *groups, const char *filename)
 	return (false);
 }
 
-void	free_pattern_groups(t_pattern *groups)
+int	globbing(t_pat groups[], const char *filename)
 {
-	int	i;
-
-	i = 0;
-	while (groups[i].ptr != NULL)
-		free(groups[i++].string);
-	free(groups);
-}
-
-int	globbing(const char *pattern, const char *filename)
-{
-	t_pattern	*groups;
-	int			result;
-
-	if (*filename == '.' && *pattern != '.')
+	if (*filename == '.' && groups[0].ptr[0] != '.')
 		return (false);
-	if (strcmp(pattern, "*") == 0)
+	if (strcmp(groups[0].ptr, "*") == 0)
 		return (true);
-	if (strcmp(pattern, ".*") == 0 && *filename == '.')
+	if (strcmp(groups[0].ptr, ".*") == 0 && *filename == '.')
 		return (true);
-	groups = group_subpatterns(pattern);
-	result = recursive_matching(groups, filename);
-	free_pattern_groups(groups);
-	return (result);
-}
-
-
-void	debugging_log_pattern_groups(t_pattern *groups, const char *filename)
-{
-	printf("pattern: '%s'\n\n", groups->ptr);
-	while (groups->ptr != NULL)
-	{
-		printf("---\n");
-		printf("%.*s, ", groups->len, groups->ptr);
-		printf("%d, ", groups->len);
-		printf("%d\n", groups->question_mark);
-		if (groups->wildcard == false)
-		{
-			printf("...\n");
-			char *needle = groups->string;
-			printf("haystack: %s\n", filename);
-			printf("needle:   %s\n", needle);
-			printf("%s\n", strstr(filename, needle));
-		}
-		groups++;
-	}
-	printf("---\n\n");
+	return (recursive_matching(groups, filename));
 }
 
 /*

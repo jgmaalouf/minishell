@@ -14,5 +14,4 @@
 
 # define ASCII_DELIMITERS "\t\n\v\f\r !\"#$%&'()*+,-./:;<=>?@[\\]^`{|}~"
 
-
 #endif

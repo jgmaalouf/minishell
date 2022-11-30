@@ -15,24 +15,40 @@ int	terminal_dimensions(char *size)
 	return (-1);
 }
 
-static char	*replace_home_with_tilde(char *cwd)
+static char	*replace_home_with_tilde(char *path)
 {
 	char	*result;
 	size_t	path_length;
 	int		i;
 
-	if (strncmp(cwd, "/Users/", 7) != 0)
-		return (cwd);
+	if (strncmp(path, "/Users/", 7) != 0)
+		return (path);
 	i = 7;
-	while (cwd[i] != '\0' && cwd[i] != '/')
+	while (path[i] != '\0' && path[i] != '/')
 		i++;
-	path_length = strlen(cwd + i);
+	path_length = strlen(path + i);
 	result = malloc(1 + path_length + 1);
 	if (result == NULL)
-		return (cwd);
+		return (path);
 	result[0] = '~';
-	memcpy(result + 1, cwd + i, path_length + 1);
-	return (free(cwd), result);
+	memcpy(result + 1, path + i, path_length + 1);
+	return (free(path), result);
+}
+
+static char	*bold_cwd(char *path)
+{
+	char	*result;
+	char	*cwd;
+
+	cwd = strrchr(path, '/');
+	if (cwd == NULL || *(cwd + 1) == '\0')
+		return (path);
+	// result = malloc(cwd - path + strlen(BLD) + strlen(cwd) + strlen(RESET) + 1);
+	path[cwd - path] = '\0';
+	asprintf(&result, "%s/" BOLD "%s" RESET, path, ++cwd);
+	if (result == NULL)
+		return (path);
+	return (free(path), result);
 }
 
 char	*generate_prompt(void)
@@ -45,8 +61,9 @@ char	*generate_prompt(void)
 
 	cwd = getcwd(NULL, 0);
 	if (cwd == NULL)
-		return (strdup(GRN "minishell$ " NOC));
+		return (strdup(GREEN "minishell$ " RESET));
 	cwd = replace_home_with_tilde(cwd);
+	cwd = bold_cwd(cwd);
 	c = "$";
 	// c = "❯";
 	if (g_exit_status != 0)
@@ -54,11 +71,12 @@ char	*generate_prompt(void)
 		columns = terminal_dimensions("cols");
 		// printf ("columns %d\n", columns);
 		asprintf(&status, "✘ %d", g_exit_status);
-		asprintf(&prompt, RED "%*s" BLU "\r%s\n" RED "%s " NOC, columns, status, cwd, c);
+		asprintf(&prompt, BOLD RED "%*s" RESET
+			BLUE "\r%s\n" RED "%s " RESET, columns, status, cwd, c);
 		free(status);
 	}
 	else
-		asprintf(&prompt, BLU "%s\n" GRN "%s " NOC, cwd, c);
+		asprintf(&prompt, BLUE "%s\n" GREEN "%s " RESET, cwd, c);
 	free(cwd);
 	return (prompt);
 }

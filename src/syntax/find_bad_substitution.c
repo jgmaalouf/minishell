@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-char	*bad_substitution(const char *line)
+static char	*bad_substitution(const char *line)
 {
 	char	*dollar;
 
@@ -19,7 +19,8 @@ char	*bad_substitution(const char *line)
 		if (*line == '}')
 			return (bad_substitution(line + 1));
 		if (!isalnum(*line) && *line != '_')
-			return (dollar);
+			if (*line != '?')
+				return (dollar);
 		line++;
 	}
 	return (NULL);
@@ -39,6 +40,5 @@ int	find_bad_substitution(char *line)
 	while (*closing != '\0' && !isspace(*closing))
 		closing++;
 	*closing = '\0';
-	syntax_error_bad_substitution(found);
-	return (true);
+	return (syntax_error_bad_substitution(found), true);
 }

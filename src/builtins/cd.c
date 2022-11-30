@@ -2,9 +2,9 @@
 
 static int	check_access(char *path)
 {
-	if (access(path, F_OK) != 0)
+	if (access(path, F_OK) != EXIT_SUCCESS)
 		return (output_error_arg("cd", path, "No such file or directory"));
-	if (access(path, X_OK) != 0)
+	if (access(path, X_OK) != EXIT_SUCCESS)
 		return (output_error_arg("cd", path, "Permission denied"));
 	return (EXIT_SUCCESS);
 }
@@ -14,7 +14,7 @@ static int	change_directory(char *path, bool verbose)
 	char	*oldpwd;
 	char	*pwd;
 
-	if (check_access(path) != 0)
+	if (check_access(path) != EXIT_SUCCESS)
 		return (g_exit_status = 1);
 	oldpwd = getcwd(NULL, 0);
 	if (chdir(path) == -1)

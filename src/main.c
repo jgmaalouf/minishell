@@ -2,7 +2,7 @@
 
 static int	usage(void)
 {
-	printf(RED "Usage: ./minishell\n" NOC);
+	printf(RED "Usage: ./minishell\n" RESET);
 	return (EXIT_FAILURE);
 }
 
@@ -51,7 +51,6 @@ char *command_line_input(void)
 
 	prompt = generate_prompt();
 	command_line = readline(prompt);
-	// command_line = readline(GRN "minishell$ " NOC);
 	free(prompt);
 	if (command_line == NULL)
 		return (NULL);
@@ -76,7 +75,7 @@ static int	minishell(void)
 	while (42)
 	{
 		/* cmdline = readline(get_prompt(env)); */
-		/* cmdline = readline(GRN "minishell$ " NOC); */
+		/* cmdline = readline(GREEN "minishell$ " RESET); */
 		cmdline = command_line_input();
 		// cmdline = strdup("echo ${SHELL}");
 		// cmdline = strdup("ls \"test\\*\\*\'*'\"");
@@ -107,6 +106,7 @@ int	main(int argc, char *const argv[])
 	environ = strarr_dup(environ);
 	if (environ == NULL)
 		exit(EXIT_FAILURE);
+	ft_setenv("SHELL", argv[0], 1);
 	set_history_file_path(HISTFILE_WRONLY);
 	read_history_file(HISTFILE_RDONLY);
 	signal(SIGINT, &signal_ctrl_c);

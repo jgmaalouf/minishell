@@ -54,7 +54,7 @@ void	strarr_free(char *array[])
 	int	i;
 
 	i = 0;
-	while(array[i] != NULL)
+	while (array[i] != NULL)
 		free(array[i++]);
 	free(array);
 }

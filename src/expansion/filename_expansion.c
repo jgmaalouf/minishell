@@ -1,58 +1,76 @@
 #include "minishell.h"
-
 #include <glob.h>
 
-// int	glob_pattern_match(const char *pattern, const char *filename)
-int	glob_match(const char *pattern, const char *filename)
-{
-	if (!pattern || !filename)
-		return (false);
-	return (false);
-}
-
-int	ft_glob(const char *pattern, glob_t *pglob)
+static int	ft_glob(const char *pattern, glob_t *pglob)
 {
 	DIR				*cwd;
 	struct dirent	*cwd_data;
-	// t_list			*filenames;
-	int				i;
+	t_pat			*groups;
 
-	i = 0;
+	errno = 0;
 	cwd = opendir(".");
 	if (cwd == NULL)
 		return (GLOB_ABORTED);
+	groups = group_subpatterns(pattern);
 	cwd_data = readdir(cwd);
-	while (cwd_data != NULL) // && !errno
+	while (!errno && cwd_data != NULL && ++(pglob->gl_pathc))
 	{
-		pglob->gl_pathc++;
-		if (glob_match(pattern, cwd_data->d_name))
-		{
-			pglob->gl_matchc++;
-			pglob->gl_pathv[i++] = strdup(cwd_data->d_name);
-			// ft_lstadd_back(&filenames, ft_lstnew(strdup(cwd_data->d_name)));
-		}
+		if (globbing(groups, cwd_data->d_name))
+			pglob->gl_pathv[pglob->gl_matchc++] = strdup(cwd_data->d_name);
 		cwd_data = readdir(cwd);
 	}
-	// if (errno)
-	// 	perror("readdir");
+	free_pattern_groups(groups);
+	if (errno)
+		perror("readdir");
 	closedir(cwd);
-	// sort_filenames();
+	if (pglob->gl_matchc == 0)
+		return (GLOB_NOMATCH);
+	return (strarr_sort(pglob->gl_pathv), EXIT_SUCCESS);
+}
+
+static size_t	count_directory_entries(const char *directory)
+{
+	size_t			count;
+	DIR				*cwd;
+	struct dirent	*cwd_data;
+
+	errno = 0;
+	cwd = opendir(directory);
+	if (cwd == NULL)
+		return (0);
+	count = 0;
+	cwd_data = readdir(cwd);
+	while (!errno && cwd_data != NULL && ++count)
+		cwd_data = readdir(cwd);
+	if (errno)
+		perror("readdir");
+	closedir(cwd);
+	return (count);
+}
+
+static int	init_glob_struct(glob_t	*pglob)
+{
+	size_t	max;
+
+	max = count_directory_entries(".");
+	if (max == 0)
+		return (EXIT_FAILURE);
+	*pglob = (glob_t){0};
+	pglob->gl_pathv = calloc(max + 1, sizeof(char *));
+	if (pglob->gl_pathv == NULL)
+		exit(fatal_error());
 	return (EXIT_SUCCESS);
 }
 
-int	valid_glob_pattern(char *word)
+static int	valid_glob_pattern(char *word)
 {
 	while (*word != '\0')
 	{
 		if (*word == '*' || *word == '?')
 			return (true);
-		if (*word == '\\')
-			word += 2;
-		else if (*word == '\'')
+		else if (*word == '\"' || *word == '\'')
 			word = find_closing_quote(word) + 1;
-		else if (*word == '\"')
-			word = find_closing_quote(word) + 1;
-		else
+		else if (*word++ == '\\')
 			word++;
 	}
 	return (false);
@@ -60,9 +78,29 @@ int	valid_glob_pattern(char *word)
 
 t_token	*filename_expansion(t_token	*token)
 {
+	glob_t	pglob;
+	t_token	*next;
+	t_token	*new;
+	int		i;
+
 	if (!valid_glob_pattern(token->val))
 		return (token);
-	printf("valid pattern:\n");
-	// ft_glob(token->val, );
-	return (NULL);
+	if (init_glob_struct(&pglob) != EXIT_SUCCESS)
+		return (token);
+	if (ft_glob(token->val, &pglob) != EXIT_SUCCESS)
+		return (strarr_free(pglob.gl_pathv), token);
+	free(token->val);
+	next = token->next;
+	token->next = NULL;
+	i = 0;
+	token->val = pglob.gl_pathv[i++];
+	token->expanded = true;
+	while (pglob.gl_pathv[i] != NULL)
+	{
+		new = new_token_node(WORD, pglob.gl_pathv[i++]);
+		new->expanded = true;
+		token_list_add_back(&token, new);
+	}
+	free(pglob.gl_pathv);
+	return (token_list_add_back(&token, next), token);
 }

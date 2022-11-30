@@ -1,24 +1,24 @@
 #include "minishell.h"
 
-int	valid_first_token(t_token_type type)
+static int	valid_first_token(t_tk_type type)
 {
 	return (!token_is_logical_operand(type) && type != CLOSE_PARENTHESIS);
 }
 
-int	validate_token_list(t_token *tokens)
+static int	valid_token_list(t_token *tokens)
 {
 	if (!valid_first_token(tokens->type))
-		return (syntax_error_unexpected_token(tokens->val));
+		return (syntax_error_unexpected_token(tokens->val), false);
 	while (tokens)
 	{
-		if (!validate_token(tokens))
+		if (!valid_token(tokens))
 			return (false);
 		tokens = tokens->next;
 	}
 	return (true);
 }
 
-int	match_parentheses(t_token *tokens)
+static int	match_parentheses(t_token *tokens)
 {
 	int	unmatched;
 
@@ -30,19 +30,19 @@ int	match_parentheses(t_token *tokens)
 		if (tokens->type == CLOSE_PARENTHESIS)
 			unmatched--;
 		if (unmatched < 0)
-			return (syntax_error_unexpected_token(")"));
+			return (syntax_error_unexpected_token(")"), false);
 		tokens = tokens->next;
 	}
 	if (unmatched != 0)
-			return (syntax_error_end_of_file());
+		return (syntax_error_end_of_file(), false);
 	return (true);
 }
 
-int	validate_syntax(t_token *tokens)
+int	syntax_validator(t_token *tokens)
 {
-	if (!validate_token_list(tokens))
-		return (false);
+	if (!valid_token_list(tokens))
+		return (EXIT_FAILURE);
 	if (!match_parentheses(tokens))
-		return (false);
-	return (true);
+		return (EXIT_FAILURE);
+	return (EXIT_SUCCESS);
 }

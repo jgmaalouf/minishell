@@ -1,17 +1,15 @@
 #include "minishell.h"
 
-char *find_closing_quote(char *input)
+char	*find_closing_quote(const char *input)
 {
 	if (*input == '\'')
-		return (strchr(input + 1, *input));
+		return (strchr(input + 1, '\''));
 	input++;
 	while (*input != '\0')
 	{
 		if (*input == '\"')
-			return (input);
-		if (*input == '\\')
-			input += 2;
-		else
+			return ((char *)input);
+		if (*input++ == '\\')
 			input++;
 	}
 	return (NULL);

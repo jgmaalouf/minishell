@@ -4,6 +4,7 @@
 # include <stdlib.h>
 # include <stdbool.h>
 
+/* PROHIBITED */
 #include <string.h>
 
 typedef struct s_list
@@ -14,8 +15,7 @@ typedef struct s_list
 
 void	*ft_calloc(size_t count, size_t size);
 
-// int		ft_dwrite(int fd, char *s);
-int	ft_dwrite(int fd, const char *s);
+int		ft_dwrite(int fd, const char *s);
 
 char	*ft_concat(const char *s1, const char *s2);
 char	*ft_concat3(const char *s1, const char *s2, const char *s3);
@@ -50,7 +50,12 @@ char	*ft_strdup(const char *s1);
 size_t	ft_strlen(const char *s);
 int		ft_strncmp(const char *s1, const char *s2, size_t n);
 char	*ft_strndup(const char *s1, size_t n);
+char	*ft_strrchr(const char *s, int c);
 char	*ft_strsep(char **stringp, const char *delim);
 char	*ft_strstr(const char *haystack, const char *needle);
+
+long	ft_strtol(const char *str, char **endptr, int base);
+
+int		ft_toupper(int c);
 
 #endif

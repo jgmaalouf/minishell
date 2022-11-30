@@ -7,7 +7,7 @@ static char	**find_env_name(const char *name)
 	size_t		namelen;
 
 	eptr = environ;
-	namelen = strlen(name);
+	namelen = ft_strlen(name);
 	while (*eptr != NULL)
 	{
 		if (strncmp(*eptr, name, namelen) == 0 && ((*eptr)[namelen] == '=' || (*eptr)[namelen] == '\0'))

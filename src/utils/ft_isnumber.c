@@ -2,8 +2,8 @@
 
 int	ft_isnumber(char *s)
 {
-	while (*s != '\0')
-		if (!ft_isdigit(*s++))
-			return (false);
-	return (true);
+	while (ft_isdigit(*s++))
+		if (*s == '\0')
+			return (true);
+	return (false);
 }

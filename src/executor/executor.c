@@ -18,7 +18,7 @@ char	**extract_env_path(void)
 			count++;
 	env_path = calloc(count + 1, sizeof(char *));
 	if (env_path == NULL)
-		exit(EXIT_FAILURE);
+		exit(fatal_error());
 	i = 0;
 	env_path[i] = strsep(&var_path, ":");
 	while (env_path[i++] != NULL)
@@ -28,19 +28,19 @@ char	**extract_env_path(void)
 
 char	*full_cmd_path(char *env_path, char *cmd_name)
 {
-	char *full_path;
-	char *path_slash;
+	char	*full_path;
+	char	*path_slash;
 
 	path_slash = ft_concat(env_path, "/");
 	full_path = ft_concat(path_slash, cmd_name);
 	free(path_slash);
-	return(full_path);
+	return (full_path);
 }
 
 int	cmd_not_found(char *cmd)
 {
-	printf("minishell: %s: command not found\n", cmd);
-	return (g_exit_status = 1);
+	output_error(cmd, "command not found");
+	return (g_exit_status = 127);
 }
 
 const char	*find_cmd_path(char *cmd_name)
@@ -49,7 +49,7 @@ const char	*find_cmd_path(char *cmd_name)
 	char	**env_path;
 	int		i;
 
-	if (access(cmd_name, F_OK) == 0)
+	if (access(cmd_name, F_OK) == EXIT_SUCCESS)
 		return (strdup(cmd_name));
 	if (cmd_name[0] == '/')
 		return (NULL);
@@ -60,8 +60,8 @@ const char	*find_cmd_path(char *cmd_name)
 	while (env_path[i] != NULL)
 	{
 		cmd_path = full_cmd_path(env_path[i++], cmd_name);
-		if (access(cmd_path, F_OK) == 0)
-			break;
+		if (access(cmd_path, F_OK) == EXIT_SUCCESS)
+			break ;
 		free(cmd_path);
 		cmd_path = NULL;
 	}
@@ -70,7 +70,7 @@ const char	*find_cmd_path(char *cmd_name)
 	return (cmd_path);
 }
 
-int cmd_argc(t_token *tokens)
+int	cmd_argc(t_token *tokens)
 {
 	int	count;
 
@@ -92,7 +92,7 @@ void	add_cmd(t_token **tokens, t_cmd *table)
 	table->cmd_argc = cmd_argc(*tokens);
 	table->cmd_argv = calloc(table->cmd_argc + 1, sizeof(char *));
 	if (table->cmd_argv == NULL)
-		exit(EXIT_FAILURE);
+		exit(fatal_error());
 	i = 0;
 	while (i < table->cmd_argc)
 	{

@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-void	print_token_type(t_token_type type)
+static void	print_token_type(t_tk_type type)
 {
 	if (type == WORD)
 		printf("WORD");
@@ -34,4 +34,33 @@ void	debugging_log_token_list(t_token *tokens)
 		tokens = tokens->next;
 	}
 	printf("\n");
+}
+
+void	debugging_log_pattern_groups(t_pat groups[])
+{
+	int	bytes;
+
+	printf("valid glob pattern: %s\n", groups->ptr);
+	while (groups->ptr != NULL)
+	{
+		printf("------------------------\n");
+		if (groups->wildcard == true)
+		{
+			printf("(wildcard)\n");
+			printf("group: %s\n", groups->str);
+			printf("len:   %d\n", groups->question_mark);
+			groups++;
+			continue ;
+		}
+		printf("(string)\n");
+		if ((groups + 1)->ptr == NULL)
+			bytes = ft_strlen(groups->ptr);
+		else
+			bytes = (groups + 1)->ptr - groups->ptr;
+		printf("group: %.*s\n", bytes, groups->ptr);
+		printf("match: %s\n", groups->str);
+		printf("len:   %d\n", groups->len);
+		groups++;
+	}
+	printf("~~~~~~~~~~~~~~~~~~~~~~~~\n");
 }
