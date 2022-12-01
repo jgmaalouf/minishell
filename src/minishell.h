@@ -15,22 +15,24 @@
 # include "utilities.h"
 # include "garbage.h"
 
-/* TERMINAL COLOR CODES */
-# define RESET	"\001\e[0m\002"
-# define BOLD	"\001\e[1m\002"
-# define THIN	"\001\e[2m\002"
-# define ITALIC	"\001\e[3m\002"
-# define UNDRLN	"\001\e[4m\002"
-# define RED	"\001\e[31m\002"
-# define GREEN	"\001\e[32m\002"
-# define YELLOW	"\001\e[33m\002"
-# define BLUE	"\001\e[34m\002"
-# define PINK	"\001\e[35m\002"
-# define CYAN	"\001\e[36m\002"
-
 /* PERSISTENT HISTORY FILE */
 # define HISTFILE_RDONLY ".minishell_history"
 # define HISTFILE_WRONLY ".minishell_history"
+
+/* TERMINAL COLOR CODES */
+# define RESET   "\001\e[0m\002"
+# define BOLD    "\001\e[1m\002"
+# define THIN    "\001\e[2m\002"
+# define ITALIC  "\001\e[3m\002"
+# define UNDRLN  "\001\e[4m\002"
+# define BLACK   "\001\e[30m\002"
+# define RED     "\001\e[31m\002"
+# define GREEN   "\001\e[32m\002"
+# define YELLOW  "\001\e[33m\002"
+# define BLUE    "\001\e[34m\002"
+# define MAGENTA "\001\e[35m\002"
+# define CYAN    "\001\e[36m\002"
+# define WHITE   "\001\e[37m\002"
 
 /* GLOBAL VARIABLE */
 int	g_exit_status;
@@ -51,10 +53,12 @@ typedef enum e_builtin {
 typedef enum e_token_type {
 	WORD,
 	PIPE,
-	REDIRECT_INPUT_FILE,
+	REDIRECT_INPUT,
 	REDIRECT_INPUT_HEREDOC,
+	REDIRECT_INPUT_OUTPUT,
 	REDIRECT_OUTPUT_TRUNC,
 	REDIRECT_OUTPUT_APPEND,
+	REDIRECT_OUTPUT_CLOBBER,
 	LOGICAL_AND,
 	LOGICAL_OR,
 	OPEN_PARENTHESIS,

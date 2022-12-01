@@ -13,7 +13,6 @@ HFILES := $(INCDIR)minishell.h $(INCDIR)utilities.h
 
 vpath %.c src/		\
 	src/builtins	\
-	src/env			\
 	src/executor	\
 	src/expansion	\
 	src/input		\
@@ -22,6 +21,7 @@ vpath %.c src/		\
 	src/parser		\
 	src/signals		\
 	src/syntax		\
+	src/terminal	\
 	src/utils
 
 SRCDIR := src/

@@ -10,8 +10,8 @@ static void	print_token_type(t_tk_type type)
 		printf("LOGICAL_AND");
 	if (type == LOGICAL_OR)
 		printf("LOGICAL_OR");
-	if (type == REDIRECT_INPUT_FILE)
-		printf("REDIRECT_INPUT_FILE");
+	if (type == REDIRECT_INPUT)
+		printf("REDIRECT_INPUT");
 	if (type == REDIRECT_INPUT_HEREDOC)
 		printf("REDIRECT_INPUT_HEREDOC");
 	if (type == REDIRECT_OUTPUT_TRUNC)

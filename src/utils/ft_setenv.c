@@ -10,7 +10,7 @@ static char	**find_env_name(const char *name)
 	namelen = ft_strlen(name);
 	while (*eptr != NULL)
 	{
-		if (strncmp(*eptr, name, namelen) == 0 && ((*eptr)[namelen] == '=' || (*eptr)[namelen] == '\0'))
+		if (strncmp(*eptr, name, namelen) == 0 && (*eptr)[namelen] == '=')
 			return (eptr);
 		eptr++;
 	}
@@ -21,10 +21,7 @@ static void	add_to_end(int pos, const char *name, const char *value)
 {
 	extern char	**environ;
 
-	if (value == NULL)
-		environ[pos] = strdup(name);
-	else
-		environ[pos] = ft_concat3(name, "=", value);
+	environ[pos] = ft_concat3(name, "=", value);
 	environ[pos + 1] = NULL;
 }
 
@@ -33,10 +30,7 @@ static void	change_value(int pos, const char *name, const char *value)
 	extern char	**environ;
 
 	free(environ[pos]);
-	if (value == NULL)
-		environ[pos] = strdup(name);
-	else
-		environ[pos] = ft_concat3(name, "=", value);
+	environ[pos] = ft_concat3(name, "=", value);
 }
 
 static int	add_to_environ(const char *name, const char *value, int overwrite)

@@ -8,9 +8,9 @@ char	*concatenate_subwords(t_list *subwords)
 	int		total_size;
 	t_list	*lptr;
 
-	lptr = subwords;
 	total_size = 0;
-	while (lptr)
+	lptr = subwords;
+	while (lptr != NULL)
 	{
 		total_size += strlen(lptr->content);
 		lptr = lptr->next;
@@ -19,7 +19,7 @@ char	*concatenate_subwords(t_list *subwords)
 	if (result == NULL)
 		exit(fatal_error());
 	lptr = subwords;
-	while (lptr)
+	while (lptr != NULL)
 	{
 		strlcat(result, lptr->content, total_size + 1);
 		lptr = lptr->next;

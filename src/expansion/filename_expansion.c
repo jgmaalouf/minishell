@@ -13,7 +13,7 @@ static int	ft_glob(const char *pattern, glob_t *pglob)
 		return (GLOB_ABORTED);
 	groups = group_subpatterns(pattern);
 	cwd_data = readdir(cwd);
-	while (!errno && cwd_data != NULL && ++(pglob->gl_pathc))
+	while (cwd_data != NULL && ++(pglob->gl_pathc))
 	{
 		if (globbing(groups, cwd_data->d_name))
 			pglob->gl_pathv[pglob->gl_matchc++] = strdup(cwd_data->d_name);
@@ -25,7 +25,8 @@ static int	ft_glob(const char *pattern, glob_t *pglob)
 	closedir(cwd);
 	if (pglob->gl_matchc == 0)
 		return (GLOB_NOMATCH);
-	return (strarr_sort(pglob->gl_pathv), EXIT_SUCCESS);
+	strarr_sort(pglob->gl_pathv);
+	return (EXIT_SUCCESS);
 }
 
 static size_t	count_directory_entries(const char *directory)
@@ -40,7 +41,7 @@ static size_t	count_directory_entries(const char *directory)
 		return (0);
 	count = 0;
 	cwd_data = readdir(cwd);
-	while (!errno && cwd_data != NULL && ++count)
+	while (cwd_data != NULL && ++count)
 		cwd_data = readdir(cwd);
 	if (errno)
 		perror("readdir");

@@ -30,6 +30,7 @@ char	**strarr_dup(char *array[])
 	return (result);
 }
 
+/*
 char	**strarr_resize(char *array[], int *size)
 {
 	char	**result;
@@ -47,6 +48,22 @@ char	**strarr_resize(char *array[], int *size)
 	}
 	free(array);
 	return (result);
+}
+*/
+
+char	**strarr_resize(char *array[], int *size)
+{
+	char	**result;
+	int		i;
+
+	*size *= 2;
+	result = calloc(*size, sizeof(char *));
+	if (result == NULL)
+		return (NULL);
+	i = -1;
+	while (array[++i] != NULL)
+		ft_memcpy(&result[i], &array[i], sizeof(char *));
+	return (free(array), result);
 }
 
 void	strarr_free(char *array[])

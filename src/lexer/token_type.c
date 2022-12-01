@@ -23,7 +23,7 @@ bool	token_is_logical_operand(t_tk_type type)
 
 bool	token_is_redirection(t_tk_type type)
 {
-	if (type == REDIRECT_INPUT_FILE || type == REDIRECT_INPUT_HEREDOC)
+	if (type == REDIRECT_INPUT || type == REDIRECT_INPUT_HEREDOC)
 		return (true);
 	if (type == REDIRECT_OUTPUT_TRUNC || type == REDIRECT_OUTPUT_APPEND)
 		return (true);

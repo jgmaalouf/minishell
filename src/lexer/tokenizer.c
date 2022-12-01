@@ -6,15 +6,17 @@ static t_token	*tokenize_redirection(char **line)
 	{
 		if (**line == '<' && (*line)++)
 			return (new_token_node(REDIRECT_INPUT_HEREDOC, "<<"));
-		else
-			return (new_token_node(REDIRECT_INPUT_FILE, "<"));
+		if (**line == '>' && (*line)++)
+			return (new_token_node(REDIRECT_INPUT_OUTPUT, "<>"));
+		return (new_token_node(REDIRECT_INPUT, "<"));
 	}
 	if (**line == '>' && (*line)++)
 	{
 		if (**line == '>' && (*line)++)
 			return (new_token_node(REDIRECT_OUTPUT_APPEND, ">>"));
-		else
-			return (new_token_node(REDIRECT_OUTPUT_TRUNC, ">"));
+		if (**line == '|' && (*line)++)
+			return (new_token_node(REDIRECT_OUTPUT_CLOBBER, ">|"));
+		return (new_token_node(REDIRECT_OUTPUT_TRUNC, ">"));
 	}
 	return (NULL);
 }
@@ -25,8 +27,7 @@ static t_token	*tokenize_logical_operand(char **line)
 	{
 		if (**line == '|' && (*line)++)
 			return (new_token_node(LOGICAL_OR, "||"));
-		else
-			return (new_token_node(PIPE, "|"));
+		return (new_token_node(PIPE, "|"));
 	}
 	if (**line == '&' && (*line)++)
 	{
