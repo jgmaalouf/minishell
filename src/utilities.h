@@ -20,6 +20,15 @@ int		ft_dwrite(int fd, const char *s);
 char	*ft_concat(const char *s1, const char *s2);
 char	*ft_concat3(const char *s1, const char *s2, const char *s3);
 
+char	**dict_create(size_t *size);
+void	*dict_destroy(char *dict[], size_t *size);
+char	**dict_find_entry(char *dict[], const char *key);
+char	*dict_get_val(char *dict[], const char *key);
+char	**dict_set_val(char *dict[], const char *key, const char *val);
+char	**dict_operation(int op);
+char	**dict_close(void);
+char	**dict_open(void);
+
 int		ft_isalnum(int c);
 int		ft_isalpha(int c);
 int		ft_isascii(int c);
@@ -38,9 +47,9 @@ void	*ft_memset(void *b, int c, size_t len);
 
 int		ft_setenv(const char *name, const char *value, int overwrite);
 
-int		strarr_size(char *array[]);
+size_t	strarr_len(char *array[]);
 char	**strarr_dup(char *array[]);
-char	**strarr_resize(char *array[], int *size);
+char	**strarr_resize(char *array[], size_t *size);
 void	strarr_free(char *array[]);
 void	strarr_sort(char *array[]);
 

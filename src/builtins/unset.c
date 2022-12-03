@@ -49,8 +49,9 @@ void	rem_arg_from_env(char *arg)
 		rem_from_env(strsep(&arg, "="));
 }
 
-void	unset(char *argv[])
+void	builtin_unset(int argc, char *const argv[])
 {
+	(void)argc;
 	argv++;
 	while (*argv != NULL)
 	{

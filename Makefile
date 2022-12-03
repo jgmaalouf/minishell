@@ -45,7 +45,7 @@ $(NAME): $(OBJS)
 
 $(OBJDIR)%.o: $(SRCDIR)%.c $(HFILES)
 	@mkdir -p $(dir $@)
-	@$(CC) $(CFLAGS) $(HFLAGS) -c $< -o $@
+	@$(CC) $(CFLAGS) $(DFLAGS) $(HFLAGS) -c $< -o $@
 
 clean:
 	@rm -f $(OBJS)

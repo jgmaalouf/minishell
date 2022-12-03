@@ -11,7 +11,7 @@ static int	count_subpatterns(const char *pattern)
 		{
 			while (*pattern != '\0' && *pattern != '*' && *pattern != '?')
 			{
-				if (*pattern == '\"' || *pattern == '\'')
+				if (ft_isquote(*pattern))
 					pattern = find_closing_quote(pattern) + 1;
 				else if (*pattern++ == '\\')
 					pattern++;
@@ -45,7 +45,7 @@ static void	group_string(const char **pattern, t_pat *group)
 {
 	while (**pattern != '\0' && **pattern != '*' && **pattern != '?')
 	{
-		if (**pattern == '\"' || **pattern == '\'')
+		if (ft_isquote(**pattern))
 			*pattern = find_closing_quote(*pattern) + 1;
 		else if (*(*pattern)++ == '\\')
 			(*pattern)++;

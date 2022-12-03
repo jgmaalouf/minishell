@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-int	env(void)
+int	builtin_env(void)
 {
 	extern char	**environ;
 	int			i;

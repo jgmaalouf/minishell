@@ -2,26 +2,40 @@
 
 static void	print_token_type(t_tk_type type)
 {
-	if (type == WORD)
-		printf("WORD");
-	if (type == PIPE)
-		printf("PIPE");
-	if (type == LOGICAL_AND)
-		printf("LOGICAL_AND");
-	if (type == LOGICAL_OR)
-		printf("LOGICAL_OR");
-	if (type == REDIRECT_INPUT)
-		printf("REDIRECT_INPUT");
-	if (type == REDIRECT_INPUT_HEREDOC)
-		printf("REDIRECT_INPUT_HEREDOC");
-	if (type == REDIRECT_OUTPUT_TRUNC)
-		printf("REDIRECT_OUTPUT_TRUNC");
-	if (type == REDIRECT_OUTPUT_APPEND)
-		printf("REDIRECT_OUTPUT_APPEND");
-	if (type == OPEN_PARENTHESIS)
-		printf("OPEN_PARENTHESIS");
-	if (type == CLOSE_PARENTHESIS)
-		printf("CLOSE_PARENTHESIS");
+	if (type == TK_WORD)
+		printf("TK_WORD");
+	if (type == TK_ASSIGNMENT_WORD)
+		printf("TK_ASSIGNMENT_WORD");
+	if (type == TK_IO_NUMBER)
+		printf("TK_IO_NUMBER");
+	if (type == TK_REDIRECT_INPUT)
+		printf("TK_REDIRECT_INPUT");
+	if (type == TK_REDIRECT_INPUT_HEREDOC)
+		printf("TK_REDIRECT_INPUT_HEREDOC");
+	if (type == TK_REDIRECT_INPUT_OUTPUT)
+		printf("TK_REDIRECT_INPUT_OUTPUT");
+	if (type == TK_REDIRECT_OUTPUT_TRUNC)
+		printf("TK_REDIRECT_OUTPUT_TRUNC");
+	if (type == TK_REDIRECT_OUTPUT_APPEND)
+		printf("TK_REDIRECT_OUTPUT_APPEND");
+	if (type == TK_REDIRECT_OUTPUT_CLOBBER)
+		printf("TK_REDIRECT_OUTPUT_CLOBBER");
+	if (type == TK_BACKGROUND)
+		printf("TK_BACKGROUND");
+	if (type == TK_PIPE)
+		printf("TK_PIPE");
+	if (type == TK_LOGICAL_AND)
+		printf("TK_LOGICAL_AND");
+	if (type == TK_LOGICAL_OR)
+		printf("TK_LOGICAL_OR");
+	if (type == TK_OPEN_PARENTHESIS)
+		printf("TK_OPEN_PARENTHESIS");
+	if (type == TK_CLOSE_PARENTHESIS)
+		printf("TK_CLOSE_PARENTHESIS");
+	if (type == TK_SEMICOLON)
+		printf("TK_SEMICOLON");
+	if (type == TK_DSEMICOLON)
+		printf("TK_DSEMICOLON");
 	printf(": ");
 }
 

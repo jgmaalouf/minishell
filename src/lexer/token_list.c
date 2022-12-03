@@ -36,7 +36,7 @@ void	*free_token_list(t_token *tokens)
 	while (tokens != NULL)
 	{
 		next = tokens->next;
-		if (tokens->type == WORD)
+		if (token_is_word(tokens->type))
 			free(tokens->val);
 		free(tokens);
 		tokens = next;

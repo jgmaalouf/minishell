@@ -1,27 +1,27 @@
 #include "utilities.h"
 
-int	strarr_size(char *array[])
+size_t	strarr_len(char *array[])
 {
-	int	size;
+	size_t	len;
 
-	size = 0;
-	while (array[size] != NULL)
-		size++;
-	return (size);
+	len = 0;
+	while (array[len] != NULL)
+		len++;
+	return (len);
 }
 
 char	**strarr_dup(char *array[])
 {
 	char	**result;
-	int		size;
+	int		len;
 	int		i;
 
-	size = strarr_size(array);
-	result = malloc((size + 1) * sizeof(char *));
+	len = strarr_len(array);
+	result = malloc((len + 1) * sizeof(char *));
 	if (result == NULL)
 		return (NULL);
 	i = 0;
-	while (i < size)
+	while (i < len)
 	{
 		result[i] = strdup(array[i]);
 		i++;
@@ -51,7 +51,7 @@ char	**strarr_resize(char *array[], int *size)
 }
 */
 
-char	**strarr_resize(char *array[], int *size)
+char	**strarr_resize(char *array[], size_t *size)
 {
 	char	**result;
 	int		i;

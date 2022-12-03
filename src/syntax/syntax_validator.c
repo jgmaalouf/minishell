@@ -2,7 +2,7 @@
 
 static int	valid_first_token(t_tk_type type)
 {
-	return (!token_is_logical_operand(type) && type != CLOSE_PARENTHESIS);
+	return (!token_is_logical_operand(type) && type != TK_CLOSE_PARENTHESIS);
 }
 
 static int	valid_token_list(t_token *tokens)
@@ -25,9 +25,9 @@ static int	match_parentheses(t_token *tokens)
 	unmatched = 0;
 	while (tokens)
 	{
-		if (tokens->type == OPEN_PARENTHESIS)
+		if (tokens->type == TK_OPEN_PARENTHESIS)
 			unmatched++;
-		if (tokens->type == CLOSE_PARENTHESIS)
+		if (tokens->type == TK_CLOSE_PARENTHESIS)
 			unmatched--;
 		if (unmatched < 0)
 			return (syntax_error_unexpected_token(")"), false);

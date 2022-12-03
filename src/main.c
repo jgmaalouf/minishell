@@ -8,7 +8,7 @@ static int	usage(void)
 
 int	exit_ctrl_d(void)
 {
-	extern char **environ;
+	extern char	**environ;
 
 	// rl_replace_line("", 0);
 	printf("\e[1A");
@@ -42,7 +42,7 @@ int	trailing_backslash(char *line)
 	return (true);
 }
 
-char *command_line_input(void)
+char	*command_line_input(void)
 {
 	char	*command_line;
 	char	*next_line;
@@ -74,15 +74,11 @@ static int	minishell(void)
 
 	while (42)
 	{
-		/* cmdline = readline(get_prompt(env)); */
 		/* cmdline = readline(GREEN "minishell$ " RESET); */
 		cmdline = command_line_input();
-		// cmdline = strdup("echo ${SHELL}");
 		// cmdline = strdup("ls \"test\\*\\*\'*'\"");
 		// cmdline = strdup("\"this\\\" this\"");
 		// cmdline = strdup("'this\\'\\\\\\\\\\\\\\\\\"\\\"\\\"''");
-		// printf("%s\n", cmdline);
-
 		if (cmdline == NULL)
 			return (exit_ctrl_d());
 		command_history(cmdline);
@@ -90,8 +86,6 @@ static int	minishell(void)
 		if (table != NULL)
 			executor(table);
 		free(cmdline);
-
-		// exit_ctrl_d(env); return (0);
 	}
 }
 

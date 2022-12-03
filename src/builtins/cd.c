@@ -52,7 +52,7 @@ static	int	cd_oldpwd(void)
 	return (change_directory(oldpwd, 1));
 }
 
-int	cd(int argc, char *const argv[])
+int	builtin_cd(int argc, char *const argv[])
 {
 	if (argc == 1)
 		return (cd_home());

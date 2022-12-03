@@ -10,7 +10,7 @@ static bool	test_single_flag(char flag, char *s)
 	return (false);
 }
 
-int	echo(int argc, char *const argv[])
+int	builtin_echo(int argc, char *const argv[])
 {
 	bool	n_flag;
 

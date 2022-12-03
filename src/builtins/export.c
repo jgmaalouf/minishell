@@ -67,7 +67,7 @@ void	add_arg_to_env(char *arg)
 }
 
 /* export desktop=~/Desktop/ */
-void	export(int argc, char *const argv[])
+void	builtin_export(int argc, char *const argv[])
 {
 	extern char	**environ;
 

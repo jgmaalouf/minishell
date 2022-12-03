@@ -36,29 +36,33 @@ static char	*last_exit_status(void)
 	return (exit_status);
 }
 
-static char	*find_env_variable(char *key)
+static char	*find_variable(char *name)
 {
 	char	*value;
+	char	**dict;
 
-	value = getenv(key);
-	if (value == NULL)
-		return (strdup(""));
-	return (strdup(value));
+	value = getenv(name);
+	if (value != NULL)
+		return (value);
+	dict = dict_open();
+	value = dict_get_val(dict, name);
+	if (value != NULL)
+		return (value);
+	return (NULL);
 }
 
-static char	*expand_env_variable(char *key)
+static char	*expand_variable(char *name)
 {
 	char	*value;
 
-	if (strcmp(key, "$") == 0)
-		return (key);
-	if (strncmp(key, "$?", 2) == 0)
-		value = last_exit_status();
-	else
-		value = find_env_variable(key + 1);
+	if (strcmp(name, "$") == 0)
+		return (name);
+	if (strncmp(name, "$?", 2) == 0)
+		return (free(name), last_exit_status());
+	value = find_variable(name + 1);
 	if (value == NULL)
-		exit(fatal_error());
-	return (free(key), value);
+		value = "";
+	return (free(name), strdup(value));
 }
 
 char	*parameter_expansion(char *word)
@@ -73,7 +77,11 @@ char	*parameter_expansion(char *word)
 	while (lptr)
 	{
 		if (((char *)lptr->content)[0] == '$')
-			lptr->content = expand_env_variable(lptr->content);
+		{
+			lptr->content = expand_variable(lptr->content);
+			if (lptr->content == NULL)
+				exit(fatal_error());
+		}
 		lptr = lptr->next;
 	}
 	result = concatenate_subwords(subwords);

@@ -1,5 +1,5 @@
 #include "utilities.h"
-
+/*
 static char	**find_env_name(const char *name)
 {
 	extern char	**environ;
@@ -16,44 +16,45 @@ static char	**find_env_name(const char *name)
 	}
 	return (eptr);
 }
-
-static void	add_to_end(int pos, const char *name, const char *value)
+ */
+static void	add_to_end(size_t index, const char *name, const char *value)
 {
 	extern char	**environ;
 
-	environ[pos] = ft_concat3(name, "=", value);
-	environ[pos + 1] = NULL;
+	environ[index] = ft_concat3(name, "=", value);
+	environ[index + 1] = NULL;
 }
 
-static void	change_value(int pos, const char *name, const char *value)
+static void	change_value(size_t index, const char *name, const char *value)
 {
 	extern char	**environ;
 
-	free(environ[pos]);
-	environ[pos] = ft_concat3(name, "=", value);
+	free(environ[index]);
+	environ[index] = ft_concat3(name, "=", value);
 }
 
 static int	add_to_environ(const char *name, const char *value, int overwrite)
 {
-	extern char	**environ;
-	static int	size;
-	int			pos;
+	extern char		**environ;
+	static size_t	size;
+	size_t			index;
 
-	if (size == 0)
-		size = strarr_size(environ) + 1;
-	pos = find_env_name(name) - environ;
-	if (environ[pos] == NULL)
+	if (size == 0 && environ != NULL)
+		size = strarr_len(environ) + 1;
+	/* index = find_env_name(name) - environ; */
+	index = dict_find_entry(environ, name) - environ;
+	if (environ[index] == NULL)
 	{
-		if (pos + 1 >= size)
+		if (index + 1 == size)
 		{
 			environ = strarr_resize(environ, &size);
 			if (environ == NULL)
 				return (-1);
 		}
-		add_to_end(pos, name, value);
+		add_to_end(index, name, value);
 	}
 	else if (overwrite == 1)
-		change_value(pos, name, value);
+		change_value(index, name, value);
 	return (EXIT_SUCCESS);
 }
 

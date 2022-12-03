@@ -1,9 +1,9 @@
 #include "minishell.h"
-
 #include <sys/ioctl.h>
+
 int	terminal_dimensions(char *size)
 {
-	struct winsize w;
+	struct winsize	w;
 
 	ioctl(0, TIOCGWINSZ, &w);
 	// printf ("columns %d\n", w.ws_col);

@@ -13,7 +13,9 @@
 # include <readline/readline.h>
 
 # include "utilities.h"
-# include "garbage.h"
+/* PROHIBITED */
+#include <ctype.h>
+#include <string.h>
 
 /* PERSISTENT HISTORY FILE */
 # define HISTFILE_RDONLY ".minishell_history"
@@ -51,19 +53,39 @@ typedef enum e_builtin {
 }	t_builtin;
 
 typedef enum e_token_type {
-	WORD,
-	PIPE,
-	REDIRECT_INPUT,
-	REDIRECT_INPUT_HEREDOC,
-	REDIRECT_INPUT_OUTPUT,
-	REDIRECT_OUTPUT_TRUNC,
-	REDIRECT_OUTPUT_APPEND,
-	REDIRECT_OUTPUT_CLOBBER,
-	LOGICAL_AND,
-	LOGICAL_OR,
-	OPEN_PARENTHESIS,
-	CLOSE_PARENTHESIS,
+	TK_NULL,
+	TK_WORD,
+	TK_ASSIGNMENT_WORD,
+	TK_IO_NUMBER,
+	TK_REDIRECT_INPUT,
+	TK_REDIRECT_INPUT_HEREDOC,
+	TK_REDIRECT_INPUT_OUTPUT,
+	TK_REDIRECT_OUTPUT_TRUNC,
+	TK_REDIRECT_OUTPUT_APPEND,
+	TK_REDIRECT_OUTPUT_CLOBBER,
+	TK_BACKGROUND,
+	TK_PIPE,
+	TK_LOGICAL_AND,
+	TK_LOGICAL_OR,
+	TK_OPEN_PARENTHESIS,
+	TK_CLOSE_PARENTHESIS,
+	TK_SEMICOLON,
+	TK_DSEMICOLON,
+	/* TK_NEWLINE, */
 }	t_tk_type;
+
+typedef enum e_node_type
+{
+	NODE_NULL,
+	NODE_COMMAND,
+	NODE_ASSIGNMENT,
+	NODE_REDIRECTION,
+	NODE_PIPE,
+	NODE_AND_IF,
+	NODE_OR_IF,
+	NODE_SUBSHELL,
+	NODE_SEMICOLON,
+}	t_node_type;
 
 # pragma endregion enums
 
@@ -87,7 +109,7 @@ typedef struct s_cmd
 
 	int				stdinput;
 	int				stdoutput;
-	// int				stderror;
+	int				stderror;
 	struct s_cmd	*next;
 }	t_cmd;
 
@@ -106,16 +128,19 @@ typedef struct s_pattern
 # pragma region functions
 
 /* BUILTINS */
-int		cd(int argc, char *const argv[]);
-int		echo(int argc, char *const argv[]);
-int		env(void);
-int		builtin_exit(t_cmd *table);
-void	export(int argc, char *const argv[]);
-int		pwd(void);
-void	unset(char *argv[]);
+int		builtin_cd(int argc, char *const argv[]);
+int		builtin_echo(int argc, char *const argv[]);
+int		builtin_env(void);
+int		builtin_exit(int argc, char *const argv[], t_cmd *table);
+void	builtin_export(int argc, char *const argv[]);
+int		builtin_pwd(void);
+void	builtin_unset(int argc, char *const argv[]);
 
 /* EXECUTOR */
 void	executor(t_cmd *table);
+int		builtin_command(char *cmd_name);
+int		execute_builtin(t_cmd *table);
+char	*find_cmd_path(char *cmd_name);
 
 /* PARSER */
 t_cmd	*parser(char *line);
@@ -128,9 +153,10 @@ t_token	*new_token_node(int type, char *val);
 void	token_list_add_back(t_token **list, t_token *new);
 void	*free_token_list(t_token *tokens);
 int		reserved_shell_char(int c);
+bool	token_is_basic_word(t_tk_type type);
 bool	token_is_word(t_tk_type type);
-bool	token_is_logical_operand(t_tk_type type);
 bool	token_is_redirection(t_tk_type type);
+bool	token_is_logical_operand(t_tk_type type);
 bool	token_is_parenthesis(t_tk_type type);
 
 /* EXPANSION */
@@ -152,6 +178,7 @@ int		command_history(const char *line);
 /* SYNTAX */
 int		find_bad_substitution(char *line);
 char	*find_closing_quote(const char *input);
+char	*find_unquoted_char(const char *input, int c);
 int		syntax_validator(t_token *tokens);
 int		valid_token(t_token *token);
 

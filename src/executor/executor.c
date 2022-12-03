@@ -1,73 +1,9 @@
 #include "minishell.h"
 
-char	**extract_env_path(void)
-{
-	char	**env_path;
-	char	*var_path;
-	int		count;
-	int		i;
-
-	var_path = getenv("PATH");
-	if (var_path == NULL)
-		return (NULL);
-	var_path = strdup(var_path);
-	count = 1;
-	i = 0;
-	while (var_path[i] != '\0')
-		if (var_path[i++] == ':')
-			count++;
-	env_path = calloc(count + 1, sizeof(char *));
-	if (env_path == NULL)
-		exit(fatal_error());
-	i = 0;
-	env_path[i] = strsep(&var_path, ":");
-	while (env_path[i++] != NULL)
-		env_path[i] = strsep(&var_path, ":");
-	return (env_path);
-}
-
-char	*full_cmd_path(char *env_path, char *cmd_name)
-{
-	char	*full_path;
-	char	*path_slash;
-
-	path_slash = ft_concat(env_path, "/");
-	full_path = ft_concat(path_slash, cmd_name);
-	free(path_slash);
-	return (full_path);
-}
-
 int	cmd_not_found(char *cmd)
 {
 	output_error(cmd, "command not found");
 	return (g_exit_status = 127);
-}
-
-const char	*find_cmd_path(char *cmd_name)
-{
-	char	*cmd_path;
-	char	**env_path;
-	int		i;
-
-	if (access(cmd_name, F_OK) == EXIT_SUCCESS)
-		return (strdup(cmd_name));
-	if (cmd_name[0] == '/')
-		return (NULL);
-	env_path = extract_env_path();
-	if (env_path == NULL)
-		return (NULL);
-	i = 0;
-	while (env_path[i] != NULL)
-	{
-		cmd_path = full_cmd_path(env_path[i++], cmd_name);
-		if (access(cmd_path, F_OK) == EXIT_SUCCESS)
-			break ;
-		free(cmd_path);
-		cmd_path = NULL;
-	}
-	free(*env_path);
-	free(env_path);
-	return (cmd_path);
 }
 
 int	cmd_argc(t_token *tokens)
@@ -75,7 +11,7 @@ int	cmd_argc(t_token *tokens)
 	int	count;
 
 	count = 0;
-	while (tokens != NULL && token_is_word(tokens->type))
+	while (tokens != NULL && token_is_basic_word(tokens->type))
 	{
 		count++;
 		tokens = tokens->next;
@@ -110,7 +46,7 @@ t_cmd	*create_cmd_table(t_token *tokens)
 	head = table;
 	while (tokens != NULL)
 	{
-		if (token_is_word(tokens->type))
+		if (token_is_basic_word(tokens->type))
 			add_cmd(&tokens, table);
 		// if (token_is_redirection())
 		// if (token_is_logical_operand())
@@ -121,47 +57,6 @@ t_cmd	*create_cmd_table(t_token *tokens)
 		table = calloc(1, sizeof(t_cmd));
 	}
 	return (head);
-}
-
-int	execute_builtin(t_cmd *table)
-{
-	int	id;
-
-	id = table->builtin_id;
-	if (id == NO_BUILTIN)
-		return (EXIT_FAILURE);
-	else if (id == BUILTIN_CD)
-		cd(table->cmd_argc, table->cmd_argv);
-	else if (id == BUILTIN_ECHO)
-		echo(table->cmd_argc, table->cmd_argv);
-	else if (id == BUILTIN_ENV)
-		env();
-	else if (id == BUILTIN_EXIT)
-		builtin_exit(table);
-	else if (id == BUILTIN_EXPORT)
-		export(table->cmd_argc, table->cmd_argv);
-	else if (id == BUILTIN_PWD)
-		pwd();
-	return (EXIT_SUCCESS);
-}
-
-int	builtin_command(char *cmd_name)
-{
-	if (strcmp(cmd_name, "cd") == 0)
-		return (BUILTIN_CD);
-	if (strcmp(cmd_name, "echo") == 0)
-		return (BUILTIN_ECHO);
-	if (strcmp(cmd_name, "env") == 0)
-		return (BUILTIN_ENV);
-	if (strcmp(cmd_name, "exit") == 0)
-		return (BUILTIN_EXIT);
-	if (strcmp(cmd_name, "export") == 0)
-		return (BUILTIN_EXPORT);
-	if (strcmp(cmd_name, "pwd") == 0)
-		return (BUILTIN_PWD);
-	if (strcmp(cmd_name, "unset") == 0)
-		return (BUILTIN_UNSET);
-	return (NO_BUILTIN);
 }
 
 int	update_exit_status(int status)
@@ -188,14 +83,14 @@ void	executor(t_cmd *table)
 	if (table->builtin_id > 0)
 	{
 		execute_builtin(table);
-		return;
+		return ;
 	}
 
 	if (table->cmd_path == NULL)
 	{
 		cmd_not_found(table->cmd_name);
 		/* free_cmd_table(table); */
-		return;
+		return ;
 	}
 
 	pid = fork();

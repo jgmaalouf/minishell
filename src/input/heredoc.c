@@ -3,5 +3,5 @@
 void	heredoc(const char *delimiter)
 {
 	if (!delimiter)
-		return;
+		return ;
 }

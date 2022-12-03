@@ -1,36 +1,48 @@
 #include "minishell.h"
 
-int	reserved_shell_char(int c)
+bool	token_is_basic_word(t_tk_type type)
 {
-	if (c == '<' || c == '>')
-		return (c);
-	if (c == '|' || c == '&')
-		return (c);
-	if (c == '(' || c == ')')
-		return (c);
-	return (0);
+	return (type == TK_WORD);
 }
 
 bool	token_is_word(t_tk_type type)
 {
-	return (type == WORD);
-}
-
-bool	token_is_logical_operand(t_tk_type type)
-{
-	return (type == PIPE || type == LOGICAL_AND || type == LOGICAL_OR);
+	if (type == TK_WORD)
+		return (true);
+	if (type == TK_ASSIGNMENT_WORD)
+		return (true);
+	if (type == TK_IO_NUMBER)
+		return (true);
+	return (false);
 }
 
 bool	token_is_redirection(t_tk_type type)
 {
-	if (type == REDIRECT_INPUT || type == REDIRECT_INPUT_HEREDOC)
+	if (type == TK_REDIRECT_INPUT)
 		return (true);
-	if (type == REDIRECT_OUTPUT_TRUNC || type == REDIRECT_OUTPUT_APPEND)
+	if (type == TK_REDIRECT_INPUT_HEREDOC)
+		return (true);
+	if (type == TK_REDIRECT_INPUT_OUTPUT)
+		return (true);
+	if (type == TK_REDIRECT_OUTPUT_TRUNC)
+		return (true);
+	if (type == TK_REDIRECT_OUTPUT_APPEND)
+		return (true);
+	if (type == TK_REDIRECT_OUTPUT_CLOBBER)
+		return (true);
+	return (false);
+}
+
+bool	token_is_logical_operand(t_tk_type type)
+{
+	if (type == TK_BACKGROUND || type == TK_PIPE)
+		return (true);
+	if (type == TK_LOGICAL_AND || type == TK_LOGICAL_OR)
 		return (true);
 	return (false);
 }
 
 bool	token_is_parenthesis(t_tk_type type)
 {
-	return (type == OPEN_PARENTHESIS || type == CLOSE_PARENTHESIS);
+	return (type == TK_OPEN_PARENTHESIS || type == TK_CLOSE_PARENTHESIS);
 }

@@ -59,22 +59,8 @@ static int	init_glob_struct(glob_t	*pglob)
 	*pglob = (glob_t){0};
 	pglob->gl_pathv = calloc(max + 1, sizeof(char *));
 	if (pglob->gl_pathv == NULL)
-		exit(fatal_error());
+		return (GLOB_NOSPACE);
 	return (EXIT_SUCCESS);
-}
-
-static int	valid_glob_pattern(char *word)
-{
-	while (*word != '\0')
-	{
-		if (*word == '*' || *word == '?')
-			return (true);
-		else if (*word == '\"' || *word == '\'')
-			word = find_closing_quote(word) + 1;
-		else if (*word++ == '\\')
-			word++;
-	}
-	return (false);
 }
 
 t_token	*filename_expansion(t_token	*token)
@@ -84,8 +70,6 @@ t_token	*filename_expansion(t_token	*token)
 	t_token	*new;
 	int		i;
 
-	if (!valid_glob_pattern(token->val))
-		return (token);
 	if (init_glob_struct(&pglob) != EXIT_SUCCESS)
 		return (token);
 	if (ft_glob(token->val, &pglob) != EXIT_SUCCESS)
@@ -98,7 +82,7 @@ t_token	*filename_expansion(t_token	*token)
 	token->expanded = true;
 	while (pglob.gl_pathv[i] != NULL)
 	{
-		new = new_token_node(WORD, pglob.gl_pathv[i++]);
+		new = new_token_node(TK_WORD, pglob.gl_pathv[i++]);
 		new->expanded = true;
 		token_list_add_back(&token, new);
 	}
