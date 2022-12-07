@@ -2,10 +2,10 @@
 
 void	*ft_calloc(size_t count, size_t size)
 {
-	void	*ptr;
+	void	*p;
 
-	ptr = malloc(count * size);
-	if (ptr != NULL)
-		ft_memset(ptr, 0, (count * size));
-	return (ptr);
+	p = malloc(count * size);
+	if (p != NULL)
+		ft_memset(p, 0, (count * size));
+	return (p);
 }

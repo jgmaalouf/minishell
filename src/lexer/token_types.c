@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-bool	token_is_basic_word(t_tk_type type)
+bool	token_is_simple_word(t_tk_type type)
 {
 	return (type == TK_WORD);
 }

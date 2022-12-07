@@ -3,12 +3,12 @@ NAME := minishell
 CC := gcc
 CFLAGS := -Wall -Werror -Wextra
 DFLAGS := -g3 -fsanitize=address
-LFLAGS := -lreadline -L/opt/homebrew/opt/readline/lib
-#LFLAGS := -lreadline -L ~/.brew/opt/readline/lib
+
+READLINE := $(shell brew --prefix readline)
+LFLAGS := -lreadline -L $(READLINE)/lib
 
 INCDIR := src/
-HFLAGS := -I $(INCDIR) -I/opt/homebrew/opt/readline/include
-#HFLAGS := -I $(INCDIR) -I ~/.brew/opt/readline/include
+HFLAGS := -I $(INCDIR) -I $(READLINE)/include
 HFILES := $(INCDIR)minishell.h $(INCDIR)utilities.h
 
 vpath %.c src/		\

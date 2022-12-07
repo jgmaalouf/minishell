@@ -39,6 +39,8 @@ static void	group_wildcards(const char **pattern, t_pat *group)
 		(*pattern)++;
 	}
 	group->str = strndup(group->ptr, group->len);
+	if (group->str == NULL)
+		exit(fatal_error(ENOMEM));
 }
 
 static void	group_string(const char **pattern, t_pat *group)
@@ -51,6 +53,8 @@ static void	group_string(const char **pattern, t_pat *group)
 			(*pattern)++;
 	}
 	group->str = strndup(group->ptr, *pattern - group->ptr);
+	if (group->str == NULL)
+		exit(fatal_error(ENOMEM));
 	group->str = quote_removal(group->str);
 	group->len = strlen(group->str);
 }
@@ -64,7 +68,7 @@ t_pat	*group_subpatterns(const char *pattern)
 	count = count_subpatterns(pattern);
 	groups = calloc(count + 1, sizeof(t_pat));
 	if (groups == NULL)
-		exit(fatal_error());
+		exit(fatal_error(ENOMEM));
 	i = 0;
 	while (*pattern != '\0')
 	{

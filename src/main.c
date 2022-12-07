@@ -2,7 +2,7 @@
 
 static int	usage(void)
 {
-	printf(RED "Usage: ./minishell\n" RESET);
+	printf(BOLD RED "Usage: ./minishell\n" RESET);
 	return (EXIT_FAILURE);
 }
 
@@ -70,21 +70,18 @@ char	*command_line_input(void)
 static int	minishell(void)
 {
 	char	*cmdline;
-	t_cmd	*table;
+	t_node	*nodelist;
 
 	while (42)
 	{
 		/* cmdline = readline(GREEN "minishell$ " RESET); */
 		cmdline = command_line_input();
-		// cmdline = strdup("ls \"test\\*\\*\'*'\"");
-		// cmdline = strdup("\"this\\\" this\"");
-		// cmdline = strdup("'this\\'\\\\\\\\\\\\\\\\\"\\\"\\\"''");
 		if (cmdline == NULL)
 			return (exit_ctrl_d());
 		command_history(cmdline);
-		table = parser(cmdline);
-		if (table != NULL)
-			executor(table);
+		nodelist = parser(cmdline);
+		if (nodelist != NULL)
+			executor(nodelist);
 		free(cmdline);
 	}
 }
@@ -101,6 +98,8 @@ int	main(int argc, char *const argv[])
 	if (environ == NULL)
 		exit(EXIT_FAILURE);
 	/* ft_setenv("SHELL", argv[0], 1); */
+	/* ft_setenv("COLUMNS", "", 1); */
+	/* ft_setenv("LINES", "", 1); */
 	set_history_file_path(HISTFILE_WRONLY);
 	read_history_file(HISTFILE_RDONLY);
 	signal(SIGINT, &signal_ctrl_c);

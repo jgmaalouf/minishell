@@ -1,102 +1,60 @@
 #include "minishell.h"
 
-void	print_key_value_export(char *key, char *val)
-{
-	if (strncmp(key, "_", strlen(key)) == 0)
-		return ;
-	if (val == NULL)
-		printf("declare -x %s\n", key);
-	else
-		printf("declare -x %s=\"%s\"\n", key, val);
-}
-
-void	display_all_env_vars(void)
+static int	display_environ(void)
 {
 	extern char	**environ;
-	char		**env_cpy;
-	char		*tmp;
+	char		**env_dup;
+	char		*name;
 	int			i;
 
-	env_cpy = strarr_dup(environ);
-	strarr_sort(env_cpy);
+	env_dup = strarr_dup(environ);
+	if (env_dup == NULL)
+		return (g_exit_status = 1);
+	strarr_sort(env_dup);
 	i = 0;
-	while (env_cpy[i] != NULL)
+	while (env_dup[i] != NULL)
 	{
-		tmp = strsep(&(env_cpy[i]), "=");
-		print_key_value_export(tmp, env_cpy[i]);
-		env_cpy[i] = tmp;
+		name = strsep(env_dup + i, "=");
+		printf("declare -x %s=\"%s\"\n", name, env_dup[i]);
+		env_dup[i] = name;
 		i++;
 	}
-	strarr_free(env_cpy);
+	strarr_free(env_dup);
+	return (g_exit_status = 0);
 }
 
-int	check_key_export(char *arg)
+static int	export_name(char *identifer)
 {
-	if (ft_isdigit(*arg))
-		return (0);
-	while (*arg != '\0' && *arg != '=')
-	{
-		if (!isalnum(*arg))
-			return (0);
-		arg++;
-	}
-	return (1);
+	char	*name;
+	char	*value;
+	char	*dup;
+
+	if (!valid_variable_identifier(identifer))
+		return (error_argv_quoted("export", identifer, "not a valid identifier"));
+	if (strchr(identifer, '=') == NULL)
+		return (printf("unhandled\n"));
+	dup = strdup(identifer);
+	if (dup == NULL)
+		return (EXIT_FAILURE);
+	name = strsep(&dup, "=");
+	value = dup;
+	if (value[0] == '~')
+		value = tilde_expansion(strdup(value));
+	if (ft_setenv(name, value, 1) != EXIT_SUCCESS)
+		return (free(name), EXIT_FAILURE);
+	free(name);
+	return (EXIT_SUCCESS);
 }
 
-void	add_to_env(char *arg)
+int	builtin_export(int argc, char *const argv[])
 {
-	char	*arg_cpy;
-	char	*key;
-	char	*val;
+	int	status;
 
-	arg_cpy = strdup(arg);
-	if (arg_cpy == NULL)
-		exit(EXIT_FAILURE);
-	key = strsep(&arg_cpy, "=");
-	val = arg_cpy;
-	ft_setenv(key, val, 1);
-	free(key);
-}
-
-void	add_arg_to_env(char *arg)
-{
-	if (!check_key_export(arg))
-		output_error_quoted_arg("export", arg, "not a valid identifier");
-	else
-		add_to_env(arg);
-}
-
-/* export desktop=~/Desktop/ */
-void	builtin_export(int argc, char *const argv[])
-{
-	extern char	**environ;
-
+	status = 0;
 	if (argc == 1)
-		display_all_env_vars();
-	else
-	{
-		argv++;
-		while (*argv != NULL)
-		{
-			add_arg_to_env(*argv);
-			argv++;
-		}
-	}
+		return (display_environ());
+	while (*(++argv) != NULL)
+		if (export_name(*argv) != EXIT_SUCCESS)
+			status = 1;
+	return (g_exit_status = status);
 }
-
-/*
-int	main(int argc, char *argv[], char *envp[])
-{
-	extern char	**environ;
-	char		*list[] = {"PROGRAM_NAME", "\"\"\"zzz\"\"\"", NULL};
-	char		*list2[] = {"PROGRAM_NAME", "zzz=SHMANDAR", NULL};
-
-	environ = strarr_dup(environ);
-
-	// export(2, list);
-	export(2, list2);
-	export(1, NULL);
-	unset(list);
-	export(1, NULL);
-}
- */

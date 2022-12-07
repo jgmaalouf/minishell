@@ -11,6 +11,8 @@ static char	**extract_env_path(void)
 	if (var_path == NULL)
 		return (NULL);
 	var_path = strdup(var_path);
+	if (var_path == NULL)
+		return (NULL);
 	count = 1;
 	i = 0;
 	while (var_path[i] != '\0')
@@ -18,7 +20,7 @@ static char	**extract_env_path(void)
 			count++;
 	env_path = calloc(count + 1, sizeof(char *));
 	if (env_path == NULL)
-		exit(fatal_error());
+		exit(fatal_error(ENOMEM));
 	i = 0;
 	env_path[i] = strsep(&var_path, ":");
 	while (env_path[i++] != NULL)
@@ -44,7 +46,7 @@ char	*find_cmd_path(char *cmd_name)
 	{
 		cmd_path = ft_concat3(env_path[i++], "/", cmd_name);
 		if (cmd_path == NULL)
-			exit(fatal_error());
+			exit(fatal_error(ENOMEM));
 		if (access(cmd_path, F_OK) == EXIT_SUCCESS)
 			break ;
 		free(cmd_path);

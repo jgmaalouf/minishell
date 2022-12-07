@@ -27,6 +27,8 @@ static t_token	*tokenize_logical_operand(char **line)
 	{
 		if (**line == '|' && (*line)++)
 			return (new_token_node(TK_LOGICAL_OR, "||"));
+		if (**line == '&' && (*line)++)
+			return (new_token_node(TK_PIPE_STDERR, "|&"));
 		return (new_token_node(TK_PIPE, "|"));
 	}
 	if (**line == '&' && (*line)++)
@@ -74,7 +76,7 @@ static t_token	*tokenize_word(char **line)
 	}
 	word = strndup(word, *line - word);
 	if (word == NULL)
-		exit(fatal_error());
+		exit(fatal_error(ENOMEM));
 	if ((**line == '<' || **line == '>') && ft_isnumber(word))
 		return (new_token_node(TK_IO_NUMBER, word));
 	return (new_token_node(TK_WORD, word));

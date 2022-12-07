@@ -1,59 +1,44 @@
 #include "minishell.h"
 
-static int	valid_assignment(char *word)
-{
-	if (find_unquoted_char(word, '=') == NULL)
-		return (false);
-	if (ft_isdigit(*word))
-		return (false);
-	while (*word != '=')
-	{
-		if (!ft_isalnum(*word) && *word != '_')
-			return (false);
-		word++;
-	}
-	return (true);
-}
-
-static void	tokenize_assignments(t_token *tokens)
+static void	tokenize_assignments(t_token *tokenlist)
 {
 	bool	eligible;
 
 	eligible = true;
-	while (tokens != NULL)
+	while (tokenlist != NULL)
 	{
-		if (eligible && token_is_basic_word(tokens->type))
+		if (eligible && token_is_simple_word(tokenlist->type))
 		{
-			if (valid_assignment(tokens->val))
-				tokens->type = TK_ASSIGNMENT_WORD;
+			if (valid_parameter_assignment(tokenlist->val))
+				tokenlist->type = TK_ASSIGNMENT_WORD;
 			else
 				eligible = false;
 		}
-		else if (token_is_redirection(tokens->type))
+		else if (token_is_redirection(tokenlist->type))
 			eligible = false;
-		else if (!token_is_word(tokens->type))
+		else if (!token_is_word(tokenlist->type))
 			eligible = true;
-		tokens = tokens->next;
+		tokenlist = tokenlist->next;
 	}
 }
 
 t_token	*lexer(char *line)
 {
-	t_token	*tokens;
+	t_token	*tokenlist;
 	t_token	*new;
 
-	tokens = NULL;
+	tokenlist = NULL;
 	while (*line != '\0')
 	{
 		while (isspace(*line))
 			line++;
 		if (*line == '\0')
-			return (tokens);
+			return (tokenlist);
 		new = tokenizer(&line);
 		if (new == NULL)
-			return (free_token_list(tokens));
-		token_list_add_back(&tokens, new);
+			return (free_tokenlist(tokenlist, 1));
+		tokenlist_add_back(&tokenlist, new);
 	}
-	tokenize_assignments(tokens);
-	return (tokens);
+	tokenize_assignments(tokenlist);
+	return (tokenlist);
 }

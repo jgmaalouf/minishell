@@ -24,56 +24,39 @@ char	**strarr_dup(char *array[])
 	while (i < len)
 	{
 		result[i] = strdup(array[i]);
+		if (result[i] == NULL)
+			return (strarr_free(array));
 		i++;
 	}
 	result[i] = NULL;
 	return (result);
 }
 
-/*
-char	**strarr_resize(char *array[], int *size)
-{
-	char	**result;
-	int		i;
-
-	*size *= 2;
-	result = calloc(*size, sizeof(char *));
-	if (result == NULL)
-		return (NULL);
-	i = 0;
-	while (array[i] != NULL)
-	{
-		result[i] = array[i];
-		i++;
-	}
-	free(array);
-	return (result);
-}
-*/
-
 char	**strarr_resize(char *array[], size_t *size)
 {
 	char	**result;
-	int		i;
+	// int		i;
 
-	*size *= 2;
-	result = calloc(*size, sizeof(char *));
+	*size = strarr_len(array) + 1;
+	// *size *= 2;
+	result = calloc(*size + 2, sizeof(char *));
 	if (result == NULL)
 		return (NULL);
-	i = -1;
-	while (array[++i] != NULL)
-		ft_memcpy(&result[i], &array[i], sizeof(char *));
+	// i = -1;
+	// while (array[++i] != NULL)
+	// 	ft_memcpy(&result[i], &array[i], sizeof(char *));
+	ft_memcpy((char *)result, (char *)array, *size * sizeof(char *));
 	return (free(array), result);
 }
 
-void	strarr_free(char *array[])
+void	*strarr_free(char *array[])
 {
 	int	i;
 
 	i = 0;
 	while (array[i] != NULL)
 		free(array[i++]);
-	free(array);
+	return (free(array), NULL);
 }
 
 void	strarr_sort(char *array[])

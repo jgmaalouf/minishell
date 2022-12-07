@@ -3,8 +3,8 @@
 char	*ft_concat(const char *s1, const char *s2)
 {
 	char	*result;
-	int		len1;
-	int		len2;
+	size_t	len1;
+	size_t	len2;
 
 	len1 = ft_strlen(s1);
 	len2 = ft_strlen(s2);

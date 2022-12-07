@@ -3,9 +3,9 @@
 static int	check_access(char *path)
 {
 	if (access(path, F_OK) != EXIT_SUCCESS)
-		return (output_error_arg("cd", path, "No such file or directory"));
+		return (error_argv("cd", path, "No such file or directory"));
 	if (access(path, X_OK) != EXIT_SUCCESS)
-		return (output_error_arg("cd", path, "Permission denied"));
+		return (error_argv("cd", path, "Permission denied"));
 	return (EXIT_SUCCESS);
 }
 
@@ -38,7 +38,7 @@ static	int	cd_home(void)
 
 	home = getenv("HOME");
 	if (home == NULL)
-		return (output_error("cd", "HOME not set"));
+		return (error_output("cd", "HOME not set"));
 	return (change_directory(home, 0));
 }
 
@@ -48,7 +48,7 @@ static	int	cd_oldpwd(void)
 
 	oldpwd = getenv("OLDPWD");
 	if (oldpwd == NULL)
-		return (output_error("cd", "OLDPWD not set"));
+		return (error_output("cd", "OLDPWD not set"));
 	return (change_directory(oldpwd, 1));
 }
 

@@ -11,7 +11,7 @@ char	*remove_quotes(char *word)
 	i = 0;
 	result = calloc(strlen(word) + 1, sizeof(char));
 	if (result == NULL)
-		exit(fatal_error());
+		exit(fatal_error(ENOMEM));
 	while (*word != '\0')
 	{
 		if (*word == '\\' && word++)

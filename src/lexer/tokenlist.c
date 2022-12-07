@@ -6,7 +6,7 @@ t_token	*new_token_node(int type, char *val)
 
 	new = malloc(sizeof(t_token));
 	if (new == NULL)
-		exit(fatal_error());
+		exit(fatal_error(ENOMEM));
 	new->type = type;
 	new->val = val;
 	new->expanded = false;
@@ -14,7 +14,7 @@ t_token	*new_token_node(int type, char *val)
 	return (new);
 }
 
-void	token_list_add_back(t_token **list, t_token *new)
+void	tokenlist_add_back(t_token **list, t_token *new)
 {
 	t_token	*tmp;
 
@@ -29,17 +29,18 @@ void	token_list_add_back(t_token **list, t_token *new)
 	}
 }
 
-void	*free_token_list(t_token *tokens)
+void	*free_tokenlist(t_token *list, bool content)
 {
 	t_token	*next;
 
-	while (tokens != NULL)
+	while (list != NULL)
 	{
-		next = tokens->next;
-		if (token_is_word(tokens->type))
-			free(tokens->val);
-		free(tokens);
-		tokens = next;
+		next = list->next;
+		if (content == true)
+			if (token_is_word(list->type))
+				free(list->val);
+		free(list);
+		list = next;
 	}
 	return (NULL);
 }

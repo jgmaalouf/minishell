@@ -6,23 +6,23 @@ char	*concatenate_subwords(t_list *subwords)
 {
 	char	*result;
 	int		total_size;
-	t_list	*lptr;
+	t_list	*lp;
 
 	total_size = 0;
-	lptr = subwords;
-	while (lptr != NULL)
+	lp = subwords;
+	while (lp != NULL)
 	{
-		total_size += strlen(lptr->content);
-		lptr = lptr->next;
+		total_size += strlen(lp->content);
+		lp = lp->next;
 	}
 	result = calloc(total_size + 1, sizeof(char));
 	if (result == NULL)
-		exit(fatal_error());
-	lptr = subwords;
-	while (lptr != NULL)
+		exit(fatal_error(ENOMEM));
+	lp = subwords;
+	while (lp != NULL)
 	{
-		strlcat(result, lptr->content, total_size + 1);
-		lptr = lptr->next;
+		strlcat(result, lp->content, total_size + 1);
+		lp = lp->next;
 	}
 	return (result);
 }
@@ -69,20 +69,20 @@ char	*parameter_expansion(char *word)
 {
 	char	*result;
 	t_list	*subwords;
-	t_list	*lptr;
+	t_list	*lp;
 
 	subwords = subdivide_dollar_word(word);
 	free(word);
-	lptr = subwords;
-	while (lptr)
+	lp = subwords;
+	while (lp)
 	{
-		if (((char *)lptr->content)[0] == '$')
+		if (((char *)lp->content)[0] == '$')
 		{
-			lptr->content = expand_variable(lptr->content);
-			if (lptr->content == NULL)
-				exit(fatal_error());
+			lp->content = expand_variable(lp->content);
+			if (lp->content == NULL)
+				exit(fatal_error(ENOMEM));
 		}
-		lptr = lptr->next;
+		lp = lp->next;
 	}
 	result = concatenate_subwords(subwords);
 	ft_lstclear(&subwords, &free);

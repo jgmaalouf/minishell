@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-int	builtin_command(char *cmd_name)
+int	identify_builtin(char *cmd_name)
 {
 	if (strcmp(cmd_name, "cd") == 0)
 		return (BUILTIN_CD);
@@ -16,29 +16,33 @@ int	builtin_command(char *cmd_name)
 		return (BUILTIN_PWD);
 	if (strcmp(cmd_name, "unset") == 0)
 		return (BUILTIN_UNSET);
-	return (NO_BUILTIN);
+	return (NOT_BUILTIN);
 }
 
-int	execute_builtin(t_cmd *table)
+int	execute_builtin(t_node *nodelist)
 {
-	int	id;
+	int			argc;
+	char *const	*argv;
+	int			id;
 
-	id = table->builtin_id;
-	if (id == NO_BUILTIN)
-		return (EXIT_FAILURE);
-	else if (id == BUILTIN_CD)
-		builtin_cd(table->cmd_argc, table->cmd_argv);
-	else if (id == BUILTIN_ECHO)
-		builtin_echo(table->cmd_argc, table->cmd_argv);
-	else if (id == BUILTIN_ENV)
-		builtin_env();
-	else if (id == BUILTIN_EXIT)
-		builtin_exit(table->cmd_argc, table->cmd_argv, table);
-	else if (id == BUILTIN_EXPORT)
-		builtin_export(table->cmd_argc, table->cmd_argv);
-	else if (id == BUILTIN_PWD)
-		builtin_pwd();
-	else if (id == BUILTIN_UNSET)
-		builtin_unset(table->cmd_argc, table->cmd_argv);
-	return (EXIT_SUCCESS);
+	argc = nodelist->table->cmd_argc;
+	argv = nodelist->table->cmd_argv;
+	if (nodelist->table->redirlist != NULL)
+		redirect(nodelist->table->redirlist);
+	id = nodelist->table->builtin_id;
+	if (id == BUILTIN_CD)
+		return (builtin_cd(argc, argv));
+	if (id == BUILTIN_ECHO)
+		return (builtin_echo(argc, argv));
+	if (id == BUILTIN_ENV)
+		return (builtin_env());
+	if (id == BUILTIN_EXIT)
+		return (builtin_exit(argc, argv, nodelist));
+	if (id == BUILTIN_EXPORT)
+		return (builtin_export(argc, argv));
+	if (id == BUILTIN_PWD)
+		return (builtin_pwd());
+	if (id == BUILTIN_UNSET)
+		return (builtin_unset(argc, argv));
+	return (errno = EINVAL, -1);
 }

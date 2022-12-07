@@ -1,23 +1,19 @@
 #include "minishell.h"
 
-t_cmd	*parser(char *line)
+t_node	*parser(char *cmdline)
 {
-	t_token	*tokens;
-	t_cmd	*table;
+	t_node	*nodelist;
+	t_token	*tokenlist;
 
-	if (find_bad_substitution(line))
+	if (find_bad_substitution(cmdline))
 		return (NULL);
-	tokens = lexer(line);
-	if (tokens == NULL)
+	tokenlist = lexer(cmdline);
+	if (tokenlist == NULL)
 		return (NULL);
-	// printf("TOKENIZED:\n");
-	// debugging_log_token_list(tokens);
-	if (syntax_validator(tokens) != EXIT_SUCCESS)
-		return (free_token_list(tokens));
-	shell_expansion(tokens);
-	// printf("EXPANDED:\n");
-	// debugging_log_token_list(tokens);
-	table = create_cmd_table(tokens);
-	free_token_list(tokens);
-	return (table);
+	if (syntax_validator(tokenlist) != EXIT_SUCCESS)
+		return (free_tokenlist(tokenlist, 1));
+	shell_expansion(tokenlist);
+	nodelist = create_nodelist(tokenlist);
+	free_tokenlist(tokenlist, 0);
+	return (nodelist);
 }

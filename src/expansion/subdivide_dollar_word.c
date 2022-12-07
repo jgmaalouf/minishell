@@ -12,7 +12,6 @@ static char	*process_brace_substitution(char **word)
 	return (variable);
 }
 
-/* echo $'single_quote' $"double_quote" [>> single_quote double_quote] */
 static char	*process_dollar_sign(char **word)
 {
 	char	*variable;
@@ -60,6 +59,8 @@ t_list	*subdivide_dollar_word(char *word)
 	while (*word != '\0')
 	{
 		subword = process_next_dollar_subword(&word);
+		if (subword == NULL)
+			exit(fatal_error(ENOMEM));
 		ft_lstadd_back(&list, ft_lstnew(subword));
 	}
 	return (list);

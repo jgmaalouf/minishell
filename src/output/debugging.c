@@ -39,7 +39,7 @@ static void	print_token_type(t_tk_type type)
 	printf(": ");
 }
 
-void	debugging_log_token_list(t_token *tokens)
+void	debugging_log_tokenlist(t_token *tokens)
 {
 	while (tokens != NULL)
 	{

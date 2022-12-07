@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-int	output_error(char *cmd, char *msg)
+int	error_output(char *cmd, char *msg)
 {
 	ft_dwrite(2, "minishell: ");
 	ft_dwrite(2, cmd);
@@ -10,7 +10,13 @@ int	output_error(char *cmd, char *msg)
 	return (g_exit_status = 1);
 }
 
-int	output_error_arg(char *cmd, char *arg, char *msg)
+int	error(char *cmd, char *msg, int status)
+{
+	error_output(cmd, msg);
+	return (g_exit_status = status);
+}
+
+int	error_argv(char *cmd, char *arg, char *msg)
 {
 	ft_dwrite(2, "minishell: ");
 	ft_dwrite(2, cmd);
@@ -22,7 +28,7 @@ int	output_error_arg(char *cmd, char *arg, char *msg)
 	return (g_exit_status = 1);
 }
 
-int	output_error_quoted_arg(char *cmd, char *arg, char *msg)
+int	error_argv_quoted(char *cmd, char *arg, char *msg)
 {
 	ft_dwrite(2, "minishell: ");
 	ft_dwrite(2, cmd);
@@ -36,8 +42,12 @@ int	output_error_quoted_arg(char *cmd, char *arg, char *msg)
 	return (g_exit_status = 1);
 }
 
-int	fatal_error(void)
+int	fatal_error(int code)
 {
-	ft_dwrite(2, "minishell: fatal error: critical memory allocation failed\n");
-	return (g_exit_status = 1);
+	ft_dwrite(2, BOLD RED);
+	ft_dwrite(2, "minishell: fatal error: ");
+	if (code == ENOMEM)
+		ft_dwrite(2, "critical memory allocation failed\n");
+	ft_dwrite(2, RESET);
+	return (g_exit_status = -1);
 }

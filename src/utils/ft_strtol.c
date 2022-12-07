@@ -1,6 +1,4 @@
 #include "utilities.h"
-#include <limits.h>
-#include <errno.h>
 
 typedef struct s_strtol
 {

@@ -1,11 +1,14 @@
 #ifndef UTILITIES_H
 # define UTILITIES_H
 
-# include <stdlib.h>
+# include <errno.h>
+# include <limits.h>
 # include <stdbool.h>
+# include <stdlib.h>
 
 /* PROHIBITED */
 #include <string.h>
+#include <stdio.h>
 
 typedef struct s_list
 {
@@ -50,7 +53,7 @@ int		ft_setenv(const char *name, const char *value, int overwrite);
 size_t	strarr_len(char *array[]);
 char	**strarr_dup(char *array[]);
 char	**strarr_resize(char *array[], size_t *size);
-void	strarr_free(char *array[]);
+void	*strarr_free(char *array[]);
 void	strarr_sort(char *array[]);
 
 char	*ft_strchr(const char *s, int c);
@@ -66,5 +69,7 @@ char	*ft_strstr(const char *haystack, const char *needle);
 long	ft_strtol(const char *str, char **endptr, int base);
 
 int		ft_toupper(int c);
+
+int		ft_unsetenv(const char *name);
 
 #endif

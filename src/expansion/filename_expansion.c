@@ -84,8 +84,8 @@ t_token	*filename_expansion(t_token	*token)
 	{
 		new = new_token_node(TK_WORD, pglob.gl_pathv[i++]);
 		new->expanded = true;
-		token_list_add_back(&token, new);
+		tokenlist_add_back(&token, new);
 	}
 	free(pglob.gl_pathv);
-	return (token_list_add_back(&token, next), token);
+	return (tokenlist_add_back(&token, next), token);
 }

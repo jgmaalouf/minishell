@@ -19,6 +19,8 @@ static int	valid_logical_operand(t_token *token)
 		return (syntax_error_end_of_file(), false);
 	if (token_is_logical_operand(token->next->type))
 		return (syntax_error_unexpected_token(token->next->val), false);
+	if (token->next->type == TK_SEMICOLON)
+		return (syntax_error_unexpected_token(token->next->val), false);
 	if (token->next->type == TK_CLOSE_PARENTHESIS)
 		return (syntax_error_unexpected_token(")"), false);
 	return (true);
@@ -68,5 +70,7 @@ int	valid_token(t_token *token)
 		return (valid_redirection(token));
 	if (token_is_parenthesis(token->type))
 		return (valid_parenthesis(token));
+	if (token_is_semicolon(token->type))
+		return (valid_first_token(token->next));
 	return (true);
 }
