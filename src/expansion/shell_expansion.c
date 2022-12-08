@@ -22,7 +22,7 @@ void	shell_expansion(t_token *tokens)
 		{
 			if (tokens->val[0] == '~')
 				tokens->val = tilde_expansion(tokens->val);
-			if (find_unquoted_char(tokens->val, '$') != NULL)
+			if (ft_strchr(tokens->val, '$') != NULL)
 				tokens->val = parameter_expansion(tokens->val);
 			if (valid_glob_pattern(tokens->val))
 				tokens = filename_expansion(tokens);

@@ -27,6 +27,14 @@ char	*concatenate_subwords(t_list *subwords)
 	return (result);
 }
 
+char	*longtostr(long number)
+{
+	char	*str;
+
+	asprintf(&str, "%ld", number);
+	return (str);
+}
+
 /* itoa() */
 static char	*last_exit_status(void)
 {
@@ -50,13 +58,27 @@ static char	*find_variable(char *name)
 		return (value);
 	return (NULL);
 }
+/*
+pid_t	find_child_pid(void)
+{
+	pid_t	pid;
 
+	pid = fork();
+	if (pid < 0)
+		return (-1);
+	if (pid == 0)
+		exit(EXIT_SUCCESS);
+	return (pid);
+}
+ */
 static char	*expand_variable(char *name)
 {
 	char	*value;
 
 	if (strcmp(name, "$") == 0)
 		return (name);
+	if (strcmp(name, "$$") == 0)
+		return (free(name), strdup("getpid()"));
 	if (strncmp(name, "$?", 2) == 0)
 		return (free(name), last_exit_status());
 	value = find_variable(name + 1);

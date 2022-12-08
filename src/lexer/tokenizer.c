@@ -48,11 +48,7 @@ static t_token	*tokenize_special(char **line)
 	if (**line == ')' && (*line)++)
 		return (new_token_node(TK_CLOSE_PARENTHESIS, ")"));
 	if (**line == ';' && (*line)++)
-	{
-		if (**line == ';' && (*line)++)
-			return (new_token_node(TK_DSEMICOLON, ";;"));
 		return (new_token_node(TK_SEMICOLON, ";"));
-	}
 	return (NULL);
 }
 

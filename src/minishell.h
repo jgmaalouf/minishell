@@ -37,7 +37,7 @@
 # define WHITE   "\001\e[37m\002"
 
 /* GLOBAL VARIABLE */
-static int	g_exit_status;
+int	g_exit_status;
 
 # pragma region enums
 
@@ -71,7 +71,6 @@ typedef enum e_token_type {
 	TK_OPEN_PARENTHESIS,
 	TK_CLOSE_PARENTHESIS,
 	TK_SEMICOLON,
-	TK_DSEMICOLON,
 	TK_NEWLINE,
 }	t_tk_type;
 
@@ -104,12 +103,15 @@ typedef struct s_token
 typedef struct s_redir
 {
 	t_tk_type		type;
-	bool			input;
-	bool			output;
-	bool			heredoc;
+	int				fd;
+	const char		*n;
 	const char		*path;
 	int				oflag;
-	int				fd;
+	mode_t			mode;
+	/* int				io; */
+	bool			heredoc;
+	bool			input;
+	bool			output;
 	struct s_redir	*next;
 }	t_redir;
 
@@ -123,7 +125,6 @@ typedef struct s_cmd
 	// t_redir			*input;
 	// t_redir			*output;
 	t_redir			*redirlist;
-	int				pipe[2];
 	pid_t			pid;
 
 	// int				stdinput;
@@ -262,17 +263,16 @@ typedef enum e_pipe_action {
 }	t_pipe_action;
 
 int		stdio_fildes_handler(int action);
-int		redirect(t_redir *redirlist);
+int		handle_redirects(t_redir *redirlist);
 void	*free_nodelist(t_node *list);
 t_node	*free_node(t_node *node);
 bool	node_is_conditional(t_node_type type);
 t_node	*handle_conditional(t_node *nodelist);
 int		pipe_handler(int action);
 t_cmd	*create_command_table(t_token **tokenlist);
-int		token_is_semicolon(t_tk_type type);
-t_redir	*parse_redirections(t_token *tokenlist);
+void	parse_redirection(t_token **tokenlist, t_cmd *table);
 void	*free_nodelist(t_node *list);
-t_node	*next_node(t_node *nodelist);
+t_node	*process_nodelist(t_node *nodelist);
 
 # pragma endregion new
 

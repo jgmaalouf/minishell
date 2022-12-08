@@ -21,7 +21,7 @@ static char	*process_dollar_sign(char **word)
 		return (process_brace_substitution(word));
 	if (**word == '\'' || **word == '\"')
 		return (strdup(""));
-	if (isdigit(**word) || **word == '?')
+	if (isdigit(**word) || **word == '$' || **word == '?')
 		(*word)++;
 	else
 		while (isalnum(**word) || **word == '_')

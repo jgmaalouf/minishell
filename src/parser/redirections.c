@@ -1,49 +1,94 @@
 #include "minishell.h"
 
-static t_redir	*new_redirection_node(t_tk_type type)
+static t_redir	*new_redirection_node()
 {
 	t_redir	*new;
 
 	new = calloc(1, sizeof(t_cmd));
 	if (new == NULL)
 		exit(fatal_error(ENOMEM));
-	new->type = type;
-	new->next = NULL;
 	return (new);
 }
 
-static t_token	*find_next_redirection(t_token *tokenlist)
+static void	redirlist_add_back(t_redir **list, t_redir *new)
 {
-	while (tokenlist != NULL)
+	t_redir	*tmp;
+
+	if (*list == NULL)
+		*list = new;
+	else
 	{
-		if (token_is_command_separator(tokenlist->type))
-			return (NULL);
-		if (token_is_redirection(tokenlist->type))
-			return (tokenlist);
-		if (tokenlist->type == TK_IO_NUMBER)
-			return (tokenlist);
-		tokenlist = tokenlist->next;
+		tmp = *list;
+		while (tmp->next != NULL)
+			tmp = tmp->next;
+		tmp->next = new;
 	}
-	return (NULL);
 }
 
-t_redir	*parse_redirections(t_token *tokenlist)
+static int	parse_redirection_flags(t_tk_type type)
 {
-	t_redir	*redirlist;
-	t_redir	*rlp;
-	t_token	*found;
+	if (type == TK_REDIRECT_INPUT)
+		return (O_RDONLY);
+	if (type == TK_REDIRECT_INPUT_OUTPUT)
+		return (O_RDWR);
+	if (type == TK_REDIRECT_OUTPUT_TRUNC)
+		return (O_WRONLY | O_CREAT | O_TRUNC | O_EXCL); /* O_EXCL */
+	if (type == TK_REDIRECT_OUTPUT_CLOBBER)
+		return (O_WRONLY | O_CREAT | O_TRUNC);
+	if (type == TK_REDIRECT_OUTPUT_APPEND)
+		return (O_WRONLY | O_CREAT | O_APPEND);
+	return (0);
+}
 
-	found = find_next_redirection(tokenlist);
-	if (found == NULL)
-		return (NULL);
-	redirlist = new_redirection_node(found->type);
-	rlp = redirlist;
-	while (1)
+bool is_bit_set(unsigned value, unsigned bitindex)
+{
+	return ((value & (1 << bitindex)) != 0);
+}
+
+static int	input_output(t_redir *redir)
+{
+	if (redir->type == TK_REDIRECT_INPUT)
+		return (redir->input = 1);
+	if (redir->type == TK_REDIRECT_INPUT_OUTPUT)
+		return (redir->input = 1, redir->output = 1);
+	if (redir->type == TK_REDIRECT_OUTPUT_TRUNC)
+		return (redir->output = 1);
+	if (redir->type == TK_REDIRECT_OUTPUT_CLOBBER)
+		return (redir->output = 1);
+	if (redir->type == TK_REDIRECT_OUTPUT_APPEND)
+		return (redir->output = 1);
+	return (0);
+}
+
+void	parse_redirection(t_token **tokenlist, t_cmd *table)
+{
+	t_redir	*new;
+
+	new = new_redirection_node();
+	if ((*tokenlist)->type == TK_IO_NUMBER)
 	{
-		found = find_next_redirection(tokenlist);
-		if (found == NULL)
-			return (redirlist);
-		rlp->next = new_redirection_node(found->type);
-		rlp = rlp->next;
+		new->n = (*tokenlist)->val;
+		*tokenlist = (*tokenlist)->next;
 	}
+	new->type = (*tokenlist)->type;
+	new->oflag = parse_redirection_flags(new->type);
+	if (new->type == TK_REDIRECT_INPUT_HEREDOC)
+		new->heredoc = true;
+	*tokenlist = (*tokenlist)->next;
+	new->path = (*tokenlist)->val;
+	/*
+	if (is_bit_set(new->oflag, 0))
+		new->output = true;
+	else
+		new->input = true;
+	*/
+	input_output(new);
+	if (new->output)
+	{
+		new->fd = 1;
+		new->mode = 0644;
+	}
+	if (new->n != NULL)
+		new->fd = ft_strtol(new->n, NULL, 10);
+	return (redirlist_add_back(&table->redirlist, new));
 }

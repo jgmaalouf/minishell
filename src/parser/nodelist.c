@@ -6,8 +6,6 @@ static t_node_type	convert_tk_type(t_tk_type type)
 		return (NODE_COMMAND);
 	if (type == TK_ASSIGNMENT_WORD)
 		return (NODE_ASSIGNMENT);
-	if (type == TK_IO_NUMBER)
-		return (NODE_COMMAND);
 	if (token_is_redirection(type))
 		return (NODE_COMMAND);
 	if (type == TK_BACKGROUND)
@@ -42,8 +40,6 @@ static t_node	*new_node(t_token **tokenlist)
 		new->table = create_command_table(tokenlist);
 	else
 		*tokenlist = (*tokenlist)->next;
-	if (*tokenlist != NULL)
-		new->nexus = convert_tk_type((*tokenlist)->type);
 	return (new);
 }
 
@@ -66,11 +62,25 @@ static void	insert_nodes(t_node *node, t_token **tokenlist)
 	}
 }
 
+static void	assign_nexuses(t_node *nodelist)
+{
+	while (nodelist != NULL)
+	{
+		if (nodelist->sub != NULL)
+			assign_nexuses(nodelist->sub);
+		if (nodelist->next == NULL)
+			return ;
+		nodelist->nexus = nodelist->next->type;
+		nodelist = nodelist->next;
+	}
+}
+
 t_node	*create_nodelist(t_token *tokenlist)
 {
 	t_node	*nodelist;
 
 	nodelist = new_node(&tokenlist);
 	insert_nodes(nodelist, &tokenlist);
+	assign_nexuses(nodelist);
 	return (nodelist);
 }

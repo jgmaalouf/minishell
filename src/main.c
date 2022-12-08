@@ -81,7 +81,10 @@ static int	minishell(void)
 		command_history(cmdline);
 		nodelist = parser(cmdline);
 		if (nodelist != NULL)
+		{
+			stdio_fildes_handler(SAVE_STD_FILDES);
 			executor(nodelist);
+		}
 		free(cmdline);
 	}
 }
@@ -106,6 +109,6 @@ int	main(int argc, char *const argv[])
 	signal(SIGQUIT, SIG_IGN);
 	minishell();
 	// system("leaks minishell");
-	// exit(EXIT_SUCCESS);
+	// exit(g_exit_status);
 	return (g_exit_status);
 }

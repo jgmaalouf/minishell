@@ -34,8 +34,6 @@ static void	print_token_type(t_tk_type type)
 		printf("TK_CLOSE_PARENTHESIS");
 	if (type == TK_SEMICOLON)
 		printf("TK_SEMICOLON");
-	if (type == TK_DSEMICOLON)
-		printf("TK_DSEMICOLON");
 	printf(": ");
 }
 

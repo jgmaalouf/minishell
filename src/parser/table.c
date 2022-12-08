@@ -20,9 +20,18 @@ static int	cmd_argc(t_token *tokenlist)
 	int	count;
 
 	count = 0;
-	while (tokenlist != NULL && token_is_simple_word(tokenlist->type))
+	while (tokenlist != NULL)
 	{
-		count++;
+		if (token_is_command_separator(tokenlist->type))
+			break ;
+		if (token_is_redirection(tokenlist->type))
+		{
+			if (tokenlist->type == TK_IO_NUMBER)
+				tokenlist = tokenlist->next;
+			tokenlist = tokenlist->next;
+		}
+		else if (token_is_simple_word(tokenlist->type))
+			count++;
 		tokenlist = tokenlist->next;
 	}
 	return (count);
@@ -35,7 +44,7 @@ t_cmd	*parse_assignments(t_token **tokenlist)
 	int		i;
 
 	assignments = new_cmd_table();
-	assignments->redirlist = parse_redirections(*tokenlist);
+	/* assignments->redirlist = parse_redirections(*tokenlist); */
 	tlp = *tokenlist;
 	while (tlp != NULL && tlp->type == TK_ASSIGNMENT_WORD)
 	{
@@ -64,7 +73,6 @@ t_cmd	*create_command_table(t_token **tokenlist)
 	if ((*tokenlist)->type == TK_ASSIGNMENT_WORD)
 		return (parse_assignments(tokenlist));
 	table = new_cmd_table();
-	table->redirlist = parse_redirections(*tokenlist);
 	table->cmd_argc = cmd_argc(*tokenlist);
 	table->cmd_argv = calloc(table->cmd_argc + 1, sizeof(char *));
 	if (table->cmd_argv == NULL)
@@ -74,7 +82,9 @@ t_cmd	*create_command_table(t_token **tokenlist)
 	{
 		if (token_is_command_separator((*tokenlist)->type))
 			break ;
-		if (token_is_simple_word((*tokenlist)->type))
+		else if (token_is_redirection((*tokenlist)->type))
+			parse_redirection(tokenlist, table);
+		else if (token_is_simple_word((*tokenlist)->type))
 			((char **)table->cmd_argv)[i++] = (*tokenlist)->val;
 		*tokenlist = (*tokenlist)->next;
 	}

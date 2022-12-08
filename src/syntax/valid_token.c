@@ -30,6 +30,8 @@ static int	valid_redirection(t_token *token)
 {
 	if (token->next == NULL)
 		return (syntax_error_unexpected_token("newline"), false);
+	if (token->type == TK_IO_NUMBER)
+		return (true);
 	if (token->next->type != TK_WORD)
 		return (syntax_error_unexpected_token(token->next->val), false);
 	return (true);
@@ -70,7 +72,7 @@ int	valid_token(t_token *token)
 		return (valid_redirection(token));
 	if (token_is_parenthesis(token->type))
 		return (valid_parenthesis(token));
-	if (token_is_semicolon(token->type))
+	if (token->type == TK_SEMICOLON)
 		return (valid_first_token(token->next));
 	return (true);
 }

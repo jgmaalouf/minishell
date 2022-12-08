@@ -11,13 +11,13 @@ bool	token_is_word(t_tk_type type)
 		return (true);
 	if (type == TK_ASSIGNMENT_WORD)
 		return (true);
-	if (type == TK_IO_NUMBER)
-		return (true);
 	return (false);
 }
 
 bool	token_is_redirection(t_tk_type type)
 {
+	if (type == TK_IO_NUMBER)
+		return (true);
 	if (type == TK_REDIRECT_INPUT)
 		return (true);
 	if (type == TK_REDIRECT_INPUT_HEREDOC)

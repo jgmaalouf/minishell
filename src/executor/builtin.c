@@ -27,8 +27,8 @@ int	execute_builtin(t_node *nodelist)
 
 	argc = nodelist->table->cmd_argc;
 	argv = nodelist->table->cmd_argv;
-	if (nodelist->table->redirlist != NULL)
-		redirect(nodelist->table->redirlist);
+	if (handle_redirects(nodelist->table->redirlist) != EXIT_SUCCESS)
+		return (stdio_fildes_handler(RESTORE_STD_FILDES), EXIT_FAILURE);
 	id = nodelist->table->builtin_id;
 	if (id == BUILTIN_CD)
 		return (builtin_cd(argc, argv));
@@ -46,3 +46,14 @@ int	execute_builtin(t_node *nodelist)
 		return (builtin_unset(argc, argv));
 	return (errno = EINVAL, -1);
 }
+
+/*
+int	builtin_handler(t_node *nodelist)
+{
+	if (nodelist->table->redirlist != NULL)
+		redirect(nodelist->table->redirlist);
+	execute_builtin(nodelist);
+	stdio_fildes_handler(RESTORE_STD_FILDES);
+	return (EXIT_SUCCESS);
+}
+ */
