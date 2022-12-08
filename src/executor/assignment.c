@@ -17,7 +17,7 @@ int	variable_assignment(const char *assignment)
 	char	*value;
 
 	value = (char *)assignment;
-	name = strsep(&value, "=");
+	name = ft_strsep(&value, "=");
 	set_local_variable(name, value);
 	return (EXIT_SUCCESS);
 }

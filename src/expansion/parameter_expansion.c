@@ -12,10 +12,10 @@ char	*concatenate_subwords(t_list *subwords)
 	lp = subwords;
 	while (lp != NULL)
 	{
-		total_size += strlen(lp->content);
+		total_size += ft_strlen(lp->content);
 		lp = lp->next;
 	}
-	result = calloc(total_size + 1, sizeof(char));
+	result = ft_calloc(total_size + 1, sizeof(char));
 	if (result == NULL)
 		exit(fatal_error(ENOMEM));
 	lp = subwords;
@@ -75,16 +75,16 @@ static char	*expand_variable(char *name)
 {
 	char	*value;
 
-	if (strcmp(name, "$") == 0)
+	if (ft_strcmp(name, "$") == 0)
 		return (name);
-	if (strcmp(name, "$$") == 0)
-		return (free(name), strdup("getpid()"));
-	if (strncmp(name, "$?", 2) == 0)
+	if (ft_strcmp(name, "$$") == 0)
+		return (free(name), ft_strdup("getpid()"));
+	if (ft_strncmp(name, "$?", 2) == 0)
 		return (free(name), last_exit_status());
 	value = find_variable(name + 1);
 	if (value == NULL)
 		value = "";
-	return (free(name), strdup(value));
+	return (free(name), ft_strdup(value));
 }
 
 char	*parameter_expansion(char *word)

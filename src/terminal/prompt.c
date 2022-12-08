@@ -8,9 +8,9 @@ int	terminal_dimensions(char *size)
 	ioctl(0, TIOCGWINSZ, &w);
 	// printf ("columns %d\n", w.ws_col);
 	// printf ("lines %d\n", w.ws_row);
-	if (strcmp(size, "cols") == 0)
+	if (ft_strcmp(size, "cols") == 0)
 		return (w.ws_col);
-	if (strcmp(size, "lines") == 0)
+	if (ft_strcmp(size, "lines") == 0)
 		return (w.ws_row);
 	return (-1);
 }
@@ -21,17 +21,17 @@ static char	*replace_home_with_tilde(char *path)
 	size_t	path_length;
 	int		i;
 
-	if (strncmp(path, "/Users/", 7) != 0)
+	if (ft_strncmp(path, "/Users/", 7) != 0)
 		return (path);
 	i = 7;
 	while (path[i] != '\0' && path[i] != '/')
 		i++;
-	path_length = strlen(path + i);
+	path_length = ft_strlen(path + i);
 	result = malloc(1 + path_length + 1);
 	if (result == NULL)
 		return (path);
 	result[0] = '~';
-	memcpy(result + 1, path + i, path_length + 1);
+	ft_memcpy(result + 1, path + i, path_length + 1);
 	return (free(path), result);
 }
 
@@ -40,10 +40,10 @@ static char	*bold_cwd(char *path)
 	char	*result;
 	char	*cwd;
 
-	cwd = strrchr(path, '/');
+	cwd = ft_strrchr(path, '/');
 	if (cwd == NULL || *(cwd + 1) == '\0')
 		return (path);
-	// result = malloc(cwd - path + strlen(BLD) + strlen(cwd) + strlen(RESET) + 1);
+	// result = malloc(cwd - path + ft_strlen(BLD) + ft_strlen(cwd) + ft_strlen(RESET) + 1);
 	path[cwd - path] = '\0';
 	asprintf(&result, "%s/" BOLD "%s" RESET, path, ++cwd);
 	if (result == NULL)
@@ -61,7 +61,7 @@ char	*generate_prompt(void)
 
 	cwd = getcwd(NULL, 0);
 	if (cwd == NULL)
-		return (strdup(GREEN "minishell$ " RESET));
+		return (ft_strdup(GREEN "minishell$ " RESET));
 	cwd = replace_home_with_tilde(cwd);
 	cwd = bold_cwd(cwd);
 	c = "$";

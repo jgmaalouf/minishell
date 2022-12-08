@@ -13,9 +13,6 @@
 # include <readline/readline.h>
 
 # include "utilities.h"
-/* PROHIBITED */
-#include <ctype.h>
-#include <string.h>
 
 /* PERSISTENT HISTORY FILE */
 # define HISTFILE_RDONLY ".minishell_history"

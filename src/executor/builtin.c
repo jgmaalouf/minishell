@@ -2,19 +2,19 @@
 
 int	identify_builtin(char *cmd_name)
 {
-	if (strcmp(cmd_name, "cd") == 0)
+	if (ft_strcmp(cmd_name, "cd") == 0)
 		return (BUILTIN_CD);
-	if (strcmp(cmd_name, "echo") == 0)
+	if (ft_strcmp(cmd_name, "echo") == 0)
 		return (BUILTIN_ECHO);
-	if (strcmp(cmd_name, "env") == 0)
+	if (ft_strcmp(cmd_name, "env") == 0)
 		return (BUILTIN_ENV);
-	if (strcmp(cmd_name, "exit") == 0)
+	if (ft_strcmp(cmd_name, "exit") == 0)
 		return (BUILTIN_EXIT);
-	if (strcmp(cmd_name, "export") == 0)
+	if (ft_strcmp(cmd_name, "export") == 0)
 		return (BUILTIN_EXPORT);
-	if (strcmp(cmd_name, "pwd") == 0)
+	if (ft_strcmp(cmd_name, "pwd") == 0)
 		return (BUILTIN_PWD);
-	if (strcmp(cmd_name, "unset") == 0)
+	if (ft_strcmp(cmd_name, "unset") == 0)
 		return (BUILTIN_UNSET);
 	return (NOT_BUILTIN);
 }

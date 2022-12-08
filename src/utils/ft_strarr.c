@@ -23,7 +23,7 @@ char	**strarr_dup(char *array[])
 	i = 0;
 	while (i < len)
 	{
-		result[i] = strdup(array[i]);
+		result[i] = ft_strdup(array[i]);
 		if (result[i] == NULL)
 			return (strarr_free(array));
 		i++;
@@ -39,7 +39,7 @@ char	**strarr_resize(char *array[], size_t *size)
 
 	*size = strarr_len(array) + 1;
 	// *size *= 2;
-	result = calloc(*size + 2, sizeof(char *));
+	result = ft_calloc(*size + 2, sizeof(char *));
 	if (result == NULL)
 		return (NULL);
 	// i = -1;
@@ -71,7 +71,7 @@ void	strarr_sort(char *array[])
 		j = i + 1;
 		while (array[j] != NULL)
 		{
-			if (strcmp(array[j], array[i]) < 0)
+			if (ft_strcmp(array[j], array[i]) < 0)
 			{
 				tmp = array[i];
 				array[i] = array[j];

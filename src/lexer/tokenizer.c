@@ -70,7 +70,7 @@ static t_token	*tokenize_word(char **line)
 		else if (*(*line)++ == '\\')
 			(*line)++;
 	}
-	word = strndup(word, *line - word);
+	word = ft_strndup(word, *line - word);
 	if (word == NULL)
 		exit(fatal_error(ENOMEM));
 	if ((**line == '<' || **line == '>') && ft_isnumber(word))
@@ -86,7 +86,7 @@ t_token	*tokenizer(char **line)
 		return (tokenize_logical_operand(line));
 	if (**line == '(' || **line == ')' || **line == ';')
 		return (tokenize_special(line));
-	if (isascii(**line))
+	if (ft_isascii(**line))
 		return (tokenize_word(line));
 	return (NULL);
 }

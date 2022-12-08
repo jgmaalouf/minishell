@@ -14,7 +14,7 @@ static int	display_environ(void)
 	i = 0;
 	while (env_dup[i] != NULL)
 	{
-		name = strsep(env_dup + i, "=");
+		name = ft_strsep(env_dup + i, "=");
 		printf("declare -x %s=\"%s\"\n", name, env_dup[i]);
 		env_dup[i] = name;
 		i++;
@@ -31,15 +31,15 @@ static int	export_name(char *identifer)
 
 	if (!valid_variable_identifier(identifer))
 		return (error_argv_quoted("export", identifer, "not a valid identifier"));
-	if (strchr(identifer, '=') == NULL)
+	if (ft_strchr(identifer, '=') == NULL)
 		return (printf("unhandled\n"));
-	dup = strdup(identifer);
+	dup = ft_strdup(identifer);
 	if (dup == NULL)
 		return (EXIT_FAILURE);
-	name = strsep(&dup, "=");
+	name = ft_strsep(&dup, "=");
 	value = dup;
 	if (value[0] == '~')
-		value = tilde_expansion(strdup(value));
+		value = tilde_expansion(ft_strdup(value));
 	if (ft_setenv(name, value, 1) != EXIT_SUCCESS)
 		return (free(name), EXIT_FAILURE);
 	free(name);

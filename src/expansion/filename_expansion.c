@@ -16,7 +16,7 @@ static int	ft_glob(const char *pattern, glob_t *pglob)
 	while (cwd_data != NULL && ++(pglob->gl_pathc))
 	{
 		if (globbing(groups, cwd_data->d_name))
-			pglob->gl_pathv[pglob->gl_matchc++] = strdup(cwd_data->d_name);
+			pglob->gl_pathv[pglob->gl_matchc++] = ft_strdup(cwd_data->d_name);
 		cwd_data = readdir(cwd);
 	}
 	free_pattern_groups(groups);
@@ -57,7 +57,7 @@ static int	init_glob_struct(glob_t	*pglob)
 	if (max == 0)
 		return (EXIT_FAILURE);
 	*pglob = (glob_t){0};
-	pglob->gl_pathv = calloc(max + 1, sizeof(char *));
+	pglob->gl_pathv = ft_calloc(max + 1, sizeof(char *));
 	if (pglob->gl_pathv == NULL)
 		return (GLOB_NOSPACE);
 	return (EXIT_SUCCESS);

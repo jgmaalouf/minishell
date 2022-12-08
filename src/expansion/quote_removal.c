@@ -9,7 +9,7 @@ char	*remove_quotes(char *word)
 	int		i;
 
 	i = 0;
-	result = calloc(strlen(word) + 1, sizeof(char));
+	result = ft_calloc(ft_strlen(word) + 1, sizeof(char));
 	if (result == NULL)
 		exit(fatal_error(ENOMEM));
 	while (*word != '\0')
@@ -44,8 +44,8 @@ char	*quote_removal(char *word)
 {
 	char	*result;
 
-	if (strchr(word, '\"') == NULL && strchr(word, '\'') == NULL)
-		if (strchr(word, '\\') == NULL)
+	if (ft_strchr(word, '\"') == NULL && ft_strchr(word, '\'') == NULL)
+		if (ft_strchr(word, '\\') == NULL)
 			return (word);
 	result = remove_quotes(word);
 	return (free(word), result);

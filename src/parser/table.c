@@ -9,7 +9,7 @@ static t_cmd	*new_cmd_table(void)
 {
 	t_cmd	*new;
 
-	new = calloc(1, sizeof(t_cmd));
+	new = ft_calloc(1, sizeof(t_cmd));
 	if (new == NULL)
 		exit(fatal_error(ENOMEM));
 	return (new);
@@ -51,7 +51,7 @@ t_cmd	*parse_assignments(t_token **tokenlist)
 		assignments->cmd_argc++;
 		tlp = tlp->next;
 	}
-	assignments->cmd_argv = calloc(assignments->cmd_argc + 1, sizeof(char *));
+	assignments->cmd_argv = ft_calloc(assignments->cmd_argc + 1, sizeof(char *));
 	if (assignments->cmd_argv == NULL)
 		exit(fatal_error(ENOMEM));
 	i = 0;
@@ -74,7 +74,7 @@ t_cmd	*create_command_table(t_token **tokenlist)
 		return (parse_assignments(tokenlist));
 	table = new_cmd_table();
 	table->cmd_argc = cmd_argc(*tokenlist);
-	table->cmd_argv = calloc(table->cmd_argc + 1, sizeof(char *));
+	table->cmd_argv = ft_calloc(table->cmd_argc + 1, sizeof(char *));
 	if (table->cmd_argv == NULL)
 		exit(fatal_error(ENOMEM));
 	i = 0;

@@ -4,7 +4,7 @@ static t_redir	*new_redirection_node()
 {
 	t_redir	*new;
 
-	new = calloc(1, sizeof(t_cmd));
+	new = ft_calloc(1, sizeof(t_cmd));
 	if (new == NULL)
 		exit(fatal_error(ENOMEM));
 	return (new);

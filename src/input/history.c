@@ -54,16 +54,16 @@ int	command_history(const char *line)
 	const char	*histfile;
 	int			fd;
 
-	while (isspace(*line))
+	while (ft_isspace(*line))
 		line++;
 	if (*line == '\0')
 		return (EXIT_SUCCESS);
-	if (strcmp(line, prev_line) == 0)
+	if (ft_strcmp(line, prev_line) == 0)
 		return (EXIT_SUCCESS);
 	add_history(line);
-	line_length = strlen(line);
+	line_length = ft_strlen(line);
 	if (line_length < 1024)
-		memcpy(prev_line, line, line_length + 1);
+		ft_memcpy(prev_line, line, line_length + 1);
 	histfile = getenv("HISTFILE");
 	if (histfile == NULL)
 		return (EXIT_FAILURE);

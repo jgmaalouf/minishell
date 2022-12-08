@@ -30,7 +30,7 @@ t_token	*lexer(char *line)
 	tokenlist = NULL;
 	while (*line != '\0')
 	{
-		while (isspace(*line))
+		while (ft_isspace(*line))
 			line++;
 		if (*line == '\0')
 			return (tokenlist);

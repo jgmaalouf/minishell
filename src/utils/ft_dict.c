@@ -6,7 +6,7 @@ char	**dict_create(size_t *size)
 	char	**dict;
 
 	*size = DICTSIZE;
-	dict = calloc(*size, sizeof(char *));
+	dict = ft_calloc(*size, sizeof(char *));
 	if (dict == NULL)
 		exit(EXIT_FAILURE);
 	return (dict);
@@ -30,10 +30,10 @@ char	**dict_find_entry(char *dict[], const char *key)
 	size_t	keylen;
 
 	entry = dict;
-	keylen = strlen(key);
+	keylen = ft_strlen(key);
 	while (*entry != NULL)
 	{
-		if (strncmp(*entry, key, keylen) == 0 && (*entry)[keylen] == '=')
+		if (ft_strncmp(*entry, key, keylen) == 0 && (*entry)[keylen] == '=')
 			return (entry);
 		entry++;
 	}
@@ -47,7 +47,7 @@ char	*dict_get_val(char *dict[], const char *key)
 	entry = dict_find_entry(dict, key);
 	if (*entry == NULL)
 		return (NULL);
-	return (strchr(*entry, '=') + 1);
+	return (ft_strchr(*entry, '=') + 1);
 }
 
 char	**dict_set_val(char *dict[], const char *key, const char *val)

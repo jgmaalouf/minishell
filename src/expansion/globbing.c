@@ -2,7 +2,7 @@
 
 static int	match_string(t_pat *groups, const char **filename)
 {
-	if (strncmp(*filename, groups->str, groups->len) != 0)
+	if (ft_strncmp(*filename, groups->str, groups->len) != 0)
 		return (false);
 	*filename += groups->len;
 	return (true);
@@ -23,7 +23,7 @@ static int	match_after_asterisk(t_pat *groups, const char **filename)
 {
 	char	*next_match;
 
-	next_match = strstr(*filename, groups->str);
+	next_match = ft_strstr(*filename, groups->str);
 	if (next_match == NULL)
 		return (false);
 	*filename = next_match + groups->len;
@@ -61,9 +61,9 @@ int	globbing(t_pat groups[], const char *filename)
 {
 	if (*filename == '.' && groups[0].ptr[0] != '.')
 		return (false);
-	if (strcmp(groups[0].ptr, "*") == 0)
+	if (ft_strcmp(groups[0].ptr, "*") == 0)
 		return (true);
-	if (strcmp(groups[0].ptr, ".*") == 0 && *filename == '.')
+	if (ft_strcmp(groups[0].ptr, ".*") == 0 && *filename == '.')
 		return (true);
 	return (recursive_matching(groups, filename));
 }

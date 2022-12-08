@@ -27,7 +27,7 @@ int	trailing_backslash(char *line)
 	int	len;
 	int	i;
 
-	len = strlen(line);
+	len = ft_strlen(line);
 	if (len == 0)
 		return (false);
 	i = len - 1;

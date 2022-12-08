@@ -32,7 +32,7 @@ static t_node	*new_node(t_token **tokenlist)
 {
 	t_node	*new;
 
-	new = calloc(1, sizeof(t_node));
+	new = ft_calloc(1, sizeof(t_node));
 	if (new == NULL)
 		exit(fatal_error(ENOMEM));
 	new->type = convert_tk_type((*tokenlist)->type);

@@ -58,7 +58,7 @@ int	builtin_cd(int argc, char *const argv[])
 		return (cd_home());
 	if (argc > 2)
 		return (error_output("cd", "too many arguments"));
-	if (strcmp(argv[1], "-") == 0)
+	if (ft_strcmp(argv[1], "-") == 0)
 		return (cd_oldpwd());
 	return (change_directory(argv[1], 0));
 }

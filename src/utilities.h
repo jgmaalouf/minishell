@@ -7,7 +7,7 @@
 # include <stdlib.h>
 
 /* PROHIBITED */
-#include <string.h>
+/* #include <string.h> */
 #include <stdio.h>
 
 typedef struct s_list

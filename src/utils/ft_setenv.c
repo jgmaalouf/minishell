@@ -10,7 +10,7 @@ static char	**find_env_name(const char *name)
 	namelen = ft_strlen(name);
 	while (*ep != NULL)
 	{
-		if (strncmp(*ep, name, namelen) == 0 && (*ep)[namelen] == '=')
+		if (ft_strncmp(*ep, name, namelen) == 0 && (*ep)[namelen] == '=')
 			return (ep);
 		ep++;
 	}
@@ -77,7 +77,7 @@ static int	add_to_environ(const char *name, const char *value, int overwrite)
 	char		**ep;
 	size_t		len;
 
-	const size_t namelen = strlen(name);
+	const size_t namelen = ft_strlen(name);
 	ep = environ;
 	len = 0;
 	if (ep != NULL)
@@ -85,7 +85,7 @@ static int	add_to_environ(const char *name, const char *value, int overwrite)
 		while (*ep != NULL)
 		{
 			len++;
-			if (strncmp(*ep, name, namelen) == 0 && (*ep)[namelen] == '=')
+			if (ft_strncmp(*ep, name, namelen) == 0 && (*ep)[namelen] == '=')
 				break;
 			ep++;
 		}
@@ -125,7 +125,7 @@ static int	add_to_environ(const char *name, const char *value, int overwrite)
 
 int	ft_setenv(const char *name, const char *value, int overwrite)
 {
-	if (name == NULL || *name == '\0' || strchr(name, '=') != NULL)
+	if (name == NULL || *name == '\0' || ft_strchr(name, '=') != NULL)
 		return (errno = EINVAL, -1);
 	return (add_to_environ(name, value, overwrite));
 }
