@@ -15,6 +15,7 @@ vpath %.c src/		\
 	src/builtins	\
 	src/executor	\
 	src/expansion	\
+	src/heredoc		\
 	src/input		\
 	src/lexer		\
 	src/output		\

@@ -239,6 +239,8 @@ char	*generate_prompt(void);
 void	debugging_log_tokenlist(t_token *tokenlist);
 void	debugging_log_pattern_groups(t_pat groups[]);
 
+int	heredoc(const char *delimiter);
+
 # pragma endregion functions
 
 
