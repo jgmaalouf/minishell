@@ -1,34 +1,53 @@
 #include "minishell.h"
 
-static int	close_fds(int fd1, int fd2)
+static int	open_heredoc(int heredoc_fd[2])
 {
-	if (fd1 != -1)
-		close(fd1);
-	if (fd2 != -1)
-		close(fd2);
-	return (-1);
+	static int	id;
+	const char	file[42];
+
+	sprintf(file, "/tmp/sh-thd-%d", id);
+	heredoc_fd[1] = open(file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	if (heredoc_fd[1] == -1)
+		return(-1);
+	heredoc_fd[0] = open(file, O_RDONLY);
+	if (heredoc_fd[0] == -1)
+		return(close(heredoc_fd[1]), unlink(file), -1);
+	id++;
+	return (EXIT_SUCCESS);
+}
+
+int	heredoc_warning(int line, const char *delimiter)
+{
+	printf("minishell: warning: here-document at \
+		line %d delimited by end-of-file (wanted `%s')\n", 
+		line, delimiter);
+	return (0);
 }
 
 int	heredoc(const char *delimiter)
 {
-	int		heredoc_wfd;
-	int		heredoc_rfd;
+	int		heredoc_fd[2];
+	int		line;
 	char	*input;
 
-	heredoc_wfd = open(".heredoc_tmp", O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	heredoc_rfd = open(".heredoc_tmp", O_RDONLY);
-	if (heredoc_wfd == -1 || heredoc_rfd == -1)
-		return (close_fds(heredoc_wfd, heredoc_rfd));
+	if (open_heredoc(heredoc_fd) != EXIT_SUCCESS)
+		return (-1);
+	line = 0;
 	while (1)
 	{
+		line++;
 		input = readline(BOLD YELLOW "> " RESET);
-		if (strlen(input) == strlen(delimiter)
-			&& strncmp(input, delimiter, strlen(delimiter)) == 0)
+		if (input == NULL)
+		{
+			heredoc_warning(line, delimiter);
 			break ;
-		write(heredoc_wfd, input, strlen(input));
+		}
+		if (ft_strcmp(input, delimiter) == 0)
+			break ;
+		write(heredoc_fd[1], input, ft_strlen(input));
 		free(input);
 	}
 	free(input);
-	close(heredoc_wfd);
-	return (heredoc_rfd);
+	close(heredoc_fd[1]);
+	return (heredoc_fd[0]);
 }
