@@ -82,7 +82,7 @@ static int	minishell(void)
 		nodelist = parser(cmdline);
 		if (nodelist != NULL)
 		{
-			stdio_fildes_handler(SAVE_STD_FILDES);
+			// stdio_fildes_handler(SAVE_STD_FILDES);
 			executor(nodelist);
 		}
 		free(cmdline);

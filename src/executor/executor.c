@@ -115,6 +115,8 @@ int	pipeline_closing_command(t_node *nodelist)
 	}
 	exit_status = waitpid_exit_status(nodelist->pid);
 	/* close old pipe stdin and clobber it with saved value */
+	close(STDIN_FILENO);
+	while (wait(NULL) > 0);
 	stdio_fildes_handler(RESTORE_STD_FILDES);
 	return (exit_status);
 }
@@ -190,7 +192,7 @@ int	execute(t_node *nodelist)
 
 int	executor(t_node *nodelist)
 {
-	/* stdio_fildes_handler(SAVE_STD_FILDES); */
+	stdio_fildes_handler(SAVE_STD_FILDES);
 	while (nodelist != NULL)
 	{
 		execute(nodelist);
