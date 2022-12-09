@@ -13,7 +13,7 @@ int	count_width(int min_width, int content)
 	return (count);
 }
 
-int	count_character(char c, t_flags flags)
+int	count_character(t_flags flags)
 {
 	int	count;
 

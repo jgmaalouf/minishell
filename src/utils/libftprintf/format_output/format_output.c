@@ -56,7 +56,7 @@ char	*format_output(const char * restrict format, va_list ap)
 	count = count_output(format, ap);
 	if (count == 0)
 		return (NULL);
-	output = malloc(count);
+	output = ft_calloc(count + 1, sizeof(char));
 	if (output != NULL)
 		fill_output(format, ap, output);
 	return (output);

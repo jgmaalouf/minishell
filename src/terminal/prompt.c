@@ -42,7 +42,7 @@ static char	*bold_cwd(char *path)
 		return (path);
 	// result = malloc(cwd - path + ft_strlen(BLD) + ft_strlen(cwd) + ft_strlen(RESET) + 1);
 	path[cwd - path] = '\0';
-	asprintf(&result, "%s/" BOLD "%s" RESET, path, ++cwd);
+	ft_asprintf(&result, "%s/" BOLD "%s" RESET, path, ++cwd);
 	if (result == NULL)
 		return (path);
 	return (free(path), result);
@@ -67,13 +67,13 @@ char	*generate_prompt(void)
 	{
 		columns = terminal_dimensions("cols");
 		// printf ("columns %d\n", columns);
-		asprintf(&status, "✘ %d", g_exit_status);
-		asprintf(&prompt, BOLD RED "%*s" RESET
+		ft_asprintf(&status, "✘ %d", g_exit_status);
+		ft_asprintf(&prompt, BOLD RED "%*s" RESET
 			BLUE "\r%s\n" RED "%s " RESET, columns, status, cwd, c);
 		free(status);
 	}
 	else
-		asprintf(&prompt, BLUE "%s\n" GREEN "%s " RESET, cwd, c);
+		ft_asprintf(&prompt, BLUE "%s\n" GREEN "%s " RESET, cwd, c);
 	free(cwd);
 	return (prompt);
 }

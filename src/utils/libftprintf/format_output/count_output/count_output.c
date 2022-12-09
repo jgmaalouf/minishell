@@ -6,7 +6,7 @@ int	count_format(const char **format, va_list *ap_cpy)
 
 	flags = get_flags(format, ap_cpy);
 	if (flags.specifier == 'c')
-		return (count_character(va_arg(*ap_cpy, int), flags));
+		return (count_character(flags));
 	if (flags.specifier == 's')
 		return (count_string(va_arg(*ap_cpy, char *), flags));
 	if (flags.specifier == 'd' || flags.specifier == 'i')
@@ -20,6 +20,6 @@ int	count_format(const char **format, va_list *ap_cpy)
 	if (flags.specifier == 'X')
 		return (count_unsigned(va_arg(*ap_cpy, unsigned), UPRHEXA, flags));
 	if (flags.specifier == '%')
-		return (count_character('%', flags));
+		return (count_character(flags));
 	return (-1);
 }

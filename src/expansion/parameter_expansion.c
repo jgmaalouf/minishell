@@ -15,7 +15,7 @@ static char	*last_exit_status(void)
 {
 	char	*exit_status;
 
-	asprintf(&exit_status, "%d", g_exit_status);
+	ft_asprintf(&exit_status, "%d", g_exit_status);
 	return (exit_status);
 }
 

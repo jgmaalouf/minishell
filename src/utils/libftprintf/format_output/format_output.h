@@ -9,6 +9,7 @@
 # include <stdarg.h>
 # include <unistd.h>
 # include <stdlib.h>
+# include "../../../utilities.h"
 
 typedef struct s_flags
 {
@@ -29,7 +30,7 @@ t_flags	get_flags(const char **format, va_list *ap_cpy);
 
 /* Count ***************************************/
 int		count_width(int min_width, int content);
-int		count_character(char c, t_flags flags);
+int		count_character(t_flags flags);
 int		count_string(char *str, t_flags flags);
 int		count_signed(long n, char *base, t_flags flags);
 int		count_unsigned(unsigned long n, char *base, t_flags flags);
@@ -50,9 +51,9 @@ int		signed_length(long n, int radix, t_flags flags);
 void	signed_padding(long n, int zeros, t_flags flags, char *str);
 char	*format_signed(long n, char *base, t_flags flags);
 
-int		ft_isdigit(int c);
-int		ft_strlen(const char *s);
-int		ft_atoi(const char *str);
-char	*ft_strchr(const char *s, int c);
+// int		ft_isdigit(int c);
+// int		ft_strlen(const char *s);
+// int		ft_atoi(const char *str);
+// char	*ft_strchr(const char *s, int c);
 
 #endif
