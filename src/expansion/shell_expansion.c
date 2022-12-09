@@ -14,21 +14,21 @@ static int	valid_glob_pattern(char *word)
 	return (false);
 }
 
-void	shell_expansion(t_token *tokens)
+void	shell_expansion(t_token *tokenlist)
 {
-	while (tokens != NULL)
+	while (tokenlist != NULL)
 	{
-		if (token_is_word(tokens->type) && !tokens->expanded)
+		if (token_is_word(tokenlist->type) && !tokenlist->expanded)
 		{
-			if (tokens->val[0] == '~')
-				tokens->val = tilde_expansion(tokens->val);
-			if (ft_strchr(tokens->val, '$') != NULL)
-				tokens->val = parameter_expansion(tokens->val);
-			if (valid_glob_pattern(tokens->val))
-				tokens = filename_expansion(tokens);
-			if (!tokens->expanded)
-				tokens->val = quote_removal(tokens->val);
+			if (tokenlist->val[0] == '~')
+				tokenlist->val = tilde_expansion(tokenlist->val);
+			if (ft_strchr(tokenlist->val, '$') && ++(tokenlist->expanded))
+				tokenlist->val = parameter_expansion(tokenlist->val);
+			if (valid_glob_pattern(tokenlist->val))
+				tokenlist = filename_expansion(tokenlist);
+			if (!tokenlist->expanded)
+				tokenlist->val = quote_removal(tokenlist->val);
 		}
-		tokens = tokens->next;
+		tokenlist = tokenlist->next;
 	}
 }

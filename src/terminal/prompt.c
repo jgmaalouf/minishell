@@ -1,13 +1,10 @@
 #include "minishell.h"
-#include <sys/ioctl.h>
 
 int	terminal_dimensions(char *size)
 {
 	struct winsize	w;
 
 	ioctl(0, TIOCGWINSZ, &w);
-	// printf ("columns %d\n", w.ws_col);
-	// printf ("lines %d\n", w.ws_row);
 	if (ft_strcmp(size, "cols") == 0)
 		return (w.ws_col);
 	if (ft_strcmp(size, "lines") == 0)

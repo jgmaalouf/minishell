@@ -15,7 +15,7 @@ static t_cmd	*new_cmd_table(void)
 	return (new);
 }
 
-static int	cmd_argc(t_token *tokenlist)
+static int	count_cmd_argc(t_token *tokenlist)
 {
 	int	count;
 
@@ -23,7 +23,7 @@ static int	cmd_argc(t_token *tokenlist)
 	while (tokenlist != NULL)
 	{
 		if (token_is_command_separator(tokenlist->type))
-			break ;
+			return (count);
 		if (token_is_redirection(tokenlist->type))
 		{
 			if (tokenlist->type == TK_IO_NUMBER)
@@ -65,6 +65,19 @@ t_cmd	*parse_assignments(t_token **tokenlist)
 	return (assignments);
 }
 
+static t_cmd	*redirection_without_command(t_token **tokenlist, t_cmd *table)
+{
+	while (*tokenlist != NULL)
+	{
+		if (token_is_command_separator((*tokenlist)->type))
+			return (table);
+		else if (token_is_redirection((*tokenlist)->type))
+			parse_redirection(tokenlist, table);
+		*tokenlist = (*tokenlist)->next;
+	}
+	return (table);
+}
+
 t_cmd	*create_command_table(t_token **tokenlist)
 {
 	t_cmd	*table;
@@ -73,7 +86,9 @@ t_cmd	*create_command_table(t_token **tokenlist)
 	if ((*tokenlist)->type == TK_ASSIGNMENT_WORD)
 		return (parse_assignments(tokenlist));
 	table = new_cmd_table();
-	table->cmd_argc = cmd_argc(*tokenlist);
+	table->cmd_argc = count_cmd_argc(*tokenlist);
+	if (table->cmd_argc == 0)
+		return (redirection_without_command(tokenlist, table));
 	table->cmd_argv = ft_calloc(table->cmd_argc + 1, sizeof(char *));
 	if (table->cmd_argv == NULL)
 		exit(fatal_error(ENOMEM));

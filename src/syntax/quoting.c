@@ -1,5 +1,17 @@
 #include "minishell.h"
 
+char	*find_next_quote(const char *input)
+{
+	while (*input != '\0')
+	{
+		if (ft_isquote(*input))
+			return ((char *)input);
+		if (*input++ == '\\')
+			input++;
+	}
+	return (NULL);
+}
+
 char	*find_closing_quote(const char *input)
 {
 	if (*input == '\'')

@@ -8,8 +8,6 @@ static t_node_type	convert_tk_type(t_tk_type type)
 		return (NODE_ASSIGNMENT);
 	if (token_is_redirection(type))
 		return (NODE_COMMAND);
-	if (type == TK_BACKGROUND)
-		return (NODE_BACKGROUND);
 	if (type == TK_PIPE)
 		return (NODE_PIPE);
 	if (type == TK_LOGICAL_AND)

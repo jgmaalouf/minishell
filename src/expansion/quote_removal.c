@@ -39,7 +39,6 @@ char	*remove_quotes(char *word)
 	return (result);
 }
 
-/* export MYVAR='this is a "quoted" string' */
 char	*quote_removal(char *word)
 {
 	char	*result;

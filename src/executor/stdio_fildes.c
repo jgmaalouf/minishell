@@ -16,24 +16,30 @@ static int	save_std_filedes(int std_fd[3])
 
 static int	restore_std_filedes(int std_fd[3])
 {
-	if (dup2(std_fd[0], STDIN_FILENO))
-		return (-1);
-	if (dup2(std_fd[1], STDOUT_FILENO))
-		return (-1);
-	if (dup2(std_fd[2], STDERR_FILENO))
-		return (-1);
-	return (EXIT_SUCCESS);
+	int	status;
+
+	status = 0;
+	if (dup2(std_fd[0], STDIN_FILENO) == -1)
+		status = -1;
+	if (dup2(std_fd[1], STDOUT_FILENO) == -1)
+		status = -1;
+	if (dup2(std_fd[2], STDERR_FILENO) == -1)
+		status = -1;
+	return (status);
 }
 
 static int	close_std_filedes_dups(int std_fd[3])
 {
+	int	status;
+
+	status = 0;
 	if (close(std_fd[0]) == -1)
-		return (-1);
+		status = -1;
 	if (close(std_fd[1]) == -1)
-		return (-1);
+		status = -1;
 	if (close(std_fd[2]) == -1)
-		return (-1);
-	return (EXIT_SUCCESS);
+		status = -1;
+	return (status);
 }
 
 int	stdio_fildes_handler(int action)

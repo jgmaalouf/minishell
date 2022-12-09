@@ -7,6 +7,7 @@ static void	free_redirlist(t_redir *list)
 	while (list != NULL)
 	{
 		next = list->next;
+		free((char *)list->n);
 		free((char *)list->path);
 		free(list);
 		list = next;
@@ -16,7 +17,8 @@ static void	free_redirlist(t_redir *list)
 static void	free_command_table(t_cmd *table)
 {
 	free((char *)table->cmd_path);
-	strarr_free((char **)table->cmd_argv);
+	if (table->cmd_argc > 0)
+		strarr_free((char **)table->cmd_argv);
 	free_redirlist(table->redirlist);
 }
 

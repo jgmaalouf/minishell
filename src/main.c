@@ -6,21 +6,6 @@ static int	usage(void)
 	return (EXIT_FAILURE);
 }
 
-int	exit_ctrl_d(void)
-{
-	extern char	**environ;
-
-	// rl_replace_line("", 0);
-	printf("\e[1A");
-	rl_on_new_line();
-	rl_redisplay();
-	ft_dwrite(2, "exit\n");
-	rl_clear_history();
-	strarr_free(environ);
-	return (g_exit_status);
-}
-
-// int	escaped_newline(char *line)
 int	trailing_backslash(char *line)
 {
 	int	count;
@@ -105,10 +90,10 @@ int	main(int argc, char *const argv[])
 	/* ft_setenv("LINES", "", 1); */
 	set_history_file_path(HISTFILE_WRONLY);
 	read_history_file(HISTFILE_RDONLY);
-	signal(SIGINT, &signal_ctrl_c);
+	signal(SIGINT, &signal_ctrl_c_input);
 	signal(SIGQUIT, SIG_IGN);
+	disable_echoctl();
 	minishell();
 	// system("leaks minishell");
-	// exit(g_exit_status);
-	return (g_exit_status);
+	exit(g_exit_status);
 }

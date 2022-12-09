@@ -7,6 +7,8 @@
 # include <stdbool.h>
 # include <stdio.h>
 # include <stdlib.h>
+# include <sys/ioctl.h>
+# include <termios.h>
 # include <unistd.h>
 
 # include <readline/history.h>
@@ -76,8 +78,6 @@ typedef enum e_node_type
 	NODE_NULL,
 	NODE_COMMAND,
 	NODE_ASSIGNMENT,
-	/* NODE_REDIRECTION, */
-	NODE_BACKGROUND,
 	NODE_PIPE,
 	NODE_AND_IF,
 	NODE_OR_IF,
@@ -105,7 +105,6 @@ typedef struct s_redir
 	const char		*path;
 	int				oflag;
 	mode_t			mode;
-	/* int				io; */
 	bool			heredoc;
 	bool			input;
 	bool			output;
@@ -119,26 +118,26 @@ typedef struct s_cmd
 	const char		*cmd_path;
 	t_builtin		builtin_id;
 
-	// t_redir			*input;
-	// t_redir			*output;
 	t_redir			*redirlist;
-	pid_t			pid;
-
-	// int				stdinput;
-	// int				stdoutput;
-	// int				stderror;
 }	t_cmd;
 
 typedef struct s_node
 {
 	pid_t			pid;
 	t_node_type		type;
-	t_node_type		nexus; /* relation */
+	t_node_type		nexus;
 	t_cmd			*table;
 	int				pipe[2];
 	struct s_node	*sub;
 	struct s_node	*next;
 }	t_node;
+
+typedef enum e_std_fd_action
+{
+	SAVE_STD_FILDES,
+	RESTORE_STD_FILDES,
+	CLOSE_STD_FILDES_DUPS,
+}	t_std_fd_action;
 
 typedef struct s_pattern
 {
@@ -239,18 +238,10 @@ char	*generate_prompt(void);
 void	debugging_log_tokenlist(t_token *tokenlist);
 void	debugging_log_pattern_groups(t_pat groups[]);
 
-int	heredoc(const char *delimiter);
-
 # pragma endregion functions
 
 
 # pragma region new
-
-typedef enum e_std_fd_action {
-	SAVE_STD_FILDES,
-	RESTORE_STD_FILDES,
-	CLOSE_STD_FILDES_DUPS,
-}	t_std_fd_action;
 
 typedef enum e_pipe_action {
 	CLOSE_PIPE_READ_END,
@@ -271,8 +262,18 @@ int		pipe_handler(int action);
 t_cmd	*create_command_table(t_token **tokenlist);
 void	parse_redirection(t_token **tokenlist, t_cmd *table);
 void	*free_nodelist(t_node *list);
-t_node	*process_nodelist(t_node *nodelist);
+t_node	*node_handler(t_node *nodelist);
+
+char	*find_next_quote(const char *input);
 
 # pragma endregion new
+
+char	*expand_dollar_variable(char *name);
+char	*concatenate_subwords(t_list *subwords);
+
+void	disable_echoctl(void);
+void	signal_ctrl_c_input(int signal);
+char	*process_dollar_string_group(char *group);
+int		exit_ctrl_d(void);
 
 #endif

@@ -3,7 +3,7 @@
 static int	open_heredoc(int heredoc_fd[2])
 {
 	static int	id;
-	const char	file[42];
+	char		file[42];
 
 	sprintf(file, "/tmp/sh-thd-%d", id);
 	heredoc_fd[1] = open(file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
@@ -19,7 +19,7 @@ static int	open_heredoc(int heredoc_fd[2])
 int	heredoc_warning(int line, const char *delimiter)
 {
 	printf("minishell: warning: here-document at \
-		line %d delimited by end-of-file (wanted `%s')\n", 
+		line %d delimited by end-of-file (wanted `%s')\n",
 		line, delimiter);
 	return (0);
 }
