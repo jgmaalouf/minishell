@@ -1,5 +1,7 @@
 #include "minishell.h"
 
+int	g_exit_status;
+
 static int	usage(void)
 {
 	printf(BOLD RED "Usage: ./minishell\n" RESET);
@@ -57,6 +59,7 @@ static int	minishell(void)
 	char	*cmdline;
 	t_node	*nodelist;
 
+	nodelist = NULL;
 	while (42)
 	{
 		/* cmdline = readline(GREEN "minishell$ " RESET); */

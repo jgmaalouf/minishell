@@ -22,7 +22,7 @@ void	shell_expansion(t_token *tokenlist)
 		{
 			if (tokenlist->val[0] == '~')
 				tokenlist->val = tilde_expansion(tokenlist->val);
-			if (ft_strchr(tokenlist->val, '$') && ++(tokenlist->expanded))
+			if (ft_strchr(tokenlist->val, '$') && (tokenlist->expanded))
 				tokenlist->val = parameter_expansion(tokenlist->val);
 			if (valid_glob_pattern(tokenlist->val))
 				tokenlist = filename_expansion(tokenlist);

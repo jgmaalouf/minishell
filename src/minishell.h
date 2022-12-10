@@ -11,6 +11,8 @@
 # include <sys/stat.h>
 # include <termios.h>
 # include <unistd.h>
+# include <signal.h>
+# include <sys/wait.h>
 
 # include <readline/history.h>
 # include <readline/readline.h>
@@ -37,9 +39,7 @@
 # define WHITE   "\001\e[37m\002"
 
 /* GLOBAL VARIABLE */
-int	g_exit_status;
-
-# pragma region enums
+extern int	g_exit_status;
 
 typedef enum e_builtin {
 	NOT_BUILTIN,
@@ -100,10 +100,6 @@ typedef enum e_stdfd_action
 	CLOSE_STD_FILDES_DUPS,
 }	t_stdfd_action;
 
-# pragma endregion enums
-
-# pragma region structs
-
 typedef struct s_token
 {
 	t_tk_type		type;
@@ -156,10 +152,6 @@ typedef struct s_pattern
 	int			question_mark;
 	bool		wildcard;
 }	t_pat;
-
-# pragma endregion structs
-
-# pragma region functions
 
 /* BUILTINS */
 int			builtin_cd(int argc, char *const argv[]);
@@ -263,7 +255,5 @@ void		signal_ctrl_c_input(int signal);
 void		signal_ctrl_c_runtime(int signal);
 void		signal_ctrl_backslash(int signal);
 int			exit_ctrl_d(void);
-
-# pragma endregion functions
 
 #endif

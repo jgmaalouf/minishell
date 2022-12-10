@@ -48,7 +48,7 @@ char	*concatenate_subwords(t_list *subwords)
 	lp = subwords;
 	while (lp != NULL)
 	{
-		strlcat(result, lp->content, total_size + 1);
+		ft_strlcat(result, lp->content, total_size + 1);
 		lp = lp->next;
 	}
 	return (result);

@@ -4,11 +4,10 @@ CC := gcc
 CFLAGS := -Wall -Werror -Wextra
 DFLAGS := -g3 #-fsanitize=address
 
-READLINE := $(shell brew --prefix readline)
-LFLAGS := -lreadline -L $(READLINE)/lib
 
 INCDIR := src/
-HFLAGS := -I $(INCDIR) -I $(READLINE)/include -I $(INCDIR)/utils/libftprintf
+LFLAGS := -lreadline
+HFLAGS := -I $(INCDIR) -I $(INCDIR)/utils/libftprintf
 HFILES := $(INCDIR)minishell.h $(INCDIR)utilities.h \
 		$(INCDIR)/utils/libftprintf/format_output.h \
 		$(INCDIR)/utils/libftprintf/libftprintf.h
