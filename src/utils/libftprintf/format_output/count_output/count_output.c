@@ -1,4 +1,4 @@
-#include "../format_output.h"
+#include "format_output.h"
 
 int	count_format(const char **format, va_list *ap_cpy)
 {

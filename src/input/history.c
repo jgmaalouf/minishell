@@ -72,6 +72,5 @@ int	command_history(const char *line)
 		return (EXIT_FAILURE);
 	write(fd, line, line_length);
 	write(fd, "\n", 1);
-	close(fd);
-	return (EXIT_SUCCESS);
+	return (close(fd), EXIT_SUCCESS);
 }

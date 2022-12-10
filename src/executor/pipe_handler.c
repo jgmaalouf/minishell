@@ -1,5 +1,14 @@
 #include "minishell.h"
 
+typedef enum e_pipe_action {
+	CLOSE_PIPE_READ_END,
+	CLOSE_PIPE_WRITE_END,
+	CLOSE_PIPE_FILEDES,
+	OPEN_PIPE_FILEDES,
+	DUP_PIPE_STDIN,
+	DUP_PIPE_STDOUT,
+}	t_pipe_action;
+
 static int	close_pipe_read_end(int pipe_fd[2])
 {
 	return (close(pipe_fd[0]));
@@ -12,11 +21,14 @@ static int	close_pipe_write_end(int pipe_fd[2])
 
 static int	close_pipe_filedes(int pipe_fd[2])
 {
+	int	status;
+
+	status = 0;
 	if (close(pipe_fd[0]) == -1)
-		return (-1);
+		status = -1;
 	if (close(pipe_fd[1]) == -1)
-		return (-1);
-	return (EXIT_SUCCESS);
+		status = -1;
+	return (status);
 }
 
 static int	open_pipe_filedes(int pipe_fd[2])

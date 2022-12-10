@@ -16,12 +16,12 @@ static int	open_heredoc(int heredoc_fd[2])
 	return (EXIT_SUCCESS);
 }
 
-int	heredoc_warning(int line, const char *delimiter)
+static int	heredoc_warning(int line, const char *delimiter)
 {
-	printf("minishell: warning: here-document at \
-		line %d delimited by end-of-file (wanted `%s')\n",
+	printf("minishell: warning: here-document at "
+		"line %d delimited by end-of-file (wanted `%s')\n",
 		line, delimiter);
-	return (0);
+	return (EXIT_SUCCESS);
 }
 
 int	heredoc(const char *delimiter)
@@ -45,6 +45,7 @@ int	heredoc(const char *delimiter)
 		if (ft_strcmp(input, delimiter) == 0)
 			break ;
 		write(heredoc_fd[1], input, ft_strlen(input));
+		write(heredoc_fd[1], "\n", 1);
 		free(input);
 	}
 	free(input);

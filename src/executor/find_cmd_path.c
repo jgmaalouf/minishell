@@ -12,7 +12,7 @@ static char	**extract_env_path(void)
 		return (NULL);
 	var_path = ft_strdup(var_path);
 	if (var_path == NULL)
-		return (NULL);
+		exit(fatal_error(ENOMEM));
 	count = 1;
 	i = 0;
 	while (var_path[i] != '\0')

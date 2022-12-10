@@ -1,16 +1,16 @@
 #include "minishell.h"
 
-static void	free_redirlist(t_redir *list)
+static void	free_redirlist(t_redir *redirlist)
 {
 	t_redir	*next;
 
-	while (list != NULL)
+	while (redirlist != NULL)
 	{
-		next = list->next;
-		free((char *)list->n);
-		free((char *)list->path);
-		free(list);
-		list = next;
+		next = redirlist->next;
+		free((char *)redirlist->n);
+		free((char *)redirlist->path);
+		free(redirlist);
+		redirlist = next;
 	}
 }
 
@@ -22,19 +22,20 @@ static void	free_command_table(t_cmd *table)
 	free_redirlist(table->redirlist);
 }
 
-void	*free_nodelist(t_node *list)
+void	*free_nodelist(t_node *nodelist)
 {
 	t_node	*next;
 
-	while (list != NULL)
+	while (nodelist != NULL)
 	{
-		next = list->next;
-		if (list->sub != NULL)
-			free_nodelist(list->sub);
-		if (list->table != NULL)
-			free_command_table(list->table);
-		free(list);
-		list = next;
+		next = nodelist->next;
+		if (nodelist->sub != NULL)
+			free_nodelist(nodelist->sub);
+		if (nodelist->table != NULL)
+			free_command_table(nodelist->table);
+		free_tokenlist(nodelist->tokenlist, 0);
+		free(nodelist);
+		nodelist = next;
 	}
 	return (NULL);
 }
@@ -48,5 +49,6 @@ t_node	*free_node(t_node *node)
 		free_nodelist(node->sub);
 	else if (node->table != NULL)
 		free_command_table(node->table);
+	free_tokenlist(node->tokenlist, 0);
 	return (free(node), next);
 }

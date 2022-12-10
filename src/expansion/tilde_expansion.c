@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-char	*tilde_prefix(char *word)
+static char	*tilde_prefix(char *word)
 {
 	char	*prefix;
 
@@ -10,7 +10,7 @@ char	*tilde_prefix(char *word)
 	return (ft_strndup(prefix, word - prefix));
 }
 
-char	*expand_tilde_prefix(char *prefix)
+static char	*expand_tilde_prefix(char *prefix)
 {
 	if (ft_strcmp(prefix, "~") == 0)
 		return (getenv("HOME"));

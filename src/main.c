@@ -6,7 +6,7 @@ static int	usage(void)
 	return (EXIT_FAILURE);
 }
 
-int	trailing_backslash(char *line)
+static int	trailing_backslash(char *line)
 {
 	int	count;
 	int	len;
@@ -27,7 +27,7 @@ int	trailing_backslash(char *line)
 	return (true);
 }
 
-char	*command_line_input(void)
+static char	*command_line_input(void)
 {
 	char	*command_line;
 	char	*next_line;
@@ -66,10 +66,7 @@ static int	minishell(void)
 		command_history(cmdline);
 		nodelist = parser(cmdline);
 		if (nodelist != NULL)
-		{
-			// stdio_fildes_handler(SAVE_STD_FILDES);
 			executor(nodelist);
-		}
 		free(cmdline);
 	}
 }
@@ -84,7 +81,7 @@ int	main(int argc, char *const argv[])
 		return (usage());
 	environ = strarr_dup(environ);
 	if (environ == NULL)
-		exit(EXIT_FAILURE);
+		exit(fatal_error(ENOMEM));
 	/* ft_setenv("SHELL", argv[0], 1); */
 	/* ft_setenv("COLUMNS", "", 1); */
 	/* ft_setenv("LINES", "", 1); */

@@ -12,8 +12,7 @@ t_node	*parser(char *cmdline)
 		return (NULL);
 	if (syntax_validator(tokenlist) != EXIT_SUCCESS)
 		return (free_tokenlist(tokenlist, 1));
-	shell_expansion(tokenlist);
+	heredoc_handler(HEREDOC_COLLECT, tokenlist);
 	nodelist = create_nodelist(tokenlist);
-	free_tokenlist(tokenlist, 0);
 	return (nodelist);
 }

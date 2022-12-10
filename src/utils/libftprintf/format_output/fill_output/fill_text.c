@@ -1,4 +1,4 @@
-#include "../format_output.h"
+#include "format_output.h"
 
 void	fill_width(int min_width, int content, char c, char **output)
 {

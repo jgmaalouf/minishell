@@ -3,7 +3,7 @@
 int	valid_first_token(t_token *token)
 {
 	if (token_is_logical_operand(token->type)
-		|| token->type == TK_CLOSE_PARENTHESIS)
+		|| token->type == TK_CLOSE_PARENTHESIS || token->type == TK_SEMICOLON)
 		return (syntax_error_unexpected_token(token->val), false);
 	return (true);
 }

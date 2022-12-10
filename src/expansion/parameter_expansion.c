@@ -1,51 +1,89 @@
 #include "minishell.h"
 
-/*
-char	*longtostr(long number)
+static t_list	*group_quoted_strings(char *word)
 {
-	char	*str;
+	t_list	*grouplist;
+	char	*group;
+	char	*quote;
+	size_t	len;
 
-	asprintf(&str, "%ld", number);
-	return (str);
-}
- */
-
-/* itoa() */
-static char	*last_exit_status(void)
-{
-	char	*exit_status;
-
-	ft_asprintf(&exit_status, "%d", g_exit_status);
-	return (exit_status);
-}
-
-static char	*find_variable(char *name)
-{
-	char	*value;
-	char	**dict;
-
-	value = getenv(name);
-	if (value != NULL)
-		return (value);
-	dict = dict_open();
-	value = dict_get_val(dict, name);
-	if (value != NULL)
-		return (value);
-	return (NULL);
+	grouplist = NULL;
+	while (*word != '\0')
+	{
+		if (ft_isquote(*word))
+			len = find_closing_quote(word) - word + 1;
+		else
+		{
+			quote = find_next_quote(word);
+			if (quote == NULL)
+				len = ft_strlen(word);
+			else
+				len = quote - word;
+		}
+		group = ft_strndup(word, len);
+		if (group == NULL)
+			exit(fatal_error(ENOMEM));
+		ft_lstadd_back(&grouplist, ft_lstnew(group));
+		word += len;
+	}
+	return (grouplist);
 }
 
-char	*expand_dollar_variable(char *name)
+char	*concatenate_subwords(t_list *subwords)
 {
-	char	*value;
+	char	*result;
+	int		total_size;
+	t_list	*lp;
 
-	if (ft_strcmp(name, "$") == 0)
-		return (name);
-	if (ft_strcmp(name, "$$") == 0)
-		return (free(name), ft_strdup("getpid()"));
-	if (ft_strncmp(name, "$?", 2) == 0)
-		return (free(name), last_exit_status());
-	value = find_variable(name + 1);
-	if (value == NULL)
-		value = "";
-	return (free(name), ft_strdup(value));
+	total_size = 0;
+	lp = subwords;
+	while (lp != NULL)
+	{
+		total_size += ft_strlen(lp->content);
+		lp = lp->next;
+	}
+	result = ft_calloc(total_size + 1, sizeof(char));
+	if (result == NULL)
+		exit(fatal_error(ENOMEM));
+	lp = subwords;
+	while (lp != NULL)
+	{
+		strlcat(result, lp->content, total_size + 1);
+		lp = lp->next;
+	}
+	return (result);
+}
+
+static void	string_delete_first_char(char *string)
+{
+	string[0] = string[1];
+	while (*(++string) != '\0')
+		string[0] = string[1];
+}
+
+char	*parameter_expansion(char *word)
+{
+	char	*result;
+	char	*p;
+	t_list	*grouplist;
+	t_list	*lp;
+
+	p = word;
+	while (*p != '\0')
+	{
+		if (ft_strncmp(p, "$\"", 2) == 0 || ft_strncmp(p, "$\'", 2) == 0)
+			string_delete_first_char(p);
+		p++;
+	}
+	grouplist = group_quoted_strings(word);
+	free(word);
+	lp = grouplist;
+	while (lp != NULL)
+	{
+		lp->content = process_dollar_string_group(lp->content);
+		lp = lp->next;
+	}
+	result = concatenate_subwords(grouplist);
+	ft_lstclear(&grouplist, &free);
+	return (result);
 }

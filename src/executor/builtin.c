@@ -46,14 +46,3 @@ int	execute_builtin(t_node *nodelist)
 		return (builtin_unset(argc, argv));
 	return (errno = EINVAL, -1);
 }
-
-/*
-int	builtin_handler(t_node *nodelist)
-{
-	if (nodelist->table->redirlist != NULL)
-		redirect(nodelist->table->redirlist);
-	execute_builtin(nodelist);
-	stdio_fildes_handler(RESTORE_STD_FILDES);
-	return (EXIT_SUCCESS);
-}
- */

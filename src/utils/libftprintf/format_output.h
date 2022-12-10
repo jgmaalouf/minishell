@@ -9,7 +9,7 @@
 # include <stdarg.h>
 # include <unistd.h>
 # include <stdlib.h>
-# include "../../../utilities.h"
+# include "utilities.h"
 
 typedef struct s_flags
 {
@@ -50,10 +50,5 @@ char	*format_unsigned(unsigned long n, char *base, t_flags flags);
 int		signed_length(long n, int radix, t_flags flags);
 void	signed_padding(long n, int zeros, t_flags flags, char *str);
 char	*format_signed(long n, char *base, t_flags flags);
-
-// int		ft_isdigit(int c);
-// int		ft_strlen(const char *s);
-// int		ft_atoi(const char *str);
-// char	*ft_strchr(const char *s, int c);
 
 #endif

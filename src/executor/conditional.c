@@ -1,10 +1,5 @@
 #include "minishell.h"
 
-bool	node_is_conditional(t_node_type type)
-{
-	return (type == NODE_AND_IF || type == NODE_OR_IF);
-}
-
 static int	evaluate_conditional(t_node_type condition)
 {
 	if (condition == NODE_AND_IF)

@@ -8,6 +8,7 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <sys/ioctl.h>
+# include <sys/stat.h>
 # include <termios.h>
 # include <unistd.h>
 
@@ -85,6 +86,20 @@ typedef enum e_node_type
 	NODE_SEMICOLON,
 }	t_node_type;
 
+typedef enum e_heredoc_action
+{
+	HEREDOC_COLLECT,
+	HEREDOC_OBTAINE,
+	HEREDOC_DESTROY,
+}	t_heredoc_action;
+
+typedef enum e_stdfd_action
+{
+	SAVE_STD_FILDES,
+	RESTORE_STD_FILDES,
+	CLOSE_STD_FILDES_DUPS,
+}	t_stdfd_action;
+
 # pragma endregion enums
 
 # pragma region structs
@@ -117,7 +132,6 @@ typedef struct s_cmd
 	char *const		*cmd_argv;
 	const char		*cmd_path;
 	t_builtin		builtin_id;
-
 	t_redir			*redirlist;
 }	t_cmd;
 
@@ -126,18 +140,12 @@ typedef struct s_node
 	pid_t			pid;
 	t_node_type		type;
 	t_node_type		nexus;
-	t_cmd			*table;
 	int				pipe[2];
+	t_cmd			*table;
+	t_token			*tokenlist;
 	struct s_node	*sub;
 	struct s_node	*next;
 }	t_node;
-
-typedef enum e_std_fd_action
-{
-	SAVE_STD_FILDES,
-	RESTORE_STD_FILDES,
-	CLOSE_STD_FILDES_DUPS,
-}	t_std_fd_action;
 
 typedef struct s_pattern
 {
@@ -154,126 +162,108 @@ typedef struct s_pattern
 # pragma region functions
 
 /* BUILTINS */
-int		builtin_cd(int argc, char *const argv[]);
-int		builtin_echo(int argc, char *const argv[]);
-int		builtin_env(void);
-int		builtin_exit(int argc, char *const argv[], t_node *nodelist);
-int		builtin_export(int argc, char *const argv[]);
-int		builtin_pwd(void);
-int		builtin_unset(int argc, char *const argv[]);
+int			builtin_cd(int argc, char *const argv[]);
+int			builtin_echo(int argc, char *const argv[]);
+int			builtin_env(void);
+int			builtin_exit(int argc, char *const argv[], t_node *nodelist);
+int			builtin_export(int argc, char *const argv[]);
+int			builtin_pwd(void);
+int			builtin_unset(int argc, char *const argv[]);
 
 /* EXECUTOR */
-int		executor(t_node	*parser);
-int		identify_builtin(char *cmd_name);
-int		execute_builtin(t_node *nodelist);
-char	*find_cmd_path(char *cmd_name);
-t_node	*create_nodelist(t_token *tokenlist);
-
-/* PARSER */
-t_node	*parser(char *cmdline);
-t_cmd	*create_cmd_table(t_token *tokenlist);
-bool	token_is_command_separator(t_tk_type type);
-
-/* LEXER */
-t_token	*lexer(char *line);
-t_token	*tokenizer(char **line);
-t_token	*new_token_node(int type, char *val);
-void	tokenlist_add_back(t_token **list, t_token *new);
-void	*free_tokenlist(t_token *list, bool content);
-int		reserved_shell_char(int c);
-bool	token_is_simple_word(t_tk_type type);
-bool	token_is_word(t_tk_type type);
-bool	token_is_redirection(t_tk_type type);
-bool	token_is_logical_operand(t_tk_type type);
-bool	token_is_parenthesis(t_tk_type type);
+int			identify_builtin(char *cmd_name);
+int			execute_builtin(t_node *nodelist);
+int			execute_command(t_cmd *table);
+int			launch_command(t_node *nodelist);
+t_node		*handle_conditional(t_node *nodelist);
+int			waitpid_exit_status(pid_t pid);
+t_node		*node_handler(t_node *nodelist);
+int			executor(t_node *nodelist);
+char		*find_cmd_path(char *cmd_name);
+void		*free_nodelist(t_node *nodelist);
+t_node		*free_node(t_node *node);
+int			handle_redirects(t_redir *redirlist);
+int			launch_pipe(t_node *nodelist);
+t_node		*handle_pipeline(t_node *nodelist);
+int			stdio_fildes_handler(int action);
+t_node		*subshell_extract_nodelist(t_node *nodelist);
+int			launch_subshell(t_node *nodelist);
 
 /* EXPANSION */
-int		globbing(t_pat groups[], const char *filename);
-t_pat	*group_subpatterns(const char *pattern);
-void	free_pattern_groups(t_pat groups[]);
-t_token	*filename_expansion(t_token	*token);
-char	*parameter_expansion(char *word);
-t_list	*subdivide_dollar_word(char *word);
-char	*quote_removal(char *word);
-void	shell_expansion(t_token *tokenlist);
-char	*tilde_expansion(char *word);
+char		*process_dollar_string_group(char *group);
+char		*expand_dollar_variable(char *name);
+t_token		*filename_expansion(t_token	*token);
+int			globbing(t_pat groups[], const char *filename);
+char		*concatenate_subwords(t_list *subwords);
+t_pat		*group_subpatterns(const char *pattern);
+void		free_pattern_groups(t_pat groups[]);
+char		*parameter_expansion(char *word);
+char		*quote_removal(char *word);
+void		shell_expansion(t_token *tokenlist);
+char		*tilde_expansion(char *word);
 
-/* HISTORY */
-int		set_history_file_path(const char *filename);
-int		read_history_file(const char *filename);
-int		command_history(const char *line);
+/* INPUT */
+int			heredoc_handler(int action, t_token *tokenlist);
+int			heredoc(const char *delimiter);
+int			set_history_file_path(const char *filename);
+int			read_history_file(const char *filename);
+int			command_history(const char *line);
+
+/* LEXER */
+t_token		*lexer(char *line);
+bool		token_is_simple_word(t_tk_type type);
+bool		token_is_word(t_tk_type type);
+bool		token_is_redirection(t_tk_type type);
+bool		token_is_logical_operand(t_tk_type type);
+bool		token_is_parenthesis(t_tk_type type);
+t_token		*tokenizer(char **line);
+t_token		*new_token_node(int type, char *val);
+void		tokenlist_add_back(t_token **list, t_token *new);
+void		*free_tokenlist(t_token *list, bool content);
+
+/* OUTPUT */
+int			error_output(char *cmd, char *msg);
+int			error(char *cmd, char *msg, int status);
+int			error_argv(char *cmd, char *arg, char *msg);
+int			error_argv_quoted(char *cmd, char *arg, char *msg);
+int			fatal_error(int code);
+int			syntax_error_bad_substitution(char *word);
+int			syntax_error_end_of_file(void);
+int			syntax_error_matching(char c);
+int			syntax_error_unexpected_token(char *c);
+
+/* PARSER */
+t_node_type	convert_tk_type(t_tk_type type);
+bool		node_is_block_separator(t_node_type type);
+bool		node_is_command_separator(t_node_type type);
+bool		token_is_command_separator(t_tk_type type);
+bool		node_is_conditional(t_node_type type);
+t_node		*create_nodelist(t_token *tokenlist);
+t_node		*parser(char *cmdline);
+void		parse_redirection(t_token **tokenlist, t_cmd *table);
+t_cmd		*create_command_table(t_token **tokenlist);
 
 /* SYNTAX */
-int		find_bad_substitution(char *line);
-char	*find_closing_quote(const char *input);
-char	*find_unquoted_char(const char *input, int c);
-int		syntax_validator(t_token *tokenlist);
-int		valid_first_token(t_token *token);
-int		valid_token(t_token *token);
-int		valid_variable_name(const char *name);
-int		valid_variable_identifier(const char *name);
-int		valid_parameter_assignment(const char *word);
-
-/* SIGNALS */
-void	signal_handler(int signal);
-void	signal_ctrl_c(int signal);
-void	signal_ctrl_c_runtime(int signal);
-void	signal_ctrl_backslash(int signal);
-
-/* ERROR */
-int		syntax_error_end_of_file(void);
-int		syntax_error_unexpected_token(char *c);
-int		syntax_error_matching(char c);
-int		syntax_error_bad_substitution(char *word);
-int		error_output(char *cmd, char *msg);
-int		error(char *cmd, char *msg, int status);
-int		error_argv(char *cmd, char *arg, char *msg);
-int		error_argv_quoted(char *cmd, char *arg, char *msg);
-int		fatal_error(int code);
+int			find_bad_substitution(char *line);
+char		*find_next_quote(const char *input);
+char		*find_closing_quote(const char *input);
+char		*find_unquoted_char(const char *input, int c);
+int			reserved_shell_char(int c);
+int			valid_first_token(t_token *token);
+int			syntax_validator(t_token *tokenlist);
+int			valid_token(t_token *token);
+int			valid_variable_name(const char *name);
+int			valid_variable_identifier(const char *name);
+int			valid_parameter_assignment(const char *word);
 
 /* TERMINAL */
-char	*generate_prompt(void);
-
-/* DEBUGGING */
-void	debugging_log_tokenlist(t_token *tokenlist);
-void	debugging_log_pattern_groups(t_pat groups[]);
+void		disable_echoctl(void);
+char		*generate_prompt(void);
+void		signal_ctrl_c_input(int signal);
+void		signal_ctrl_c_runtime(int signal);
+void		signal_ctrl_backslash(int signal);
+int			exit_ctrl_d(void);
 
 # pragma endregion functions
-
-
-# pragma region new
-
-typedef enum e_pipe_action {
-	CLOSE_PIPE_READ_END,
-	CLOSE_PIPE_WRITE_END,
-	CLOSE_PIPE_FILEDES,
-	OPEN_PIPE_FILEDES,
-	DUP_PIPE_STDIN,
-	DUP_PIPE_STDOUT,
-}	t_pipe_action;
-
-int		stdio_fildes_handler(int action);
-int		handle_redirects(t_redir *redirlist);
-void	*free_nodelist(t_node *list);
-t_node	*free_node(t_node *node);
-bool	node_is_conditional(t_node_type type);
-t_node	*handle_conditional(t_node *nodelist);
-int		pipe_handler(int action);
-t_cmd	*create_command_table(t_token **tokenlist);
-void	parse_redirection(t_token **tokenlist, t_cmd *table);
-void	*free_nodelist(t_node *list);
-t_node	*node_handler(t_node *nodelist);
-
-char	*find_next_quote(const char *input);
-
-# pragma endregion new
-
-char	*expand_dollar_variable(char *name);
-char	*concatenate_subwords(t_list *subwords);
-
-void	disable_echoctl(void);
-void	signal_ctrl_c_input(int signal);
-char	*process_dollar_string_group(char *group);
-int		exit_ctrl_d(void);
 
 #endif

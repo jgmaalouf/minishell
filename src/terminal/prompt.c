@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-int	terminal_dimensions(char *size)
+static int	terminal_dimensions(char *size)
 {
 	struct winsize	w;
 

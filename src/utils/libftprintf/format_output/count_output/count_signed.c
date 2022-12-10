@@ -1,4 +1,4 @@
-#include "../format_output.h"
+#include "format_output.h"
 
 int	count_signed(long n, char *base, t_flags flags)
 {

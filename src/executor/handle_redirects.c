@@ -1,12 +1,15 @@
 #include "minishell.h"
 
-/* multiple heredocs */
-/* bash: warning: here-document at line 1 delimited by end-of-file (wanted `<delimiter>') $?=0 */
-static int	handle_heredoc(t_redir *redir)
+static int	redirect_heredoc(t_redir *redir)
 {
-	if (redir != NULL)
-		return (EXIT_SUCCESS);
-	return (-1);
+	int	fd;
+
+	fd = heredoc_handler(HEREDOC_OBTAINE, NULL);
+	if (fd == -1)
+		return (-1);
+	if (dup2(fd, redir->fd) == -1)
+		return (close(fd), -1);
+	return (close(fd));
 }
 
 static	int	valid_access_rights(t_redir *redir)
@@ -29,10 +32,10 @@ static int	redirect(t_redir *redir)
 	int	fd;
 
 	if (redir->heredoc)
-		return (handle_heredoc(redir));
+		return (redirect_heredoc(redir));
+	fd = open(redir->path, redir->oflag, redir->mode);
 	if (valid_access_rights(redir) != EXIT_SUCCESS)
 		return (-1);
-	fd = open(redir->path, redir->oflag, redir->mode);
 	if (fd == -1)
 		return (-1);
 	if (dup2(fd, redir->fd) == -1)

@@ -90,7 +90,7 @@ static t_list	*process_raw_string(char *string)
 	return (sublist);
 }
 
-char *process_dollar_string_group(char *group)
+char	*process_dollar_string_group(char *group)
 {
 	char	*result;
 	t_list	*sublist;

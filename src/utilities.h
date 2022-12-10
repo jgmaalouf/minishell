@@ -7,10 +7,6 @@
 # include <stdlib.h>
 # include "utils/libftprintf/libftprintf.h"
 
-/* PROHIBITED */
-/* #include <string.h> */
-#include <stdio.h>
-
 typedef struct s_list
 {
 	void			*content;

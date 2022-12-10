@@ -1,10 +1,5 @@
 #include "minishell.h"
 
-bool	token_is_command_separator(t_tk_type type)
-{
-	return (!token_is_word(type) && !token_is_redirection(type));
-}
-
 static t_cmd	*new_cmd_table(void)
 {
 	t_cmd	*new;

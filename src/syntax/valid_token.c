@@ -73,6 +73,10 @@ int	valid_token(t_token *token)
 	if (token_is_parenthesis(token->type))
 		return (valid_parenthesis(token));
 	if (token->type == TK_SEMICOLON)
+	{
+		if (token->next == NULL)
+			return (true);
 		return (valid_first_token(token->next));
+	}
 	return (true);
 }
