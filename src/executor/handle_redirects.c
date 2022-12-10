@@ -2,14 +2,9 @@
 
 static int	redirect_heredoc(t_redir *redir)
 {
-	int	fd;
-
-	fd = heredoc_handler(HEREDOC_OBTAINE, NULL);
-	if (fd == -1)
-		return (-1);
-	if (dup2(fd, redir->fd) == -1)
-		return (close(fd), -1);
-	return (close(fd));
+	if (dup2(redir->fd, STDIN_FILENO) == -1)
+		return (close(redir->fd), -1);
+	return (close(redir->fd));
 }
 
 static	int	valid_access_rights(t_redir *redir)

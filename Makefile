@@ -43,6 +43,7 @@ SRCS =	cd.c echo.c env.c exit.c export.c pwd.c unset.c \
 		fill_format.c fill_signed.c fill_text.c fill_unsigned.c \
 		flags_handling.c format_output.c \
 		ft_asprintf.c ft_dprintf.c ft_printf.c ft_vasprintf.c ft_vdprintf.c ft_vprintf.c \
+		ft_snprintf.c ft_sprintf.c ft_vsnprintf.c ft_vsprintf.c \
 		ft_calloc.c ft_concat.c ft_dict.c ft_dwrite.c ft_isalnum.c ft_isalpha.c ft_isascii.c \
 		ft_isdigit.c ft_isnumber.c ft_isquote.c ft_isspace.c ft_list.c ft_memcpy.c \
 		ft_memset.c ft_setenv.c ft_strarr.c ft_strchr.c ft_strcmp.c ft_strdup.c \

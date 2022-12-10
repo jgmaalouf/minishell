@@ -89,7 +89,7 @@ typedef enum e_node_type
 typedef enum e_heredoc_action
 {
 	HEREDOC_COLLECT,
-	HEREDOC_OBTAINE,
+	HEREDOC_RECEIVE,
 	HEREDOC_DESTROY,
 }	t_heredoc_action;
 
@@ -196,7 +196,7 @@ char		*tilde_expansion(char *word);
 
 /* INPUT */
 int			heredoc_handler(int action, t_token *tokenlist);
-int			heredoc(const char *delimiter);
+int			heredoc(const char *delimiter, int id);
 int			set_history_file_path(const char *filename);
 int			read_history_file(const char *filename);
 int			command_history(const char *line);

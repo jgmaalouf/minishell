@@ -1,18 +1,16 @@
 #include "minishell.h"
 
-static int	open_heredoc(int heredoc_fd[2])
+static int	open_heredoc(int heredoc_fd[2], int id)
 {
-	static int	id;
-	char		file[42];
+	char	file[42];
 
-	sprintf(file, "/tmp/sh-thd-%d", id);
+	ft_snprintf(file, 42, "/tmp/sh-thd-%d", id);
 	heredoc_fd[1] = open(file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (heredoc_fd[1] == -1)
 		return(-1);
 	heredoc_fd[0] = open(file, O_RDONLY);
 	if (heredoc_fd[0] == -1)
 		return(close(heredoc_fd[1]), unlink(file), -1);
-	id++;
 	return (EXIT_SUCCESS);
 }
 
@@ -24,13 +22,13 @@ static int	heredoc_warning(int line, const char *delimiter)
 	return (EXIT_SUCCESS);
 }
 
-int	heredoc(const char *delimiter)
+int	heredoc(const char *delimiter, int id)
 {
 	int		heredoc_fd[2];
 	int		line;
 	char	*input;
 
-	if (open_heredoc(heredoc_fd) != EXIT_SUCCESS)
+	if (open_heredoc(heredoc_fd, id) != EXIT_SUCCESS)
 		return (-1);
 	line = 0;
 	while (1)

@@ -29,6 +29,8 @@ void	shell_expansion(t_token *tokenlist)
 			if (!tokenlist->expanded)
 				tokenlist->val = quote_removal(tokenlist->val);
 		}
+		if (tokenlist->type == TK_REDIRECT_INPUT_HEREDOC)
+			tokenlist = tokenlist->next;
 		tokenlist = tokenlist->next;
 	}
 }

@@ -71,17 +71,14 @@ void	parse_redirection(t_token **tokenlist, t_cmd *table)
 		*tokenlist = (*tokenlist)->next;
 	}
 	new->type = (*tokenlist)->type;
-	new->oflag = parse_redirection_flags(new->type);
 	if (new->type == TK_REDIRECT_INPUT_HEREDOC)
+	{
 		new->heredoc = true;
+		new->fd = heredoc_handler(HEREDOC_RECEIVE, NULL);
+	}
+	new->oflag = parse_redirection_flags(new->type);
 	*tokenlist = (*tokenlist)->next;
 	new->path = (*tokenlist)->val;
-	/*
-	if (is_bit_set(new->oflag, 0))
-		new->output = true;
-	else
-		new->input = true;
-	*/
 	input_output(new);
 	if (new->output)
 	{
