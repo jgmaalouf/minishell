@@ -1,6 +1,6 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
-// # define ft_setenv setenv
+
 # include <dirent.h>
 # include <errno.h>
 # include <fcntl.h>
@@ -9,10 +9,10 @@
 # include <stdlib.h>
 # include <sys/ioctl.h>
 # include <sys/stat.h>
+# include <sys/wait.h>
+# include <signal.h>
 # include <termios.h>
 # include <unistd.h>
-# include <signal.h>
-# include <sys/wait.h>
 
 # include <readline/history.h>
 # include <readline/readline.h>
@@ -104,7 +104,7 @@ typedef struct s_token
 {
 	t_tk_type		type;
 	char			*val;
-	bool			expanded;
+	int				expanded;
 	struct s_token	*next;
 }	t_token;
 

@@ -59,7 +59,6 @@ static int	minishell(void)
 	char	*cmdline;
 	t_node	*nodelist;
 
-	nodelist = NULL;
 	while (42)
 	{
 		/* cmdline = readline(GREEN "minishell$ " RESET); */

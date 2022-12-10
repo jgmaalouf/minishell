@@ -1,34 +1,34 @@
 NAME := minishell
 
-CC := gcc
-CFLAGS := -Wall -Werror -Wextra
-DFLAGS := -g3 #-fsanitize=address
+CC       := gcc
+CFLAGS   := -Wall -Werror -Wextra
+DFLAGS   := -g3 -fsanitize=address
 
+INCDIR   := src/
+HFLAGS   := -I $(INCDIR) -I $(INCDIR)utils/libftprintf
+HFILES   := $(INCDIR)minishell.h $(INCDIR)utilities.h
+HFILES   += $(INCDIR)utils/libftprintf/libftprintf.h
+HFILES   += $(INCDIR)utils/libftprintf/format_output.h
 
-INCDIR := src/
-LFLAGS := -lreadline
-HFLAGS := -I $(INCDIR) -I $(INCDIR)/utils/libftprintf
-HFILES := $(INCDIR)minishell.h $(INCDIR)utilities.h \
-		$(INCDIR)/utils/libftprintf/format_output.h \
-		$(INCDIR)/utils/libftprintf/libftprintf.h
+READLINE := $(shell brew --prefix readline)
+LFLAGS   := -lreadline -L $(READLINE)/lib
+HFLAGS   += -I $(READLINE)/include
 
-VPATH =	src/		\
+VPATH =	src/			\
 		src/builtins	\
 		src/executor	\
 		src/expansion	\
-		src/heredoc		\
 		src/input		\
 		src/lexer		\
 		src/output		\
 		src/parser		\
-		src/signals		\
 		src/syntax		\
 		src/terminal	\
 		src/utils		\
-		src/utils/libftprintf \
-		src/utils/libftprintf/format_output \
-		src/utils/libftprintf/format_output/count_output \
-		src/utils/libftprintf/format_output/fill_output \
+		src/utils/libftprintf 								\
+		src/utils/libftprintf/format_output 				\
+		src/utils/libftprintf/format_output/count_output 	\
+		src/utils/libftprintf/format_output/fill_output
 
 SRCS =	cd.c echo.c env.c exit.c export.c pwd.c unset.c \
 		assignment.c builtin.c command.c conditional.c executor.c find_cmd_path.c \
@@ -50,7 +50,7 @@ SRCS =	cd.c echo.c env.c exit.c export.c pwd.c unset.c \
 		ft_strstr.c ft_strtol.c ft_toupper.c ft_unsetenv.c main.c
 
 OBJDIR := obj/
-OBJS :=	$(addprefix $(OBJDIR),$(notdir $(SRCS:.c=.o)))
+OBJS := $(SRCS:$(SRCDIR)%.c=$(OBJDIR)%.o)
 
 all: $(NAME)
 
@@ -59,7 +59,7 @@ bonus: all
 $(NAME): $(OBJS)
 	@$(CC) $(CFLAGS) $(DFLAGS) $(HFLAGS) $(LFLAGS) $(OBJS) -o $(NAME)
 
-$(OBJDIR)%.o: %.c $(HFILES)
+$(OBJDIR)%.o: $(SRCDIR)%.c $(HFILES)
 	@mkdir -p $(dir $@)
 	@$(CC) $(CFLAGS) $(DFLAGS) $(HFLAGS) -c $< -o $@
 

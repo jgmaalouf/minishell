@@ -5,9 +5,9 @@ static int	builtin_exit_routine(t_node *nodelist)
 	extern char	**environ;
 
 	free_nodelist(nodelist);
-	ft_setenv("EXIT", "TRUE", 1);
-	strarr_free(environ);
+	/* ft_setenv("EXIT", "true", 1); */
 	heredoc_handler(HEREDOC_DESTROY, NULL);
+	strarr_free(environ);
 	exit(g_exit_status);
 }
 

@@ -51,6 +51,5 @@ t_node	*free_node(t_node *node)
 	else if (node->table != NULL)
 		free_command_table(node->table);
 	free_tokenlist(node->tokenlist, 0);
-	free(node);
-	return (next);
+	return (free(node), next);
 }
