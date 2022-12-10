@@ -20,6 +20,7 @@ static void	free_command_table(t_cmd *table)
 	if (table->cmd_argc > 0)
 		strarr_free((char **)table->cmd_argv);
 	free_redirlist(table->redirlist);
+	free(table);
 }
 
 void	*free_nodelist(t_node *nodelist)
@@ -50,5 +51,6 @@ t_node	*free_node(t_node *node)
 	else if (node->table != NULL)
 		free_command_table(node->table);
 	free_tokenlist(node->tokenlist, 0);
-	return (free(node), next);
+	free(node);
+	return (next);
 }

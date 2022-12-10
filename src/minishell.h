@@ -1,6 +1,6 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
-
+// # define ft_setenv setenv
 # include <dirent.h>
 # include <errno.h>
 # include <fcntl.h>
