@@ -86,5 +86,6 @@ int	main(int argc, char *const argv[])
 	signal(SIGQUIT, SIG_IGN);
 	disable_echoctl();
 	minishell();
+	system("leaks minishell");
 	exit(g_exit_status);
 }

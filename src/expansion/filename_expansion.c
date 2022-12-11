@@ -13,17 +13,17 @@ static int	ft_glob(const char *pattern, glob_t *pglob)
 		return (GLOB_ABORTED);
 	groups = group_subpatterns(pattern);
 	cwd_data = readdir(cwd);
-	while (cwd_data != NULL && ++(pglob->gl_pathc))
+	while (cwd_data != NULL)
 	{
 		if (globbing(groups, cwd_data->d_name))
-			pglob->gl_pathv[pglob->gl_matchc++] = ft_strdup(cwd_data->d_name);
+			pglob->gl_pathv[pglob->gl_pathc++] = ft_strdup(cwd_data->d_name);
 		cwd_data = readdir(cwd);
 	}
 	free_pattern_groups(groups);
 	if (errno)
 		perror("readdir");
 	closedir(cwd);
-	if (pglob->gl_matchc == 0)
+	if (pglob->gl_pathc == 0)
 		return (GLOB_NOMATCH);
 	strarr_sort(pglob->gl_pathv);
 	return (EXIT_SUCCESS);

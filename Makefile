@@ -11,9 +11,9 @@ HFILES   += $(INCDIR)utils/libftprintf/libftprintf.h
 HFILES   += $(INCDIR)utils/libftprintf/format_output.h
 LFLAGS   := -lreadline
 
-READLINE := $(shell brew --prefix readline)
-HFLAGS   += -I $(READLINE)/include
-LFLAGS   += -L $(READLINE)/lib
+# READLINE := $(shell brew --prefix readline)
+# HFLAGS   += -I $(READLINE)/include
+# LFLAGS   += -L $(READLINE)/lib
 
 VPATH := src/			\
 		src/builtins	\

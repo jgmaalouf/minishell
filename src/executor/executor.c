@@ -22,11 +22,9 @@ int	waitpid_exit_status(pid_t pid)
 
 static void	nodelist_expand_block(t_node *node)
 {
-	if (node->type == NODE_SUBSHELL)
-		node = node->next;
 	while (node != NULL && !node_is_block_separator(node->type))
 	{
-		if (node->type != NODE_PIPE)
+		if (node->type != NODE_SUBSHELL && node->type != NODE_PIPE)
 		{
 			shell_expansion(node->tokenlist);
 			t_token *tp = node->tokenlist; /* fix */
