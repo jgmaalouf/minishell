@@ -4,7 +4,7 @@ static int	unset_name(char *name)
 {
 	if (!valid_variable_name(name))
 		return (error_argv_quoted("unset", name, "not a valid identifier"));
-	// delete `set' variable
+	unset_lexicon_entry(name);
 	return (ft_unsetenv(name));
 }
 

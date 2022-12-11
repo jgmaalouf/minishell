@@ -33,9 +33,9 @@ VPATH := src/			\
 		src/utils/libftprintf/format_output/fill_output
 
 SRCS =	cd.c echo.c env.c exit.c export.c pwd.c unset.c \
-		assignment.c builtin.c command.c conditional.c executor.c find_cmd_path.c free_nodelist.c handle_redirects.c pipe_handler.c pipeline.c stdio_fildes.c subshell.c \
+		builtin.c command.c conditional.c executor.c find_cmd_path.c free_nodelist.c handle_redirects.c launch_assignment.c pipeline.c stdio_fildes.c subshell.c \
 		dollar_string_group.c expand_dollar_variable.c filename_expansion.c globbing.c group_subpatterns.c parameter_expansion.c quote_removal.c shell_expansion.c tilde_expansion.c \
-		add_to_lexicon.c export_display_environ.c export_lexicon.c \
+		export_display_environ.c export_lexicon.c get_lexicon_entry.c set_lexicon_entry.c unset_lexicon_entry.c variable_assignment.c \
 		heredoc_handler.c heredoc.c history.c \
 		lexer.c token_types.c tokenizer.c tokenlist.c \
 		output_error.c syntax_error.c \

@@ -10,7 +10,6 @@ char	*longtostr(long number)
 }
  */
 
-/* itoa() */
 static char	*last_exit_status(void)
 {
 	char	*exit_status;
@@ -22,16 +21,11 @@ static char	*last_exit_status(void)
 static char	*find_variable(char *name)
 {
 	char	*value;
-	char	**dict;
 
 	value = ft_getenv(name);
 	if (value != NULL)
 		return (value);
-	dict = dict_open();
-	value = dict_get_val(dict, name);
-	if (value != NULL)
-		return (value);
-	return (NULL);
+	return (get_lexicon_entry(name));
 }
 
 char	*expand_dollar_variable(char *name)

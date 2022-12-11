@@ -34,3 +34,24 @@ int	valid_parameter_assignment(const char *word)
 		return (false);
 	return (valid_export_identifier(word));
 }
+
+void	split_variable(char *word, char **name, char **value)
+{
+	*name = word;
+	while (*word != '\0')
+	{
+		if (*word == '=')
+		{
+			*name = ft_strndup(*name, word - *name);
+			*value = ft_strdup(word + 1);
+			if (*name == NULL || *value == NULL)
+				exit(fatal_error(ENOMEM));
+			return ;
+		}
+		word++;
+	}
+	*name = ft_strdup(*name);
+	if (*name == NULL)
+		exit(fatal_error(ENOMEM));
+	*value = NULL;
+}

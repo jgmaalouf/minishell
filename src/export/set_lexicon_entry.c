@@ -1,15 +1,5 @@
 #include "minishell.h"
 
-static void	remove_entry(t_local *lexicon)
-{
-	free(lexicon[0].entry);
-	free(lexicon[0].name);
-	free(lexicon[0].value);
-	lexicon[0] = lexicon[1];
-	while (lexicon[0].name != NULL)
-		lexicon[0] = lexicon[1];
-}
-
 static void	change_entry(t_local *lexicon, char *name, char *value, bool export)
 {
 	free(lexicon->entry);
@@ -63,17 +53,21 @@ static void	add_new_entry(char *name, char *value, bool export)
 	export_lexicon(EXPORT_SAVE_LEXICON, new_lexicon);
 }
 
-void	add_to_lexicon(char *name, char *value, bool export)
+int	set_lexicon_entry(char *name, char *value, bool export)
 {
 	t_local	*lexicon;
 	int		i;
 
+	if (name == NULL || *name == '\0' || ft_strchr(name, '=') != NULL)
+		return (errno = EINVAL, -1);
 	lexicon = export_lexicon(EXPORT_GET_LEXICON, NULL);
 	i = 0;
 	while (lexicon[i].name != NULL)
 	{
 		if (ft_strcmp(lexicon[i].name, name) == 0)
 		{
+			if (value == NULL)
+				return (free(name), EXIT_SUCCESS);
 			if (export == true)
 			{
 				ft_setenv(lexicon[i].name, lexicon[i].value, 1);
@@ -81,6 +75,8 @@ void	add_to_lexicon(char *name, char *value, bool export)
 			}
 			change_entry(&lexicon[i], name, value, export);
 		}
+		i++;
 	}
 	add_new_entry(name, value, export);
+	return (EXIT_SUCCESS);
 }

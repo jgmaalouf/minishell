@@ -34,9 +34,25 @@ static void	nodelist_expand_block(t_node *node)
 	}
 }
 
+t_node	*free_processed_nodes(t_node *nodelist)
+{
+	if (nodelist->nexus == NODE_NULL)
+		return (free_node(nodelist));
+	if (nodelist->type == NODE_ASSIGNMENT)
+	{
+		nodelist = free_node(nodelist);
+		if (nodelist->type == NODE_COMMAND)
+			return (free_node(nodelist));
+		else
+			return (nodelist);
+	}
+	return (free_node(nodelist));
+}
+
+
 t_node	*node_handler(t_node *nodelist)
 {
-	nodelist = free_node(nodelist);
+	nodelist = free_processed_nodes(nodelist);
 	if (nodelist == NULL)
 		return (NULL);
 	if (nodelist->type == NODE_PIPE)
@@ -58,8 +74,8 @@ static int	execute_handler(t_node *nodelist)
 		return (launch_pipe(nodelist));
 	if (nodelist->type == NODE_SUBSHELL)
 		return (launch_subshell(nodelist));
-	// if (nodelist->type == NODE_ASSIGNMENT)
-	// 	return (launch_assignment(nodelist));
+	if (nodelist->type == NODE_ASSIGNMENT)
+		return (launch_assignment(nodelist));
 	if (nodelist->type == NODE_COMMAND)
 		return (launch_command(nodelist));
 	return (EXIT_SUCCESS);

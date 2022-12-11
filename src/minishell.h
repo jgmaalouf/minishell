@@ -190,6 +190,7 @@ char		*find_cmd_path(char *cmd_name);
 void		*free_nodelist(t_node *nodelist);
 t_node		*free_node(t_node *node);
 int			handle_redirects(t_redir *redirlist);
+int			launch_assignment(t_node *nodelist);
 int			launch_pipe(t_node *nodelist);
 t_node		*handle_pipeline(t_node *nodelist);
 int			stdio_fildes_handler(int action);
@@ -210,10 +211,14 @@ void		shell_expansion(t_token *tokenlist);
 char		*tilde_expansion(char *word);
 
 /* EXPORT */
-void		add_to_lexicon(char *name, char *value, bool export);
 int			export_display_environ(void);
 t_local		*create_new_lexicon(size_t size);
 t_local		*export_lexicon(int action, t_local *new_lexicon);
+char		*get_lexicon_entry(const char *name);
+int			set_lexicon_entry(char *name, char *value, bool export);
+void		remove_entry(t_local *lexicon);
+int			unset_lexicon_entry(const char *name);
+int			variable_assignment(const char *assignment);
 
 /* INPUT */
 int			heredoc_handler(int action, t_token *tokenlist);
@@ -268,6 +273,7 @@ int			valid_token(t_token *token);
 int			valid_variable_name(const char *name);
 int			valid_export_identifier(const char *name);
 int			valid_parameter_assignment(const char *word);
+void		split_variable(char *word, char **name, char **value);
 
 /* TERMINAL */
 void		disable_echoctl(void);
