@@ -111,21 +111,3 @@ long	ft_strtol(const char *str, char **endptr, int base)
 		*endptr = (char *)str;
 	return (num);
 }
-
-/*
-int	main(void)
-{
-	const char	*str = "0xabc";
-	char		*endptr = NULL;
-	int			base = 0;
-
-	printf("result: %ld\n",    strtol(str, &endptr, base)); printf("endptr: %s\n", endptr);
-	if (errno)
-		perror("   strtol");
-	errno = 0;
-	printf("result: %ld\n", ft_strtol(str, &endptr, base)); printf("endptr: %s\n", endptr);
-	if (errno)
-		perror("ft_strtol");
-	return (0);
-}
- */

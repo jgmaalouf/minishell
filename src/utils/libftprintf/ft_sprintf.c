@@ -1,6 +1,6 @@
 #include "libftprintf.h"
 
-int	ft_sprintf(char * restrict str, const char * restrict format, ...)
+int	ft_sprintf(char *restrict str, const char *restrict format, ...)
 {
 	int		nbyte;
 	va_list	ap;

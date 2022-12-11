@@ -1,6 +1,6 @@
 #include "libftprintf.h"
 
-int	ft_printf(const char * restrict format, ...)
+int	ft_printf(const char *restrict format, ...)
 {
 	int		nbyte;
 	va_list	ap;

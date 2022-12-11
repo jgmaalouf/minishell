@@ -40,7 +40,6 @@ static char	*bold_cwd(char *path)
 	cwd = ft_strrchr(path, '/');
 	if (cwd == NULL || *(cwd + 1) == '\0')
 		return (path);
-	// result = malloc(cwd - path + ft_strlen(BLD) + ft_strlen(cwd) + ft_strlen(RESET) + 1);
 	path[cwd - path] = '\0';
 	ft_asprintf(&result, "%s/" BOLD "%s" RESET, path, ++cwd);
 	if (result == NULL)
@@ -61,12 +60,10 @@ char	*generate_prompt(void)
 		return (ft_strdup(GREEN "minishell$ " RESET));
 	cwd = replace_home_with_tilde(cwd);
 	cwd = bold_cwd(cwd);
-	c = "$";
-	// c = "❯";
+	c = "🎄";
 	if (g_exit_status != 0)
 	{
 		columns = terminal_dimensions("cols");
-		// printf ("columns %d\n", columns);
 		ft_asprintf(&status, "✘ %d", g_exit_status);
 		ft_asprintf(&prompt, BOLD RED "%*s" RESET
 			BLUE "\r%s\n" RED "%s " RESET, columns, status, cwd, c);

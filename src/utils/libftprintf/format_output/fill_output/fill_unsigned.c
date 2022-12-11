@@ -75,7 +75,7 @@ void	fill_unsigned(unsigned long n, char *base, t_flags flags, char **output)
 		flags.zero = ' ';
 	str = format_unsigned(n, base, flags);
 	if (!str)
-		return;
+		return ;
 	length = ft_strlen(str);
 	if (flags.minus)
 		copy_str(str, length, output);

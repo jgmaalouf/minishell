@@ -143,7 +143,6 @@ typedef struct s_node
 	pid_t			pid;
 	t_node_type		type;
 	t_node_type		nexus;
-	int				pipe[2];
 	t_cmd			*table;
 	t_token			*tokenlist;
 	struct s_node	*sub;
@@ -251,6 +250,8 @@ int			syntax_error_matching(char c);
 int			syntax_error_unexpected_token(char *c);
 
 /* PARSER */
+int			count_command_argc(t_token *tokenlist);
+int			count_assignment_argc(t_token *tokenlist);
 t_node_type	convert_tk_type(t_tk_type type);
 bool		node_is_block_separator(t_node_type type);
 bool		node_is_command_separator(t_node_type type);
@@ -259,7 +260,7 @@ bool		node_is_conditional(t_node_type type);
 t_node		*create_nodelist(t_token *tokenlist);
 t_node		*parser(char *cmdline);
 void		parse_redirection(t_token **tokenlist, t_cmd *table);
-t_cmd		*create_command_table(t_token **tokenlist);
+t_cmd		*create_command_table(t_token *tokenlist);
 
 /* SYNTAX */
 int			find_bad_substitution(char *line);

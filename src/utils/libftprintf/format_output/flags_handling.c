@@ -27,7 +27,6 @@ int	get_width(const char **format, va_list *ap_cpy)
 	}
 	else
 	{
-		// width = ft_atoi(*format);
 		width = ft_strtol(*format, NULL, 10);
 		while (ft_isdigit(*(*format + 1)))
 			(*format)++;
@@ -49,7 +48,6 @@ int	get_precision(const char **format, va_list *ap_cpy)
 		if (!ft_isdigit(*(*format + 1)))
 			return (0);
 		(*format)++;
-		// precision = ft_atoi(*format);
 		precision = ft_strtol(*format, NULL, 10);
 		while (ft_isdigit(*(*format + 1)))
 			(*format)++;

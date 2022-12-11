@@ -12,7 +12,8 @@ static	int	valid_access_rights(t_redir *redir)
 	if (access(redir->path, F_OK) != EXIT_SUCCESS)
 		return (error((char *)redir->path, "No such file or directory", 1));
 	if (redir->type == TK_REDIRECT_OUTPUT_TRUNC)
-		return (error((char *)redir->path, "cannot overwrite existing file", 1));
+		return (error((char *)redir->path,
+				"cannot overwrite existing file", 1));
 	if (redir->input)
 		if (access(redir->path, R_OK) != EXIT_SUCCESS)
 			return (error((char *)redir->path, "Permission denied", 1));

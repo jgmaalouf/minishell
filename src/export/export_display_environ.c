@@ -3,7 +3,7 @@
 static int	count_lexicon_export_entries(t_local *lexicon)
 {
 	size_t	count;
-	int	i;
+	int		i;
 
 	i = 0;
 	count = 0;

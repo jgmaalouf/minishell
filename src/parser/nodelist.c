@@ -30,7 +30,8 @@ static t_node	*node_insert_tokenlist(t_token **tokenlist)
 			return (new);
 		}
 		*tokenlist = (*tokenlist)->next;
-		tokenlist_add_back(&(new->tokenlist), new_token_node((*tokenlist)->type, (*tokenlist)->val));
+		tokenlist_add_back(&(new->tokenlist),
+			new_token_node((*tokenlist)->type, (*tokenlist)->val));
 	}
 	*tokenlist = NULL;
 	return (new);

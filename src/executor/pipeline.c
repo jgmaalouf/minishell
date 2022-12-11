@@ -2,31 +2,27 @@
 
 int	launch_pipe(t_node *nodelist)
 {
-	/* int pipe_fd[2]; */
-	/* pipe_handler(OPEN_PIPE_FILEDES) */
-	if (pipe(nodelist->pipe) == -1)
+	int	pipe_fd[2];
+
+	if (pipe(pipe_fd) == -1)
 		return (-1);
 	nodelist->pid = fork();
 	if (nodelist->pid < 0)
 		return (-1);
 	if (nodelist->pid == 0)
 	{
-		close(nodelist->pipe[0]);
-		dup2(nodelist->pipe[1], STDOUT_FILENO);
-		close(nodelist->pipe[1]);
-		/* pipe_handler(DUP_PIPE_STDOUT); */
-		/* pipe_handler(CLOSE_PIPE_FILEDES); */
+		close(pipe_fd[0]);
+		dup2(pipe_fd[1], STDOUT_FILENO);
+		close(pipe_fd[1]);
 		if (nodelist->type == NODE_SUBSHELL)
 			exit(executor(subshell_extract_nodelist(nodelist)));
 		if (nodelist->table->builtin_id > 0)
 			exit(execute_builtin(nodelist));
 		exit(execute_command(nodelist->table));
 	}
-	close(nodelist->pipe[1]);
-	dup2(nodelist->pipe[0], STDIN_FILENO);
-	close(nodelist->pipe[0]);
-	/* pipe_handler(DUP_PIPE_STDIN); */
-	/* pipe_handler(CLOSE_PIPE_FILEDES); */
+	close(pipe_fd[1]);
+	dup2(pipe_fd[0], STDIN_FILENO);
+	close(pipe_fd[0]);
 	return (EXIT_SUCCESS);
 }
 
@@ -46,11 +42,9 @@ static int	pipeline_closing_command(t_node *nodelist)
 		exit(execute_command(nodelist->table));
 	}
 	exit_status = waitpid_exit_status(nodelist->pid);
-	/* close old pipe stdin and clobber it with saved value */
-	close(STDIN_FILENO); /* also works with RESTORE_STD_FILDES handler */
+	stdio_fildes_handler(RESTORE_STD_FILDES);
 	while (wait(NULL) > 0)
 		continue ;
-	stdio_fildes_handler(RESTORE_STD_FILDES);
 	return (exit_status);
 }
 

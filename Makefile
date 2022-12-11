@@ -2,7 +2,7 @@ NAME := minishell
 
 CC       := gcc
 CFLAGS   := -Wall -Werror -Wextra
-DFLAGS   := -g3 #-fsanitize=address
+DFLAGS   := -g3 -fsanitize=address
 
 INCDIR   := src/
 HFLAGS   := -I $(INCDIR) -I $(INCDIR)utils/libftprintf
@@ -33,13 +33,13 @@ VPATH := src/			\
 		src/utils/libftprintf/format_output/fill_output
 
 SRCS =	cd.c echo.c env.c exit.c export.c pwd.c unset.c \
-		builtin.c command.c conditional.c executor.c find_cmd_path.c free_nodelist.c handle_redirects.c launch_assignment.c pipeline.c stdio_fildes.c subshell.c \
+		builtin.c command.c conditional.c executor.c find_cmd_path.c free_nodelist.c handle_redirects.c launch_assignment.c pipeline.c stdio_fildes.c subshell.c waitpid_exit_status.c \
 		dollar_string_group.c expand_dollar_variable.c filename_expansion.c globbing.c group_subpatterns.c parameter_expansion.c quote_removal.c shell_expansion.c tilde_expansion.c \
 		export_display_environ.c export_lexicon.c get_lexicon_entry.c set_lexicon_entry.c unset_lexicon_entry.c variable_assignment.c \
 		heredoc_handler.c heredoc.c history.c \
 		lexer.c token_types.c tokenizer.c tokenlist.c \
 		output_error.c syntax_error.c \
-		node_types.c nodelist.c parser.c redirections.c table.c \
+		count_argc.c node_types.c nodelist.c parser.c redirections.c table.c \
 		find_bad_substitution.c quoting.c reserved_shell_char.c syntax_validator.c valid_token.c variables.c \
 		echoctl.c prompt.c signals.c \
 		main.c
@@ -49,7 +49,7 @@ SRCS +=	count_output.c count_signed.c count_text.c count_unsigned.c \
 		flags_handling.c format_output.c \
 		ft_asprintf.c ft_dprintf.c ft_printf.c ft_snprintf.c ft_sprintf.c ft_vasprintf.c ft_vdprintf.c ft_vprintf.c ft_vsnprintf.c ft_vsprintf.c
 
-SRCS +=	ft_calloc.c ft_concat.c ft_dict.c ft_dwrite.c \
+SRCS +=	ft_calloc.c ft_concat.c ft_dwrite.c \
 		ft_environ.c ft_getenv.c ft_setenv.c ft_unsetenv.c \
 		ft_isalnum.c ft_isalpha.c ft_isascii.c ft_isdigit.c ft_isnumber.c ft_isquote.c ft_isspace.c ft_toupper.c \
 		ft_list.c ft_memcpy.c ft_memset.c \

@@ -1,6 +1,7 @@
 #include "libftprintf.h"
 
-int	ft_snprintf(char * restrict str, size_t size, const char * restrict format, ...)
+int	ft_snprintf(char *restrict str, size_t size,
+		const char *restrict format, ...)
 {
 	int		nbyte;
 	va_list	ap;

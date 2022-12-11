@@ -44,6 +44,10 @@ t_local	*export_lexicon(int action, t_local *new_lexicon)
 		return (last_lexicon);
 	}
 	if (action == EXPORT_DESTROY_LEXICON)
+	{
+		if (last_lexicon == NULL)
+			return (NULL);
 		return (last_lexicon = free_lexicon(last_lexicon));
+	}
 	return (errno = EINVAL, NULL);
 }

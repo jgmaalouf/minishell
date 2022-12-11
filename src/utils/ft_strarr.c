@@ -35,16 +35,11 @@ char	**strarr_dup(char *array[])
 char	**strarr_resize(char *array[], size_t *size)
 {
 	char	**result;
-	// int		i;
 
 	*size = strarr_len(array) + 1;
-	// *size *= 2;
-	result = ft_calloc(*size + 2, sizeof(char *));
+	result = ft_calloc(*size + 1, sizeof(char *));
 	if (result == NULL)
 		return (NULL);
-	// i = -1;
-	// while (array[++i] != NULL)
-	// 	ft_memcpy(&result[i], &array[i], sizeof(char *));
 	ft_memcpy((char *)result, (char *)array, *size * sizeof(char *));
 	return (free(array), result);
 }

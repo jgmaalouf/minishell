@@ -7,10 +7,10 @@ static int	open_heredoc(int heredoc_fd[2], int id)
 	ft_snprintf(file, 42, "/tmp/sh-thd-%d", id);
 	heredoc_fd[1] = open(file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (heredoc_fd[1] == -1)
-		return(-1);
+		return (-1);
 	heredoc_fd[0] = open(file, O_RDONLY);
 	if (heredoc_fd[0] == -1)
-		return(close(heredoc_fd[1]), unlink(file), -1);
+		return (close(heredoc_fd[1]), unlink(file), -1);
 	return (EXIT_SUCCESS);
 }
 

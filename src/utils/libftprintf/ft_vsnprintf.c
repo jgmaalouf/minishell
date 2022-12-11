@@ -1,6 +1,7 @@
 #include "libftprintf.h"
 
-int	ft_vsnprintf(char * restrict str, size_t size, const char * restrict format, va_list ap)
+int	ft_vsnprintf(char *restrict str, size_t size,
+		const char *restrict format, va_list ap)
 {
 	int		nbyte;
 	char	*output;

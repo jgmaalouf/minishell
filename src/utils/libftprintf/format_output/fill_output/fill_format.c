@@ -1,6 +1,6 @@
 #include "format_output.h"
 
-void	fill_format(const char ** format, char **output, va_list *ap_cpy)
+void	fill_format(const char **format, char **output, va_list *ap_cpy)
 {
 	t_flags	flags;
 

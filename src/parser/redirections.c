@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-static t_redir	*new_redirection_node()
+static t_redir	*new_redirection_node(void)
 {
 	t_redir	*new;
 
@@ -32,7 +32,7 @@ static int	parse_redirection_flags(t_tk_type type)
 	if (type == TK_REDIRECT_INPUT_OUTPUT)
 		return (O_RDWR);
 	if (type == TK_REDIRECT_OUTPUT_TRUNC)
-		return (O_WRONLY | O_CREAT | O_TRUNC | O_EXCL); /* O_EXCL */
+		return (O_WRONLY | O_CREAT | O_TRUNC | O_EXCL);
 	if (type == TK_REDIRECT_OUTPUT_CLOBBER)
 		return (O_WRONLY | O_CREAT | O_TRUNC);
 	if (type == TK_REDIRECT_OUTPUT_APPEND)
@@ -40,14 +40,12 @@ static int	parse_redirection_flags(t_tk_type type)
 	return (0);
 }
 
-bool is_bit_set(unsigned value, unsigned bitindex)
+static int	input_output(t_redir *redir, t_tk_type type)
 {
-	return ((value & (1 << bitindex)) != 0);
-}
-
-static int	input_output(t_redir *redir)
-{
+	redir->type = type;
 	if (redir->type == TK_REDIRECT_INPUT)
+		return (redir->input = 1);
+	if (redir->type == TK_REDIRECT_INPUT_HEREDOC)
 		return (redir->input = 1);
 	if (redir->type == TK_REDIRECT_INPUT_OUTPUT)
 		return (redir->input = 1, redir->output = 1);
@@ -70,17 +68,16 @@ void	parse_redirection(t_token **tokenlist, t_cmd *table)
 		new->n = (*tokenlist)->val;
 		*tokenlist = (*tokenlist)->next;
 	}
-	new->type = (*tokenlist)->type;
+	input_output(new, (*tokenlist)->type);
 	if (new->type == TK_REDIRECT_INPUT_HEREDOC)
 	{
-		new->heredoc = true;
 		new->fd = heredoc_handler(HEREDOC_RECEIVE, NULL);
+		new->heredoc = true;
 	}
 	new->oflag = parse_redirection_flags(new->type);
 	*tokenlist = (*tokenlist)->next;
 	new->path = (*tokenlist)->val;
-	input_output(new);
-	if (new->output)
+	if (new->output == true)
 	{
 		new->fd = 1;
 		new->mode = 0644;

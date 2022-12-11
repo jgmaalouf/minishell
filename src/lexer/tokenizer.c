@@ -16,8 +16,7 @@ static t_token	*tokenize_redirection(char **line)
 			return (new_token_node(TK_REDIRECT_OUTPUT_APPEND, ">>"));
 		if (**line == '|' && (*line)++)
 			return (new_token_node(TK_REDIRECT_OUTPUT_CLOBBER, ">|"));
-		return (new_token_node(TK_REDIRECT_OUTPUT_CLOBBER, ">"));
-		// return (new_token_node(TK_REDIRECT_OUTPUT_TRUNC, ">"));
+		return (new_token_node(TK_REDIRECT_OUTPUT_TRUNC, ">"));
 	}
 	return (NULL);
 }

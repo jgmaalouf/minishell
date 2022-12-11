@@ -1,6 +1,6 @@
 #include "format_output.h"
 
-int		count_output(const char *format, va_list ap)
+int	count_output(const char *format, va_list ap)
 {
 	int		total;
 	int		count;
@@ -48,7 +48,7 @@ void	fill_output(const char *format, va_list ap, char *output)
 	va_end(ap_cpy);
 }
 
-char	*format_output(const char * restrict format, va_list ap)
+char	*format_output(const char *restrict format, va_list ap)
 {
 	int		count;
 	char	*output;

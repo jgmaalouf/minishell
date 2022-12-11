@@ -23,9 +23,9 @@ typedef struct s_flags
 	int	specifier;
 }	t_flags;
 
-char	*format_output(const char * restrict format, va_list ap);
+char	*format_output(const char *restrict format, va_list ap);
 int		count_format(const char **format, va_list *args);
-void	fill_format(const char ** format, char **output, va_list *ap_cpy);
+void	fill_format(const char **format, char **output, va_list *ap_cpy);
 t_flags	get_flags(const char **format, va_list *ap_cpy);
 
 /* Count ***************************************/
@@ -41,7 +41,7 @@ void	fill_width(int min_width, int content, char c, char **output);
 void	fill_character(char c, t_flags flags, char **output);
 void	fill_string(char *str, t_flags flags, char **output);
 void	fill_signed(long n, char *base, t_flags flags, char **output);
-void	fill_unsigned(unsigned long n, char *base, t_flags flags, char **output);
+void	fill_unsigned(unsigned long n, char *base, t_flags flags, char **out);
 
 int		unsigned_length(unsigned long n, int radix, t_flags flags);
 void	unsigned_padding(int zeros, t_flags flags, char *str);

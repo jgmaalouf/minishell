@@ -1,13 +1,12 @@
 #include "utilities.h"
-/*
-static char	**find_env_name(const char *name)
+
+static char	**find_environ_entry(const char *name)
 {
-	extern char	**environ;
 	char		**ep;
 	size_t		namelen;
 
-	ep = environ;
 	namelen = ft_strlen(name);
+	ep = ft_environ(ENVIRON_GET, NULL);
 	while (*ep != NULL)
 	{
 		if (ft_strncmp(*ep, name, namelen) == 0 && (*ep)[namelen] == '=')
@@ -16,7 +15,6 @@ static char	**find_env_name(const char *name)
 	}
 	return (ep);
 }
- */
 
 static int	add_to_environ(const char *name, const char *value, int overwrite)
 {
@@ -25,7 +23,7 @@ static int	add_to_environ(const char *name, const char *value, int overwrite)
 	size_t	len;
 
 	ep = ft_environ(ENVIRON_GET, NULL);
-	index = dict_find_entry(ep, name) - ep;
+	index = find_environ_entry(name) - ep;
 	len = index + 1;
 	if (ep[index] == NULL)
 	{
