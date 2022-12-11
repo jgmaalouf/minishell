@@ -13,15 +13,17 @@ int	valid_variable_name(const char *name)
 	return (true);
 }
 
-int	valid_variable_identifier(const char *name)
+int	valid_export_identifier(const char *word)
 {
-	if (ft_isdigit(*name))
+	if (ft_isdigit(*word))
 		return (false);
-	while (*name != '\0' && *name != '=')
+	if (*word == '=')
+		return (false);
+	while (*word != '\0' && *word != '=')
 	{
-		if (!ft_isalnum(*name) && *name != '_')
+		if (!ft_isalnum(*word) && *word != '_')
 			return (false);
-		name++;
+		word++;
 	}
 	return (true);
 }
@@ -30,5 +32,5 @@ int	valid_parameter_assignment(const char *word)
 {
 	if (find_unquoted_char(word, '=') == NULL)
 		return (false);
-	return (valid_variable_identifier(word));
+	return (valid_export_identifier(word));
 }

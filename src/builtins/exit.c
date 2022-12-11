@@ -5,6 +5,7 @@ static int	builtin_exit_routine(t_node *nodelist)
 	rl_clear_history();
 	free_nodelist(nodelist);
 	heredoc_handler(HEREDOC_DESTROY, NULL);
+	export_lexicon(EXPORT_DESTROY_LEXICON, NULL);
 	ft_environ(ENVIRON_DESTROY, NULL);
 	exit(g_exit_status);
 }

@@ -86,6 +86,13 @@ typedef enum e_node_type
 	NODE_SEMICOLON,
 }	t_node_type;
 
+typedef enum e_export_action
+{
+	EXPORT_SAVE_LEXICON,
+	EXPORT_GET_LEXICON,
+	EXPORT_DESTROY_LEXICON,
+}	t_export_action;
+
 typedef enum e_heredoc_action
 {
 	HEREDOC_COLLECT,
@@ -143,6 +150,14 @@ typedef struct s_node
 	struct s_node	*next;
 }	t_node;
 
+typedef struct s_local
+{
+	char			*entry;
+	char			*name;
+	char			*value;
+	bool			export;
+}	t_local;
+
 typedef struct s_pattern
 {
 	char		*str;
@@ -193,6 +208,12 @@ char		*parameter_expansion(char *word);
 char		*quote_removal(char *word);
 void		shell_expansion(t_token *tokenlist);
 char		*tilde_expansion(char *word);
+
+/* EXPORT */
+void		add_to_lexicon(char *name, char *value, bool export);
+int			export_display_environ(void);
+t_local		*create_new_lexicon(size_t size);
+t_local		*export_lexicon(int action, t_local *new_lexicon);
 
 /* INPUT */
 int			heredoc_handler(int action, t_token *tokenlist);
@@ -245,7 +266,7 @@ int			valid_first_token(t_token *token);
 int			syntax_validator(t_token *tokenlist);
 int			valid_token(t_token *token);
 int			valid_variable_name(const char *name);
-int			valid_variable_identifier(const char *name);
+int			valid_export_identifier(const char *name);
 int			valid_parameter_assignment(const char *word);
 
 /* TERMINAL */

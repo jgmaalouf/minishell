@@ -31,6 +31,7 @@ int	exit_ctrl_d(void)
 	rl_redisplay();
 	ft_dwrite(2, "exit\n");
 	rl_clear_history();
+	export_lexicon(EXPORT_DESTROY_LEXICON, NULL);
 	ft_environ(ENVIRON_DESTROY, NULL);
 	return (g_exit_status);
 }
