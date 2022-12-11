@@ -2,12 +2,10 @@
 
 static int	builtin_exit_routine(t_node *nodelist)
 {
-	extern char	**environ;
-
+	rl_clear_history();
 	free_nodelist(nodelist);
-	/* ft_setenv("EXIT", "true", 1); */
 	heredoc_handler(HEREDOC_DESTROY, NULL);
-	strarr_free(environ);
+	ft_environ(ENVIRON_DESTROY, NULL);
 	exit(g_exit_status);
 }
 

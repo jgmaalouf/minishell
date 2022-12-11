@@ -26,13 +26,11 @@ void	signal_ctrl_backslash(int signal)
 
 int	exit_ctrl_d(void)
 {
-	extern char	**environ;
-
 	printf("\e[1A");
 	rl_on_new_line();
 	rl_redisplay();
 	ft_dwrite(2, "exit\n");
 	rl_clear_history();
-	strarr_free(environ);
+	ft_environ(ENVIRON_DESTROY, NULL);
 	return (g_exit_status);
 }

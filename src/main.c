@@ -61,7 +61,6 @@ static int	minishell(void)
 
 	while (42)
 	{
-		/* cmdline = readline(GREEN "minishell$ " RESET); */
 		cmdline = command_line_input();
 		if (cmdline == NULL)
 			return (exit_ctrl_d());
@@ -73,7 +72,6 @@ static int	minishell(void)
 	}
 }
 
-/* int	main(void) */
 int	main(int argc, char *const argv[])
 {
 	extern char	**environ;
@@ -81,18 +79,12 @@ int	main(int argc, char *const argv[])
 	g_exit_status = 0;
 	if (argc != 1 && argv != NULL)
 		return (usage());
-	environ = strarr_dup(environ);
-	if (environ == NULL)
-		exit(fatal_error(ENOMEM));
-	/* ft_setenv("SHELL", argv[0], 1); */
-	/* ft_setenv("COLUMNS", "", 1); */
-	/* ft_setenv("LINES", "", 1); */
+	ft_environ(ENVIRON_SAVE, strarr_dup(environ));
 	set_history_file_path(HISTFILE_WRONLY);
 	read_history_file(HISTFILE_RDONLY);
 	signal(SIGINT, &signal_ctrl_c_input);
 	signal(SIGQUIT, SIG_IGN);
 	disable_echoctl();
 	minishell();
-	// system("leaks minishell");
 	exit(g_exit_status);
 }

@@ -7,7 +7,7 @@ static char	**extract_env_path(void)
 	int		count;
 	int		i;
 
-	var_path = getenv("PATH");
+	var_path = ft_getenv("PATH");
 	if (var_path == NULL)
 		return (NULL);
 	var_path = ft_strdup(var_path);

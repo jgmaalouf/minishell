@@ -36,7 +36,7 @@ static	int	cd_home(void)
 {
 	char	*home;
 
-	home = getenv("HOME");
+	home = ft_getenv("HOME");
 	if (home == NULL)
 		return (error_output("cd", "HOME not set"));
 	return (change_directory(home, 0));
@@ -46,7 +46,7 @@ static	int	cd_oldpwd(void)
 {
 	char	*oldpwd;
 
-	oldpwd = getenv("OLDPWD");
+	oldpwd = ft_getenv("OLDPWD");
 	if (oldpwd == NULL)
 		return (error_output("cd", "OLDPWD not set"));
 	return (change_directory(oldpwd, 1));

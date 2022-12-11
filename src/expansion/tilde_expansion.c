@@ -13,11 +13,11 @@ static char	*tilde_prefix(char *word)
 static char	*expand_tilde_prefix(char *prefix)
 {
 	if (ft_strcmp(prefix, "~") == 0)
-		return (getenv("HOME"));
+		return (ft_getenv("HOME"));
 	if (ft_strcmp(prefix, "~+") == 0)
-		return (getenv("PWD"));
+		return (ft_getenv("PWD"));
 	if (ft_strcmp(prefix, "~-") == 0)
-		return (getenv("OLDPWD"));
+		return (ft_getenv("OLDPWD"));
 	return (NULL);
 }
 

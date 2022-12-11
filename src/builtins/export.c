@@ -2,11 +2,12 @@
 
 static int	display_environ(void)
 {
-	extern char	**environ;
+	char	**environ;
 	char		**env_dup;
 	char		*name;
 	int			i;
 
+	environ = ft_environ(ENVIRON_GET, NULL);
 	env_dup = strarr_dup(environ);
 	if (env_dup == NULL)
 		return (g_exit_status = 1);

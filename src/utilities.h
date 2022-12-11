@@ -7,6 +7,13 @@
 # include <stdlib.h>
 # include "utils/libftprintf/libftprintf.h"
 
+typedef enum e_environ_action
+{
+	ENVIRON_SAVE,
+	ENVIRON_GET,
+	ENVIRON_DESTROY,
+}	t_environ_action;
+
 typedef struct s_list
 {
 	void			*content;
@@ -16,6 +23,9 @@ typedef struct s_list
 void	*ft_calloc(size_t count, size_t size);
 
 int		ft_dwrite(int fd, const char *s);
+
+char	**ft_environ(int action, char **new_environ);
+char	*ft_getenv(const char *name);
 
 char	*ft_concat(const char *s1, const char *s2);
 char	*ft_concat3(const char *s1, const char *s2, const char *s3);

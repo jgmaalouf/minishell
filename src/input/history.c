@@ -64,7 +64,7 @@ int	command_history(const char *line)
 	line_length = ft_strlen(line);
 	if (line_length < 1024)
 		ft_memcpy(prev_line, line, line_length + 1);
-	histfile = getenv("HISTFILE");
+	histfile = ft_getenv("HISTFILE");
 	if (histfile == NULL)
 		return (EXIT_FAILURE);
 	fd = open(histfile, O_WRONLY | O_CREAT | O_APPEND, S_IRWXU);

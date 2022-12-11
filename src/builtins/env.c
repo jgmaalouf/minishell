@@ -2,9 +2,10 @@
 
 int	builtin_env(void)
 {
-	extern char	**environ;
-	int			i;
+	char	**environ;
+	int		i;
 
+	environ = ft_environ(ENVIRON_GET, NULL);
 	i = 0;
 	while (environ[i] != NULL)
 		printf("%s\n", environ[i++]);

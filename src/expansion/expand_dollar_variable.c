@@ -24,7 +24,7 @@ static char	*find_variable(char *name)
 	char	*value;
 	char	**dict;
 
-	value = getenv(name);
+	value = ft_getenv(name);
 	if (value != NULL)
 		return (value);
 	dict = dict_open();

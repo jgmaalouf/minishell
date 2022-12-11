@@ -4,7 +4,7 @@ int	set_local_variable(const char *name, const char *value)
 {
 	char	**dict;
 
-	if (getenv(name) != NULL)
+	if (ft_getenv(name) != NULL)
 		return (ft_setenv(name, value, 1));
 	dict = dict_open();
 	dict_set_val(dict, name, value);

@@ -10,14 +10,13 @@ static void	delete_from_environ(char **ep)
 
 int	ft_unsetenv(const char *name)
 {
-	extern char	**environ;
-	char		**ep;
-	size_t		namelen;
+	char	**ep;
+	size_t	namelen;
 
+	ep = ft_environ(ENVIRON_GET, NULL);
 	if (name == NULL || *name == '\0' || ft_strchr(name, '=') != NULL)
 		return (errno = EINVAL, -1);
 	namelen = ft_strlen(name);
-	ep = environ;
 	if (ep != NULL)
 	{
 		while (*ep != NULL)

@@ -12,8 +12,9 @@ static bool	is_a_directory(const char *path)
 
 int	execute_command(t_cmd *table)
 {
-	extern char	**environ;
+	char	**environ;
 
+	environ = ft_environ(ENVIRON_GET, NULL);
 	if (handle_redirects(table->redirlist) != EXIT_SUCCESS)
 		exit(EXIT_FAILURE);
 	if (table->cmd_argc == 0)
