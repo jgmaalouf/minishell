@@ -1,16 +1,19 @@
 #include "minishell.h"
 
-static void	change_entry(t_local *lexicon, char *name, char *value, bool export)
+static void	change_entry(t_local *lexicon, char *name, char *value, bool exp)
 {
 	free(lexicon->entry);
 	free(lexicon->name);
 	free(lexicon->value);
+	lexicon->entry = ft_concat3(name, "=", value);
+	if (lexicon->entry == NULL)
+		exit(fatal_error(ENOMEM));
 	lexicon->name = name;
 	lexicon->value = value;
-	lexicon->export = export;
+	lexicon->export = exp;
 }
 
-static t_local	create_entry(char *name, char *value, bool export)
+static t_local	create_entry(char *name, char *value, bool exp)
 {
 	t_local	lexicon;
 	char	*entry;
@@ -24,11 +27,11 @@ static t_local	create_entry(char *name, char *value, bool export)
 	lexicon.entry = entry;
 	lexicon.name = name;
 	lexicon.value = value;
-	lexicon.export = export;
+	lexicon.export = exp;
 	return (lexicon);
 }
 
-static void	add_new_entry(char *name, char *value, bool export)
+static void	add_new_entry(char *name, char *value, bool exp)
 {
 	t_local	*old_lexicon;
 	t_local	*new_lexicon;
@@ -48,12 +51,12 @@ static void	add_new_entry(char *name, char *value, bool export)
 		new_lexicon[i].export = old_lexicon[i].export;
 		i++;
 	}
-	new_lexicon[i] = create_entry(name, value, export);
+	new_lexicon[i] = create_entry(name, value, exp);
 	free(old_lexicon);
 	export_lexicon(EXPORT_SAVE_LEXICON, new_lexicon);
 }
 
-int	set_lexicon_entry(char *name, char *value, bool export)
+int	set_lexicon_entry(char *name, char *value, bool exp)
 {
 	t_local	*lexicon;
 	int		i;
@@ -68,15 +71,16 @@ int	set_lexicon_entry(char *name, char *value, bool export)
 		{
 			if (value == NULL)
 				return (free(name), EXIT_SUCCESS);
-			if (export == true)
+			if (exp == true)
 			{
 				ft_setenv(lexicon[i].name, lexicon[i].value, 1);
 				remove_entry(&lexicon[i]);
 			}
-			change_entry(&lexicon[i], name, value, export);
+			if (ft_strcmp(lexicon[i].value, value) == 0)
+				return (free(name), free(value), EXIT_SUCCESS);
+			return (change_entry(&lexicon[i], name, value, exp), EXIT_SUCCESS);
 		}
 		i++;
 	}
-	add_new_entry(name, value, export);
-	return (EXIT_SUCCESS);
+	return (add_new_entry(name, value, exp), EXIT_SUCCESS);
 }

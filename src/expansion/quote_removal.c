@@ -36,7 +36,7 @@ static char	*remove_quotes(char *word)
 			result[i++] = *word++;
 		else if (*word == '\'')
 			remove_single_quotes(&word, result, &i);
-		else if (*word == '\"' && word++)
+		else if (*word == '\"')
 			remove_double_quotes(&word, result, &i);
 		else
 			result[i++] = *word++;

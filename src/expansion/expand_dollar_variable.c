@@ -1,15 +1,5 @@
 #include "minishell.h"
 
-/*
-char	*longtostr(long number)
-{
-	char	*str;
-
-	ft_asprintf(&str, "%ld", number);
-	return (str);
-}
- */
-
 static char	*last_exit_status(void)
 {
 	char	*exit_status;

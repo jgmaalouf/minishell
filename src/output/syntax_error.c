@@ -1,7 +1,5 @@
 #include "minishell.h"
 
-/* STDERR ? */
-
 int	syntax_error_bad_substitution(char *word)
 {
 	printf("minishell: %s: bad substitution\n", word);

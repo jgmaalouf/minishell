@@ -67,29 +67,3 @@ int	globbing(t_pat groups[], const char *filename)
 		return (true);
 	return (recursive_matching(groups, filename));
 }
-
-/*
-int	main(int argc, char *argv[])
-{
-	char *pattern  = "test*?";
-	char *filename = "test";
-	// char *pattern  = "test*a*b";
-	// char *filename = "testabbab";
-
-	// char *pattern  = "TEST_*a???_b_c";
-	// char *filename = "TEST_a12_b_ca321_b_c";
-
-	// char *pattern  = ".*";
-	// char *filename = ".";
-
-	// char *pattern  = "*aaa*zz*cc";
-	// char *filename = "qq_aaatabzzbccqcc";
-
-	int match = globbing(pattern, filename);
-	if (match)
-		printf("MATCH:   \n pattern  <%s> \n filename <%s>\n", pattern, filename);
-	else
-		printf("CONFLICT:\n pattern  <%s> \n filename <%s>\n", pattern, filename);
-	return (0);
-}
- */

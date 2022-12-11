@@ -2,7 +2,7 @@ NAME := minishell
 
 CC       := gcc
 CFLAGS   := -Wall -Werror -Wextra
-DFLAGS   := -g3 -fsanitize=address
+DFLAGS   := -g3 #-fsanitize=address
 
 INCDIR   := src/
 HFLAGS   := -I $(INCDIR) -I $(INCDIR)utils/libftprintf

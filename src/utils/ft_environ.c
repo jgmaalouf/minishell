@@ -15,5 +15,5 @@ char	**ft_environ(int action, char **new_environ)
 		return (last_environ);
 	if (action == ENVIRON_DESTROY)
 		strarr_free(last_environ);
-	return (NULL);
+	return (errno = EINVAL, NULL);
 }

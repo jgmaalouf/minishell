@@ -23,10 +23,10 @@ static t_cmd	*parse_assignments(t_token *tokenlist)
 	i = 0;
 	while (tokenlist != NULL)
 	{
-		if (tokenlist->type != TK_ASSIGNMENT_WORD)
-			return (table);
 		if (token_is_redirection(tokenlist->type))
 			parse_redirection(&tokenlist, table);
+		if (tokenlist->type != TK_ASSIGNMENT_WORD)
+			return (table);
 		((char **)table->cmd_argv)[i++] = tokenlist->val;
 		tokenlist = tokenlist->next;
 	}

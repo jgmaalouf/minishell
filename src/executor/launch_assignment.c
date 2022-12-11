@@ -19,6 +19,8 @@ int	launch_assignment(t_node *nodelist)
 	char *const	*argv;
 
 	argv = nodelist->table->cmd_argv;
+	if (handle_redirects(nodelist->table->redirlist) != EXIT_SUCCESS)
+		return (stdio_fildes_handler(RESTORE_STD_FILDES), EXIT_FAILURE);
 	if (nodelist->nexus == NODE_COMMAND)
 	{
 		nodelist->pid = fork();
@@ -31,9 +33,11 @@ int	launch_assignment(t_node *nodelist)
 				exit(execute_builtin(nodelist));
 			exit(execute_command(nodelist->table));
 		}
+		stdio_fildes_handler(RESTORE_STD_FILDES);
 		return (waitpid_exit_status(nodelist->pid));
 	}
 	while (*argv != NULL)
 		variable_assignment(*argv++);
+	stdio_fildes_handler(RESTORE_STD_FILDES);
 	return (g_exit_status = 0);
 }
