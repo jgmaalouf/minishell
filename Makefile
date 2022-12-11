@@ -2,17 +2,18 @@ NAME := minishell
 
 CC       := gcc
 CFLAGS   := -Wall -Werror -Wextra
-DFLAGS   := -g3 -fsanitize=address
+DFLAGS   := -g3 #-fsanitize=address
 
 INCDIR   := src/
 HFLAGS   := -I $(INCDIR) -I $(INCDIR)utils/libftprintf
 HFILES   := $(INCDIR)minishell.h $(INCDIR)utilities.h
 HFILES   += $(INCDIR)utils/libftprintf/libftprintf.h
 HFILES   += $(INCDIR)utils/libftprintf/format_output.h
+LFLAGS   := -lreadline
 
-READLINE := $(shell brew --prefix readline)
-LFLAGS   := -lreadline -L $(READLINE)/lib
-HFLAGS   += -I $(READLINE)/include
+# READLINE := $(shell brew --prefix readline)
+# LFLAGS   += $(READLINE)/lib
+# HFLAGS   += -I $(READLINE)/include
 
 VPATH := src/			\
 		src/builtins	\
