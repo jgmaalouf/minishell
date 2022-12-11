@@ -37,15 +37,13 @@ void	ft_lstdelone(t_list *lst, void (*del)(void *))
 	free(lst);
 }
 
-void	ft_lstclear(t_list **lst, void (*del)(void*))
+void	ft_lstclear(t_list **lst, void (*del)(void *))
 {
-	t_list	*cache;
-
-	while (*lst)
+	if (*lst != NULL)
 	{
-		cache = (*lst)->next;
-		ft_lstdelone(*lst, del);
-		(*lst) = cache;
+		ft_lstclear((&(*lst)->next), del);
+		(*del)((*lst)->content);
+		free(*lst);
+		*lst = NULL;
 	}
-	*lst = NULL;
 }

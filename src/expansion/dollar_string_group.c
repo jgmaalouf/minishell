@@ -105,5 +105,5 @@ char	*process_dollar_string_group(char *group)
 		sublist = process_raw_string(group);
 	result = concatenate_subwords(sublist);
 	ft_lstclear(&sublist, &free);
-	return (result);
+	return (free(group), result);
 }

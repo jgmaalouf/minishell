@@ -14,27 +14,23 @@ static t_node	*new_node(t_node_type type)
 static t_node	*node_insert_tokenlist(t_token **tokenlist)
 {
 	t_node	*new;
-	t_token	*tp;
 
 	new = new_node(convert_tk_type((*tokenlist)->type));
-	new->tokenlist = *tokenlist;
 	if (node_is_command_separator(new->type))
 	{
-		tp = new->tokenlist->next;
-		new->tokenlist->next = NULL;
-		*tokenlist = tp;
+		*tokenlist = (*tokenlist)->next;
 		return (new);
 	}
-	tp = new->tokenlist;
-	while (tp->next != NULL)
+	new->tokenlist = new_token_node((*tokenlist)->type, (*tokenlist)->val);
+	while ((*tokenlist)->next != NULL)
 	{
-		if (token_is_command_separator(tp->next->type))
+		if (token_is_command_separator((*tokenlist)->next->type))
 		{
-			*tokenlist = tp->next;
-			tp->next = NULL;
+			*tokenlist = (*tokenlist)->next;
 			return (new);
 		}
-		tp = tp->next;
+		*tokenlist = (*tokenlist)->next;
+		tokenlist_add_back(&(new->tokenlist), new_token_node((*tokenlist)->type, (*tokenlist)->val));
 	}
 	*tokenlist = NULL;
 	return (new);

@@ -22,6 +22,8 @@ int	waitpid_exit_status(pid_t pid)
 
 static void	nodelist_expand_block(t_node *node)
 {
+	if (node->type == NODE_SUBSHELL)
+		node = node->next;
 	while (node != NULL && !node_is_block_separator(node->type))
 	{
 		if (node->type != NODE_PIPE)

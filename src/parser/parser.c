@@ -14,5 +14,6 @@ t_node	*parser(char *cmdline)
 		return (free_tokenlist(tokenlist, 1));
 	heredoc_handler(HEREDOC_COLLECT, tokenlist);
 	nodelist = create_nodelist(tokenlist);
+	free_tokenlist(tokenlist, 0);
 	return (nodelist);
 }
