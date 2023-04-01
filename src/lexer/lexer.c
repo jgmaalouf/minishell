@@ -22,19 +22,19 @@ static void	tokenize_assignments(t_token *tokenlist)
 	}
 }
 
-t_token	*lexer(char *line)
+t_token	*lexer(char *cmdline)
 {
 	t_token	*tokenlist;
 	t_token	*new;
 
 	tokenlist = NULL;
-	while (*line != '\0')
+	while (*cmdline != '\0')
 	{
-		while (ft_isspace(*line))
-			line++;
-		if (*line == '\0')
+		while (ft_isspace(*cmdline))
+			cmdline++;
+		if (*cmdline == '\0')
 			return (tokenlist);
-		new = tokenizer(&line);
+		new = tokenizer(&cmdline);
 		if (new == NULL)
 			return (free_tokenlist(tokenlist, 1));
 		tokenlist_add_back(&tokenlist, new);

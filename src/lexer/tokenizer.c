@@ -37,7 +37,6 @@ static t_token	*tokenize_logical_operand(char **line)
 			return (new_token_node(TK_LOGICAL_AND, "&&"));
 		return (new_token_node(TK_BACKGROUND, "&"));
 	}
-	printf("minishell: syntax error near unexpected token `%c'\n", **line);
 	return (NULL);
 }
 

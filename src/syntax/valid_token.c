@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-static int	valid_word(t_token *token)
+static bool	valid_word(t_token *token)
 {
 	if (token->next == NULL)
 		return (true);
@@ -13,20 +13,20 @@ static int	valid_word(t_token *token)
 	return (true);
 }
 
-static int	valid_logical_operand(t_token *token)
+static bool	valid_logical_operand(t_token *token)
 {
 	if (token->next == NULL)
 		return (syntax_error_end_of_file(), false);
 	if (token_is_logical_operand(token->next->type))
 		return (syntax_error_unexpected_token(token->next->val), false);
 	if (token->next->type == TK_SEMICOLON)
-		return (syntax_error_unexpected_token(token->next->val), false);
+		return (syntax_error_unexpected_token(";"), false);
 	if (token->next->type == TK_CLOSE_PARENTHESIS)
 		return (syntax_error_unexpected_token(")"), false);
 	return (true);
 }
 
-static int	valid_redirection(t_token *token)
+static bool	valid_redirection(t_token *token)
 {
 	if (token->next == NULL)
 		return (syntax_error_unexpected_token("newline"), false);
@@ -37,7 +37,7 @@ static int	valid_redirection(t_token *token)
 	return (true);
 }
 
-static int	valid_parenthesis(t_token *token)
+static bool	valid_parenthesis(t_token *token)
 {
 	if (token->type == TK_OPEN_PARENTHESIS)
 	{
@@ -62,7 +62,7 @@ static int	valid_parenthesis(t_token *token)
 	return (false);
 }
 
-int	valid_token(t_token *token)
+bool	valid_token(t_token *token)
 {
 	if (token_is_word(token->type))
 		return (valid_word(token));

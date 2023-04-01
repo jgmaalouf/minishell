@@ -14,30 +14,30 @@ static int	open_heredoc(int heredoc_fd[2], int id)
 	return (EXIT_SUCCESS);
 }
 
-static int	heredoc_warning(int line, const char *delimiter)
+static int	heredoc_warning(int line_count, const char *delimiter)
 {
 	printf("minishell: warning: here-document at "
 		"line %d delimited by end-of-file (wanted `%s')\n",
-		line, delimiter);
+		line_count, delimiter);
 	return (EXIT_SUCCESS);
 }
 
 int	heredoc(const char *delimiter, int id)
 {
 	int		heredoc_fd[2];
-	int		line;
+	int		line_count;
 	char	*input;
 
 	if (open_heredoc(heredoc_fd, id) != EXIT_SUCCESS)
 		return (-1);
-	line = 0;
+	line_count = 0;
 	while (1)
 	{
-		line++;
+		line_count++;
 		input = readline(BOLD YELLOW "> " RESET);
 		if (input == NULL)
 		{
-			heredoc_warning(line, delimiter);
+			heredoc_warning(line_count, delimiter);
 			break ;
 		}
 		if (ft_strcmp(input, delimiter) == 0)

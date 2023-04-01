@@ -8,7 +8,7 @@ static int	usage(void)
 	return (EXIT_FAILURE);
 }
 
-static int	trailing_backslash(char *line)
+static bool	trailing_backslash(char *line)
 {
 	int	count;
 	int	len;
@@ -21,7 +21,7 @@ static int	trailing_backslash(char *line)
 	if (line[i] != '\\')
 		return (false);
 	count = 1;
-	while (--i > 0 && line[i] == '\\')
+	while (--i >= 0 && line[i] == '\\')
 		count++;
 	if (count % 2 == 0)
 		return (false);

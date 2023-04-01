@@ -1,16 +1,16 @@
 #include "minishell.h"
 
-int	reserved_shell_char(int c)
+bool	reserved_shell_char(int c)
 {
 	if (ft_isspace(c))
-		return (1);
+		return (true);
 	if (c == '<' || c == '>')
-		return (1);
+		return (true);
 	if (c == '|' || c == '&')
-		return (1);
+		return (true);
 	if (c == '(' || c == ')')
-		return (1);
+		return (true);
 	if (c == ';')
-		return (1);
-	return (0);
+		return (true);
+	return (false);
 }

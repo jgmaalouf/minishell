@@ -6,8 +6,6 @@ char	**ft_environ(int action, char **new_environ)
 
 	if (action == ENVIRON_SAVE)
 	{
-		if (last_environ == new_environ)
-			return (new_environ);
 		last_environ = new_environ;
 		return (new_environ);
 	}

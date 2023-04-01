@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-int	valid_first_token(t_token *token)
+bool	valid_first_token(t_token *token)
 {
 	if (token_is_logical_operand(token->type)
 		|| token->type == TK_CLOSE_PARENTHESIS || token->type == TK_SEMICOLON)
@@ -8,7 +8,7 @@ int	valid_first_token(t_token *token)
 	return (true);
 }
 
-static int	valid_tokenlist(t_token *tokenlist)
+static bool	valid_tokenlist(t_token *tokenlist)
 {
 	if (!valid_first_token(tokenlist))
 		return (false);
@@ -21,7 +21,7 @@ static int	valid_tokenlist(t_token *tokenlist)
 	return (true);
 }
 
-static int	match_parentheses(t_token *tokenlist)
+static bool	match_parentheses(t_token *tokenlist)
 {
 	int	unmatched;
 
